@@ -143,4 +143,8 @@
 			"typescript": "^4.1.3",
 			"vscode-test": "^1.5.0"
 		}
+	},
+	"dependencies": {
+		"configcat-publicapi-node-client": "^1.0.1"
 	}
+}
