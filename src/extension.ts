@@ -1,8 +1,7 @@
 import * as vscode from 'vscode';
-import { registerProviders } from './provider-registration';
+import { registerProviders } from './providers';
 
 export async function activate(context: vscode.ExtensionContext) {
-
 	await registerProviders(context);
 }
 
