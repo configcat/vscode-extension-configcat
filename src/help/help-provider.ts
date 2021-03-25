@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { HelpItem } from './help-item';
 
 export class HelpProvider implements vscode.TreeDataProvider<HelpItem> {
 
@@ -10,26 +11,11 @@ export class HelpProvider implements vscode.TreeDataProvider<HelpItem> {
     }
 
     getChildren(element?: HelpItem): Thenable<HelpItem[]> {
-
         if (!element) {
-            const docsElement = new HelpItem('Docs', vscode.TreeItemCollapsibleState.None, vscode.Uri.parse('https://configcat.com/'));
-
+            const docsElement = new HelpItem('Docs', vscode.TreeItemCollapsibleState.None, { command: 'configcat.docs', title: 'Docs' });
             return Promise.resolve([docsElement]);
         }
 
         return Promise.resolve([]);
-    }
-}
-
-
-export class HelpItem extends vscode.TreeItem {
-
-    constructor(
-        public readonly label: string,
-        public readonly collapsibleState: vscode.TreeItemCollapsibleState,
-        resourceUri?: vscode.Uri
-    ) {
-        super(label, collapsibleState);
-        super.resourceUri = resourceUri;
     }
 }

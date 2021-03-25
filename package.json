@@ -51,6 +51,11 @@
 		},
 		"commands": [
 			{
+				"command": "configcat.docs",
+				"title": "ConfigCat - Open Docs",
+				"icon": "$(info)"
+			},
+			{
 				"command": "configcat.login",
 				"title": "ConfigCat - Log In",
 				"icon": "$(log-in)"
