@@ -11,7 +11,7 @@ export class AuthenticationProvider {
     constructor(private context: vscode.ExtensionContext, private publicApiService: PublicApiService) {
     }
 
-    async reCheckAuthenticated(): Promise<void> {
+    async checkAuthenticated(): Promise<void> {
         const configuration = await this.getAuthenticationConfiguration();
         if (!configuration) {
             await this.clear();
@@ -99,7 +99,7 @@ export class AuthenticationProvider {
         return 'Field is required.';
     }
 
-    registerAuthenticationProviders() {
+    registerProviders() {
         this.context.subscriptions.push(vscode.commands.registerCommand('configcat.login', async () => {
             await this.authenticate();
         }));
