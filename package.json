@@ -116,7 +116,7 @@
 					"group": "inline"
 				},
 				{
-					"command": "configcat.insertKey",
+					"command": "configcat.copyToClipboard",
 					"when": "view == configcat.settings && viewItem == Setting",
 					"group": "inline"
 				}
