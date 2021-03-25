@@ -2,8 +2,6 @@ import * as vscode from 'vscode';
 import { PublicApiConfiguration } from '../public-api/public-api-configuration';
 import { PublicApiService } from '../public-api/public-api.service';
 
-export const contextFullNameKey = 'configcat:fullName';
-export const contextEmailKey = 'configcat:email';
 export const contextIsAuthenticated = 'configcat:authenticated';
 
 export class AuthenticationProvider {
@@ -75,13 +73,11 @@ export class AuthenticationProvider {
         try {
             const me = await meService.getMe();
             await this.context.secrets.store(this.secretKey, JSON.stringify(configuration));
-            await this.context.globalState.update(contextEmailKey, me.body.email);
-            await this.context.globalState.update(contextFullNameKey, me.body.fullName);
-            await this.context.globalState.update(contextIsAuthenticated, true);
-            vscode.window.showInformationMessage('Logged in to ConfigCat. Email: ' + me.body.email);
+            await vscode.commands.executeCommand('setContext', contextIsAuthenticated, true);
+            await vscode.window.showInformationMessage('Logged in to ConfigCat. Email: ' + me.body.email);
             return configuration;
         } catch (error) {
-            vscode.window.showWarningMessage('Could not log in to ConfigCat');
+            await vscode.window.showWarningMessage('Could not log in to ConfigCat');
             return null;
         }
     }
@@ -93,9 +89,7 @@ export class AuthenticationProvider {
 
     private async clear() {
         await this.context.secrets.delete(this.secretKey);
-        await this.context.globalState.update(contextEmailKey, null);
-        await this.context.globalState.update(contextFullNameKey, null);
-        await this.context.globalState.update(contextIsAuthenticated, false);
+        await vscode.commands.executeCommand('setContext', contextIsAuthenticated, false);
     }
 
     requiredValidator = (value: string) => {
