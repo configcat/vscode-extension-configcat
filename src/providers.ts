@@ -1,13 +1,19 @@
 import * as vscode from 'vscode';
 import { AuthenticationProvider } from './authentication/authentication-provider';
-import { registerHelpProviders } from './help/help-provider';
+import { HelpProvider } from './help/help-provider';
 import { PublicApiService } from './public-api/public-api.service';
 
 export async function registerProviders(context: vscode.ExtensionContext): Promise<void> {
+    context.globalState.update('configcat.initializing', true);
+
     const publicApiService = new PublicApiService();
     const authenticationProvider = new AuthenticationProvider(context, publicApiService);
-    context.globalState.update('configcat.initializing', true);
+    const helpProvider = new HelpProvider(context);
+
+    authenticationProvider.registerAuthenticationProviders();
     await authenticationProvider.reCheckAuthenticated();
-    await registerHelpProviders(context);
+
+    helpProvider.registerProviders();
+
     context.globalState.update('configcat.initializing', false);
 }

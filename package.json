@@ -52,6 +52,28 @@
 				}
 			]
 		},
+		"viewsWelcome": [
+			{
+				"view": "configcat.settings",
+				"contents": "Initializing...",
+				"when": "configcat:initializing == true"
+			},
+			{
+				"view": "configcat.configs",
+				"contents": "Initializing...",
+				"when": "configcat:initializing == true"
+			},
+			{
+				"view": "configcat.settings",
+				"contents": "You should authenticate first. \n [Authenticate](command:configcat.login)",
+				"when": "configcat:initializing == false && configcat:authenticated != true"
+			},
+			{
+				"view": "configcat.configs",
+				"contents": "You should authenticate first. \n [Authenticate](command:configcat.login)",
+				"when": "configcat:initializing == false && configcat:authenticated != true"
+			}
+		],
 		"commands": [
 			{
 				"command": "configcat.login",

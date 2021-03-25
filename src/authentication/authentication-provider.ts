@@ -2,13 +2,13 @@ import * as vscode from 'vscode';
 import { PublicApiConfiguration } from '../public-api/public-api-configuration';
 import { PublicApiService } from '../public-api/public-api.service';
 
-export const contextFullNameKey = 'configcat.fullName';
-export const contextEmailKey = 'configcat.email';
-export const contextIsAuthenticated = 'configcat.authenticated';
+export const contextFullNameKey = 'configcat:fullName';
+export const contextEmailKey = 'configcat:email';
+export const contextIsAuthenticated = 'configcat:authenticated';
 
 export class AuthenticationProvider {
 
-    private secretKey = 'configcat.publicapi-credentials';
+    private secretKey = 'configcat:publicapi-credentials';
 
     constructor(private context: vscode.ExtensionContext, private publicApiService: PublicApiService) {
     }
@@ -36,10 +36,10 @@ export class AuthenticationProvider {
 
     async authenticate(): Promise<PublicApiConfiguration | null> {
         const basicAuthUsername = await vscode.window.showInputBox({
-            prompt: 'To use ConfigCat VSCode extension, you should authenticate with your Public API credentials.',
+            prompt: 'To use ConfigCat VSCode extension, you should authenticate with your Public API credentials. Please enter your Basic Auth UserName.',
             placeHolder: 'Basic auth username',
             validateInput: this.requiredValidator,
-            ignoreFocusOut: true
+            ignoreFocusOut: true,
         });
         if (!basicAuthUsername) {
             return null;
@@ -49,7 +49,8 @@ export class AuthenticationProvider {
             prompt: 'Basic auth password',
             placeHolder: 'Basic auth password',
             validateInput: this.requiredValidator,
-            ignoreFocusOut: true
+            ignoreFocusOut: true,
+            password: true,
         });
         if (!basicAuthPassword) {
             return null;
@@ -102,5 +103,14 @@ export class AuthenticationProvider {
             return null;
         }
         return 'Field is required.';
+    }
+
+    registerAuthenticationProviders() {
+        this.context.subscriptions.push(vscode.commands.registerCommand('configcat.login', async () => {
+            await this.authenticate();
+        }));
+        this.context.subscriptions.push(vscode.commands.registerCommand('configcat.logout', async () => {
+            await this.logout();
+        }));
     }
 }

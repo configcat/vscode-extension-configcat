@@ -21,12 +21,11 @@ export class HelpProvider implements vscode.TreeDataProvider<HelpItem> {
 
         return Promise.resolve([]);
     }
-}
 
-export async function registerHelpProviders(context: vscode.ExtensionContext) {
-    const helpProvider = new HelpProvider(context);
-    const help = vscode.window.createTreeView('configcat.help', {
-        treeDataProvider: helpProvider
-    });
-    context.subscriptions.push(help);
+    registerProviders() {
+        const help = vscode.window.createTreeView('configcat.help', {
+            treeDataProvider: this
+        });
+        this.context.subscriptions.push(help);
+    }
 }
