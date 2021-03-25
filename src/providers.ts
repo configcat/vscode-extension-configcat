@@ -7,8 +7,7 @@ export async function registerProviders(context: vscode.ExtensionContext): Promi
     const publicApiService = new PublicApiService();
     const authenticationProvider = new AuthenticationProvider(context, publicApiService);
     context.globalState.update('configcat.initializing', true);
-    context.globalState.update('configcat.authenticated', await authenticationProvider.isAuthenticated());
-
+    await authenticationProvider.reCheckAuthenticated();
     await registerHelpProviders(context);
     context.globalState.update('configcat.initializing', false);
 }
