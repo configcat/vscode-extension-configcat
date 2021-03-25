@@ -9,37 +9,138 @@
 	"categories": [
 		"Other"
 	],
+	"icon": "resources/logo.png",
 	"activationEvents": [
-		"onCommand:configcat-feature-flags.helloWorld"
+		"onView:configcat",
+		"onCommand:configcat.login",
+		"onCommand:configcat.logout"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
+		"viewsContainers": {
+			"activitybar": [
+				{
+					"id": "configcat",
+					"title": "ConfigCat Feature Flags",
+					"icon": "resources/dark/cat.svg"
+				}
+			]
+		},
+		"views": {
+			"configcat": [
+				{
+					"id": "configcat.settings",
+					"name": "Feature Flags & Settings",
+					"contextualTitle": "Feature Flags & Settings",
+					"type": "tree"
+				},
+				{
+					"id": "configcat.configs",
+					"name": "Products & Configs",
+					"contextualTitle": "Products & Configs",
+					"type": "tree"
+				},
+				{
+					"id": "configcat.help",
+					"name": "Help & Feedback",
+					"contextualTitle": "Help & Feedback",
+					"visibility": "collapsed",
+					"type": "tree"
+				}
+			]
+		},
 		"commands": [
 			{
-				"command": "configcat-feature-flags.helloWorld",
-				"title": "Hello World"
+				"command": "configcat.login",
+				"title": "ConfigCat - Log In",
+				"icon": "$(log-in)"
+			},
+			{
+				"command": "configcat.logout",
+				"title": "ConfigCat - Log out",
+				"icon": "$(log-out)"
+			},
+			{
+				"command": "configcat.connectConfig",
+				"title": "Connect Config to Workspace",
+				"icon": "$(refresh)"
+			},
+			{
+				"command": "configcat.addSetting",
+				"title": "Add Feature Flag",
+				"icon": "$(add)"
+			},
+			{
+				"command": "configcat.refreshSettings",
+				"title": "Refresh Feature Flags & Settings",
+				"icon": "$(refresh)"
+			},
+			{
+				"command": "configcat.refreshConfigs",
+				"title": "Refresh Configs",
+				"icon": "$(refresh)"
+			},
+			{
+				"command": "configcat.findUsages",
+				"title": "Find usages",
+				"icon": "$(search)"
+			},
+			{
+				"command": "configcat.copyToClipboard",
+				"title": "Copy Key to clipboard",
+				"icon": "$(clippy)"
 			}
-		]
-	},
-	"scripts": {
-		"vscode:prepublish": "npm run compile",
-		"compile": "tsc -p ./",
-		"watch": "tsc -watch -p ./",
-		"pretest": "npm run compile && npm run lint",
-		"lint": "eslint src --ext ts",
-		"test": "node ./out/test/runTest.js"
-	},
-	"devDependencies": {
-		"@types/vscode": "^1.46.0",
-		"@types/glob": "^7.1.3",
-		"@types/mocha": "^8.0.4",
-		"@types/node": "^12.11.7",
-		"eslint": "^7.19.0",
-		"@typescript-eslint/eslint-plugin": "^4.14.1",
-		"@typescript-eslint/parser": "^4.14.1",
-		"glob": "^7.1.6",
-		"mocha": "^8.2.1",
-		"typescript": "^4.1.3",
-		"vscode-test": "^1.5.0"
+		],
+		"menus": {
+			"view/title": [
+				{
+					"command": "configcat.refreshSettings",
+					"when": "view == configcat.settings",
+					"group": "navigation"
+				},
+				{
+					"command": "configcat.addSetting",
+					"when": "view == configcat.settings",
+					"group": "navigation"
+				},
+				{
+					"command": "configcat.refreshConfigs",
+					"when": "view == configcat.configs",
+					"group": "navigation"
+				}
+			],
+			"view/item/context": [
+				{
+					"command": "configcat.findUsages",
+					"when": "view == configcat.settings && viewItem == Setting",
+					"group": "inline"
+				},
+				{
+					"command": "configcat.insertKey",
+					"when": "view == configcat.settings && viewItem == Setting",
+					"group": "inline"
+				}
+			]
+		},
+		"scripts": {
+			"vscode:prepublish": "npm run compile",
+			"compile": "tsc -p ./",
+			"watch": "tsc -watch -p ./",
+			"pretest": "npm run compile && npm run lint",
+			"lint": "eslint src --ext ts",
+			"test": "node ./out/test/runTest.js"
+		},
+		"devDependencies": {
+			"@types/vscode": "^1.46.0",
+			"@types/glob": "^7.1.3",
+			"@types/mocha": "^8.0.4",
+			"@types/node": "^12.11.7",
+			"eslint": "^7.19.0",
+			"@typescript-eslint/eslint-plugin": "^4.14.1",
+			"@typescript-eslint/parser": "^4.14.1",
+			"glob": "^7.1.6",
+			"mocha": "^8.2.1",
+			"typescript": "^4.1.3",
+			"vscode-test": "^1.5.0"
+		}
 	}
-}
