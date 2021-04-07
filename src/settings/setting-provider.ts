@@ -19,7 +19,28 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
     private _onDidChangeTreeData: vscode.EventEmitter<Resource | undefined | void> = new vscode.EventEmitter<Resource | undefined | void>();
     readonly onDidChangeTreeData: vscode.Event<Resource | undefined | void> = this._onDidChangeTreeData.event;
 
-    refresh(): void {
+    async refresh(): Promise<void> {
+        this.refreshSettings();
+        await this.refreshHeader();
+    }
+
+    async refreshHeader(): Promise<void> {
+        try {
+            const publicApiConfiguration = await this.authenticationProvider.getAuthenticationConfiguration();
+            const workspaceConfiguration = await this.workspaceConfigurationProvider.getWorkspaceConfiguration();
+            if (!publicApiConfiguration || !workspaceConfiguration) {
+                this.setDescription(undefined);
+                return;
+            }
+            const configsService = this.publicApiService.createConfigsService(publicApiConfiguration);
+            const config = await configsService.getConfig(workspaceConfiguration.configId);
+            this.setDescription(config.body.name || '');
+        } catch (error) {
+            this.setDescription(undefined);
+        }
+    }
+
+    refreshSettings(): void {
         this._onDidChangeTreeData.fire();
     }
 
@@ -103,7 +124,7 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
         const settingsService = new PublicApiService().createSettingsService(publicApiConfiguration);
         try {
             await settingsService.createSetting(workspaceConfiguration.configId, setting);
-            this.refresh();
+            this.refreshSettings();
             statusBar.hide();
         } catch (error) {
             console.log(error);
@@ -123,7 +144,12 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
         if (!this.treeView) {
             return;
         }
-        this.treeView.description = description;
+        if (description) {
+            this.treeView.title = `${description} - FEATURE FLAGS & SETTINGS`;
+        }
+        else {
+            this.treeView.title = `FEATURE FLAGS & SETTINGS`;
+        }
     }
 
     registerProviders() {
@@ -133,7 +159,7 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
         });
         this.context.subscriptions.push(this.treeView);
         this.context.subscriptions.push(vscode.commands.registerCommand('configcat.settings.refresh',
-            () => this.refresh()));
+            async () => await this.refresh()));
         this.context.subscriptions.push(vscode.commands.registerCommand('configcat.settings.copyToClipboard',
             (resource: Resource) => vscode.env.clipboard.writeText(resource.key)));
         this.context.subscriptions.push(vscode.commands.registerCommand('configcat.settings.findUsages',
