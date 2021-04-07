@@ -1,17 +1,13 @@
-import { SettingType } from 'configcat-publicapi-node-client';
+import { CreateSettingModel } from 'configcat-publicapi-node-client';
 import * as vscode from 'vscode';
 import { AuthenticationProvider } from '../authentication/authentication-provider';
+import { SettingInput } from '../inputs/setting-input';
 import { PublicApiConfiguration } from '../public-api/public-api-configuration';
 import { PublicApiService } from '../public-api/public-api.service';
 import { ConfigCatWorkspaceConfiguration } from './workspace-configuration';
 import { WorkspaceConfigurationProvider } from './workspace-configuration-provider';
 
 export class SettingProvider implements vscode.TreeDataProvider<Resource> {
-
-    private booleanSettingDescription = 'Feature Flag';
-    private textSettingDescription = 'Text';
-    private wholeNumberSettingDescription = 'Whole number';
-    private decimalNumberSettingDescription = 'Decimal number';
 
     constructor(private context: vscode.ExtensionContext,
         private authenticationProvider: AuthenticationProvider,
@@ -86,65 +82,13 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
             return;
         }
 
-        const settingTypeString = await vscode.window.showQuickPick(
-            [this.booleanSettingDescription, this.textSettingDescription, this.wholeNumberSettingDescription, this.decimalNumberSettingDescription],
-            {
-                canPickMany: false,
-                placeHolder: 'Pick a setting type'
-            });
-        if (!settingTypeString) {
+        let setting: CreateSettingModel;
+        try {
+            setting = await SettingInput.settingInput();
+        } catch (error) {
             return;
         }
-
-        let settingType: SettingType;
-        switch (settingTypeString) {
-            case this.booleanSettingDescription:
-                settingType = SettingType.Boolean;
-                break;
-            case this.textSettingDescription:
-                settingType = SettingType.String;
-                break;
-            case this.wholeNumberSettingDescription:
-                settingType = SettingType.Int;
-                break;
-            case this.decimalNumberSettingDescription:
-                settingType = SettingType.Double;
-                break;
-            default:
-                return;
-        }
-
-        const name = await vscode.window.showInputBox({
-            prompt: 'Description',
-            placeHolder: 'Is my awesome feature enabled',
-            validateInput: this.requiredValidator
-        });
-        if (!name) {
-            return;
-        }
-        const key = await vscode.window.showInputBox({
-            prompt: 'Key',
-            placeHolder: 'isMyAwesomeFeatureEnabled',
-            validateInput: this.requiredValidator
-        });
-        if (!key) {
-            return;
-        }
-        const hint = await vscode.window.showInputBox({
-            prompt: 'Hint',
-            placeHolder: '',
-            value: ''
-        });
-        if (hint === undefined) {
-            return;
-        }
-
-        const confirmText = await vscode.window.showQuickPick(['Yes', 'No'], {
-            canPickMany: false,
-            placeHolder: 'Clicking on Yes will create a ' + settingTypeString + ' setting. Key: ' + key + '. Description: ' + name + ' Hint: ' + hint
-        });
-
-        if (confirmText !== 'Yes') {
+        if (!setting) {
             return;
         }
 
@@ -154,12 +98,8 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
 
         const settingsService = new PublicApiService().createSettingsService(publicApiConfiguration);
         try {
-            const setting = await settingsService.createSetting(workspaceConfiguration.configId, {
-                key, name, hint, settingType
-            });
-
+            await settingsService.createSetting(workspaceConfiguration.configId, setting);
             this.refresh();
-
             statusBar.hide();
         } catch (error) {
             console.log(error);
@@ -167,13 +107,6 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
             statusBar.hide();
         }
     }
-
-    requiredValidator = (value: string) => {
-        if (value) {
-            return null;
-        }
-        return 'Field is required.';
-    };
 
     registerProviders() {
         const treeView = vscode.window.createTreeView('configcat.settings', {
