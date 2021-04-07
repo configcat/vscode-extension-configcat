@@ -15,8 +15,7 @@
 		"onView:configcat.configs",
 		"onView:configcat.help",
 		"onCommand:configcat.login",
-		"onCommand:configcat.logout",
-		"onCommand:configcat.help"
+		"onCommand:configcat.logout"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -138,6 +137,14 @@
 			}
 		],
 		"commandPalette": [
+			{
+				"command": "configcat.login",
+				"when": "!configcat:authenticated"
+			},
+			{
+				"command": "configcat.logout",
+				"when": "configcat:initialized && configcat:authenticated"
+			},
 			{
 				"command": "configcat.configs.connect",
 				"when": "configcat:initialized && configcat:authenticated"
