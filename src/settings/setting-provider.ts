@@ -181,14 +181,14 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
             showCollapseAll: true
         });
         this.context.subscriptions.push(treeView);
-        this.context.subscriptions.push(vscode.commands.registerCommand('configcat.refreshSettings',
+        this.context.subscriptions.push(vscode.commands.registerCommand('configcat.settings.refresh',
             () => this.refresh()));
-        this.context.subscriptions.push(vscode.commands.registerCommand('configcat.copyToClipboard',
+        this.context.subscriptions.push(vscode.commands.registerCommand('configcat.settings.copyToClipboard',
             (resource: Resource) => vscode.env.clipboard.writeText(resource.key)));
-        this.context.subscriptions.push(vscode.commands.registerCommand('configcat.findUsages',
+        this.context.subscriptions.push(vscode.commands.registerCommand('configcat.settings.findUsages',
             (resource: Resource) => vscode.commands.executeCommand('search.action.openNewEditor', { query: resource.label })));
 
-        this.context.subscriptions.push(vscode.commands.registerCommand('configcat.addSetting',
+        this.context.subscriptions.push(vscode.commands.registerCommand('configcat.settings.add',
             async () => await this.addSetting()));
         this.context.subscriptions.push(
             vscode.workspace.onDidChangeConfiguration(async e => {

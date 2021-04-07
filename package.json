@@ -107,32 +107,32 @@
 				"icon": "$(log-out)"
 			},
 			{
-				"command": "configcat.refreshConfigs",
+				"command": "configcat.configs.refresh",
 				"title": "Refresh Configs",
 				"icon": "$(refresh)"
 			},
 			{
 				"command": "configcat.configs.connect",
 				"title": "Connect Config to Workspace",
-				"icon": "$(refresh)"
+				"icon": "$(plug)"
 			},
 			{
-				"command": "configcat.refreshSettings",
+				"command": "configcat.settings.refresh",
 				"title": "Refresh Feature Flags & Settings",
 				"icon": "$(refresh)"
 			},
 			{
-				"command": "configcat.addSetting",
+				"command": "configcat.settings.add",
 				"title": "Add Feature Flag",
 				"icon": "$(add)"
 			},
 			{
-				"command": "configcat.findUsages",
+				"command": "configcat.settings.findUsages",
 				"title": "Find usages",
 				"icon": "$(search)"
 			},
 			{
-				"command": "configcat.copyToClipboard",
+				"command": "configcat.settings.copyToClipboard",
 				"title": "Copy Key to clipboard",
 				"icon": "$(clippy)"
 			}
@@ -143,40 +143,40 @@
 				"when": "false"
 			},
 			{
-				"command": "configcat.refreshConfigs",
+				"command": "configcat.configs.refresh",
 				"when": "configcat:initialized && configcat:authenticated"
 			},
 			{
-				"command": "configcat.refreshSettings",
+				"command": "configcat.settings.refresh",
 				"when": "configcat:initialized && configcat:authenticated && configcat:connected"
 			},
 			{
-				"command": "configcat.addSetting",
+				"command": "configcat.settings.add",
 				"when": "configcat:initialized && configcat:authenticated && configcat:connected"
 			},
 			{
-				"command": "configcat.findUsages",
+				"command": "configcat.settings.findUsages",
 				"when": "false"
 			},
 			{
-				"command": "configcat.copyToClipboard",
+				"command": "configcat.settings.copyToClipboard",
 				"when": "false"
 			}
 		],
 		"menus": {
 			"view/title": [
 				{
-					"command": "configcat.refreshSettings",
+					"command": "configcat.settings.refresh",
 					"when": "configcat:initialized && configcat:authenticated && configcat:connected && view == configcat.settings",
 					"group": "navigation"
 				},
 				{
-					"command": "configcat.addSetting",
+					"command": "configcat.settings.add",
 					"when": "configcat:initialized && configcat:authenticated && configcat:connected && view == configcat.settings",
 					"group": "navigation"
 				},
 				{
-					"command": "configcat.refreshConfigs",
+					"command": "configcat.configs.refresh",
 					"when": "configcat:initialized && configcat:authenticated && view == configcat.configs",
 					"group": "navigation"
 				}
@@ -188,12 +188,12 @@
 					"group": "inline"
 				},
 				{
-					"command": "configcat.findUsages",
+					"command": "configcat.settings.findUsages",
 					"when": "view == configcat.settings && viewItem == Setting",
 					"group": "inline"
 				},
 				{
-					"command": "configcat.copyToClipboard",
+					"command": "configcat.settings.copyToClipboard",
 					"when": "view == configcat.settings && viewItem == Setting",
 					"group": "inline"
 				}
