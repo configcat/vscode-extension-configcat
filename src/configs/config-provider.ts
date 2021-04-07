@@ -3,9 +3,9 @@ import { AuthenticationProvider } from '../authentication/authentication-provide
 import { PublicApiService } from '../public-api/public-api.service';
 
 export enum ResourceType {
-    Unknown = 'Unknown',
-    Product = 'Product',
-    Config = 'Config'
+    unknown = 'Unknown',
+    product = 'Product',
+    config = 'Config'
 }
 export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
 
@@ -30,7 +30,7 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
             return this.getProducts();
         }
 
-        if (element.resourceType == ResourceType.Product) {
+        if (element.resourceType === ResourceType.product) {
             return this.getConfigs(element.resourceId);
         }
 
@@ -49,20 +49,20 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
 
             const productsService = this.publicApiService.createProductsService(configuration);
             return productsService.getProducts().then(products => {
-                const items = products.body.map((p, index) => new Resource(p.productId ?? '', p.name ?? '', ResourceType.Product, index == 0 ? vscode.TreeItemCollapsibleState.Expanded : vscode.TreeItemCollapsibleState.Collapsed));
+                const items = products.body.map((p, index) => new Resource(p.productId ?? '', p.name ?? '', ResourceType.product, index === 0 ? vscode.TreeItemCollapsibleState.Expanded : vscode.TreeItemCollapsibleState.Collapsed));
                 statusBar.hide();
                 if (!items.length) {
-                    items.push(new Resource('-1', 'Could not find any Products.', ResourceType.Unknown, vscode.TreeItemCollapsibleState.None))
+                    items.push(new Resource('-1', 'Could not find any Products.', ResourceType.unknown, vscode.TreeItemCollapsibleState.None));
                 }
                 return items;
             }, error => {
                 vscode.window.showWarningMessage('Could not load Products. Error: ' + error);
                 statusBar.hide();
-                return [new Resource('-1', 'Could not load Products.', ResourceType.Unknown, vscode.TreeItemCollapsibleState.None)];
+                return [new Resource('-1', 'Could not load Products.', ResourceType.unknown, vscode.TreeItemCollapsibleState.None)];
             });
         }, error => {
             return [];
-        })
+        });
     }
 
     getConfigs(productId: string): Thenable<Resource[]> {
@@ -77,20 +77,20 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
 
             const configsService = this.publicApiService.createConfigsService(configuration);
             return configsService.getConfigs(productId).then(configs => {
-                const items = configs.body.map(c => new Resource(c.configId ?? '', c.name ?? '', ResourceType.Config, vscode.TreeItemCollapsibleState.None));
+                const items = configs.body.map(c => new Resource(c.configId ?? '', c.name ?? '', ResourceType.config, vscode.TreeItemCollapsibleState.None));
                 statusBar.hide();
                 if (!items.length) {
-                    items.push(new Resource('-1', 'Could not find any Configs.', ResourceType.Unknown, vscode.TreeItemCollapsibleState.None))
+                    items.push(new Resource('-1', 'Could not find any Configs.', ResourceType.unknown, vscode.TreeItemCollapsibleState.None));
                 }
                 return items;
             }, error => {
                 vscode.window.showWarningMessage('Could not load Configs. Error: ' + error);
                 statusBar.hide();
-                return [new Resource('-1', 'Could not load Configs.', ResourceType.Unknown, vscode.TreeItemCollapsibleState.None)];
+                return [new Resource('-1', 'Could not load Configs.', ResourceType.unknown, vscode.TreeItemCollapsibleState.None)];
             });
         }, error => {
             return [];
-        })
+        });
     }
 
     registerProviders() {

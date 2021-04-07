@@ -56,14 +56,14 @@ export class AuthenticationProvider {
 
         let basePath = await vscode.window.showInputBox({
             prompt: 'API base URL',
-            placeHolder: 'Leave blank for default (https://api.configcat.com)',
+            placeHolder: `Leave blank for default (${PublicApiService.defaultBasePath})`,
             ignoreFocusOut: true
         });
-        if (basePath == undefined) {
+        if (basePath === undefined) {
             return null;
         }
         if (!basePath) {
-            basePath = 'https://api.configcat.com';
+            basePath = PublicApiService.defaultBasePath;
         }
 
         const configuration: PublicApiConfiguration = { basePath, basicAuthPassword, basicAuthUsername };
@@ -97,7 +97,7 @@ export class AuthenticationProvider {
             return null;
         }
         return 'Field is required.';
-    }
+    };
 
     registerProviders() {
         this.context.subscriptions.push(vscode.commands.registerCommand('configcat.login', async () => {
