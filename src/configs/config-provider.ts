@@ -1,5 +1,7 @@
 import * as vscode from 'vscode';
 import { AuthenticationProvider } from '../authentication/authentication-provider';
+import { ConfigInput } from '../inputs/config-input';
+import { ProductInput } from '../inputs/product-input';
 import { PublicApiService } from '../public-api/public-api.service';
 import { WorkspaceConfigurationProvider } from '../settings/workspace-configuration-provider';
 
@@ -95,6 +97,37 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
         });
     }
 
+    async connectConfig(resource: any): Promise<void> {
+        console.log(resource);
+        if (resource && resource.parentResourceId && resource.resourceId) {
+            return await this.workspaceConfigurationProvider.setConfiguration(resource.parentResourceId, resource.resourceId);
+        }
+
+        const configuration = await this.authenticationProvider.getAuthenticationConfiguration();
+        if (!configuration) {
+            return;
+        }
+        const productsService = this.publicApiService.createProductsService(configuration);
+        const products = await productsService.getProducts();
+
+        const productId = await ProductInput.pickProduct(products.body);
+
+        if (!productId) {
+            return;
+        }
+
+        const configsService = this.publicApiService.createConfigsService(configuration);
+        const configs = await configsService.getConfigs(productId);
+
+        const configId = await ConfigInput.pickConfig(configs.body);
+
+        if (!configId) {
+            return;
+        }
+
+        return await this.workspaceConfigurationProvider.setConfiguration(productId, configId);
+    }
+
     registerProviders() {
         const treeView = vscode.window.createTreeView('configcat.configs', {
             treeDataProvider: this,
@@ -103,7 +136,7 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
         this.context.subscriptions.push(treeView);
         this.context.subscriptions.push(vscode.commands.registerCommand('configcat.configs.refresh', () => this.refresh()));
         this.context.subscriptions.push(vscode.commands.registerCommand('configcat.configs.connect', async (resource) => {
-            await this.workspaceConfigurationProvider.setConfiguration(resource.parentResourceId, resource.resourceId);
+            await this.connectConfig(resource);
         }));
         this.context.subscriptions.push(this.context.secrets.onDidChange(e => {
             if (e.key === AuthenticationProvider.secretKey) {

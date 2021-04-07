@@ -113,7 +113,7 @@
 			},
 			{
 				"command": "configcat.configs.connect",
-				"title": "Connect Config to Workspace",
+				"title": "ConfigCat - Connect Config to Workspace",
 				"icon": "$(plug)"
 			},
 			{
@@ -140,7 +140,7 @@
 		"commandPalette": [
 			{
 				"command": "configcat.configs.connect",
-				"when": "false"
+				"when": "configcat:initialized && configcat:authenticated"
 			},
 			{
 				"command": "configcat.configs.refresh",
