@@ -9,7 +9,7 @@
 	"categories": [
 		"Other"
 	],
-	"icon": "resources/logo.png",
+	"icon": "https://configcat.com/images/shared/configcat-logo-cat-canvas-192.png",
 	"activationEvents": [
 		"onView:configcat.settings",
 		"onView:configcat.configs",
@@ -20,6 +20,22 @@
 	],
 	"main": "./out/extension.js",
 	"contributes": {
+		"configuration": {
+			"type": "object",
+			"title": "ConfigCat",
+			"properties": {
+				"configcat.productId": {
+					"type": "string",
+					"default": "",
+					"markdownDescription": "Your ConfigCat Product's Identifier."
+				},
+				"configcat.configId": {
+					"type": "string",
+					"default": "",
+					"markdownDescription": "Your ConfigCat Config's Identifier."
+				}
+			}
+		},
 		"viewsContainers": {
 			"activitybar": [
 				{
@@ -54,24 +70,29 @@
 		},
 		"viewsWelcome": [
 			{
-				"view": "configcat.settings",
-				"contents": "Initializing...",
-				"when": "configcat:initialized == false"
-			},
-			{
 				"view": "configcat.configs",
 				"contents": "Initializing...",
-				"when": "configcat:initialized == false"
-			},
-			{
-				"view": "configcat.settings",
-				"contents": "You should authenticate first. \n [Authenticate](command:configcat.login)",
-				"when": "configcat:initialized == true && configcat:authenticated != true"
+				"when": "!configcat:initialized"
 			},
 			{
 				"view": "configcat.configs",
 				"contents": "You should authenticate first. \n [Authenticate](command:configcat.login)",
-				"when": "configcat:initialized == true && configcat:authenticated != true"
+				"when": "configcat:initialized && !configcat:authenticated"
+			},
+			{
+				"view": "configcat.settings",
+				"contents": "Initializing...",
+				"when": "!configcat:initialized"
+			},
+			{
+				"view": "configcat.settings",
+				"contents": "You should authenticate first. \n [Authenticate](command:configcat.login)",
+				"when": "configcat:initialized && !configcat:authenticated"
+			},
+			{
+				"view": "configcat.setting",
+				"contents": "You should connect a Config to this workspace first. \n [Authenticate](command:configcat.connect)",
+				"when": "configcat:initialized && configcat:authenticated && !configcat:connected"
 			}
 		],
 		"commands": [

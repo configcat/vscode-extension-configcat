@@ -6,30 +6,33 @@ export const contextIsAuthenticated = 'configcat:authenticated';
 
 export class AuthenticationProvider {
 
-    private secretKey = 'configcat:publicapi-credentials';
+    public static secretKey = 'configcat:publicapi-credentials';
+    public publicApiConfiguration: PublicApiConfiguration | null = null;
 
     constructor(private context: vscode.ExtensionContext, private publicApiService: PublicApiService) {
     }
 
     async checkAuthenticated(): Promise<void> {
-        const configuration = await this.getAuthenticationConfiguration();
-        if (!configuration) {
+        try {
+            await this.getAuthenticationConfiguration();
+            await vscode.commands.executeCommand('setContext', contextIsAuthenticated, true);
+        } catch (error) {
             await this.clear();
         }
     }
 
     async getAuthenticationConfiguration(): Promise<PublicApiConfiguration | null> {
-        const credentialsString = await this.context.secrets.get(this.secretKey);
+        const credentialsString = await this.context.secrets.get(AuthenticationProvider.secretKey);
         if (!credentialsString) {
-            return Promise.resolve(null);
+            return Promise.reject();
         }
 
         const credentials: PublicApiConfiguration = JSON.parse(credentialsString);
         if (!credentials || !credentials.basePath || !credentials.basicAuthUsername || !credentials.basicAuthPassword) {
-            return Promise.resolve(null);
+            return Promise.reject();
         }
 
-        return credentials;
+        return Promise.resolve(credentials);
     }
 
     async authenticate(): Promise<PublicApiConfiguration | null> {
@@ -72,7 +75,7 @@ export class AuthenticationProvider {
 
         try {
             const me = await meService.getMe();
-            await this.context.secrets.store(this.secretKey, JSON.stringify(configuration));
+            await this.context.secrets.store(AuthenticationProvider.secretKey, JSON.stringify(configuration));
             await vscode.commands.executeCommand('setContext', contextIsAuthenticated, true);
             await vscode.window.showInformationMessage('Logged in to ConfigCat. Email: ' + me.body.email);
             return configuration;
@@ -88,8 +91,8 @@ export class AuthenticationProvider {
     }
 
     private async clear() {
-        await this.context.secrets.delete(this.secretKey);
         await vscode.commands.executeCommand('setContext', contextIsAuthenticated, false);
+        await this.context.secrets.delete(AuthenticationProvider.secretKey);
     }
 
     requiredValidator = (value: string) => {
@@ -106,5 +109,12 @@ export class AuthenticationProvider {
         this.context.subscriptions.push(vscode.commands.registerCommand('configcat.logout', async () => {
             await this.logout();
         }));
+        this.context.subscriptions.push(
+            this.context.secrets.onDidChange(async e => {
+                if (e.key === AuthenticationProvider.secretKey) {
+                    await this.checkAuthenticated();
+                }
+            })
+        );
     }
 }

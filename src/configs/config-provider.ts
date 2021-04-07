@@ -100,6 +100,11 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
         });
         this.context.subscriptions.push(treeView);
         this.context.subscriptions.push(vscode.commands.registerCommand('configcat.configs.refresh', () => this.refresh()));
+        this.context.subscriptions.push(this.context.secrets.onDidChange(e => {
+            if (e.key === AuthenticationProvider.secretKey) {
+                this.refresh();
+            }
+        }));
     }
 }
 
