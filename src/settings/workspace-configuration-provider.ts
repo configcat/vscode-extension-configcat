@@ -11,8 +11,8 @@ export class WorkspaceConfigurationProvider {
 
     async setConfiguration(productId: string, configId: string) {
         const config = vscode.workspace.getConfiguration(WorkspaceConfigurationProvider.configurationKey);
-        await config.update('productid', productId);
-        await config.update('configid', configId);
+        await config.update('productId', productId);
+        await config.update('configId', configId);
     }
 
     async checkConfiguration() {
@@ -24,13 +24,16 @@ export class WorkspaceConfigurationProvider {
         }
     }
 
-    async getWorkspaceConfiguration(): Promise<ConfigCatWorkspaceConfiguration> {
+    getWorkspaceConfiguration(): Promise<ConfigCatWorkspaceConfiguration | null> {
         const config = vscode.workspace.getConfiguration(WorkspaceConfigurationProvider.configurationKey);
         const productId = config.get('productId');
         const configId = config.get('configId');
+
         if (productId && configId) {
-            return Promise.resolve({ productId: String(productId), configId: String(configId) });
+            const configuration = { productId: String(productId), configId: String(configId) };
+            return Promise.resolve(configuration);
         }
+
         return Promise.reject();
     }
 

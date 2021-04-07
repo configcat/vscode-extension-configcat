@@ -13,8 +13,8 @@ export async function registerProviders(context: vscode.ExtensionContext): Promi
     await authenticationProvider.checkAuthenticated();
     await workspaceConfigurationProvider.checkConfiguration();
     const helpProvider = new HelpProvider(context);
-    const configProvider = new ConfigProvider(context, authenticationProvider, publicApiService);
-    const settingProvider = new SettingProvider(context, authenticationProvider, publicApiService);
+    const configProvider = new ConfigProvider(context, authenticationProvider, publicApiService, workspaceConfigurationProvider);
+    const settingProvider = new SettingProvider(context, authenticationProvider, publicApiService, workspaceConfigurationProvider);
 
     authenticationProvider.registerProviders();
     workspaceConfigurationProvider.registerProviders();

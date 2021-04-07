@@ -107,6 +107,11 @@
 				"icon": "$(log-out)"
 			},
 			{
+				"command": "configcat.configs.connect",
+				"title": "Connect Config to Workspace",
+				"icon": "$(refresh)"
+			},
+			{
 				"command": "configcat.connectConfig",
 				"title": "Connect Config to Workspace",
 				"icon": "$(refresh)"
@@ -156,6 +161,11 @@
 				}
 			],
 			"view/item/context": [
+				{
+					"command": "configcat.configs.connect",
+					"when": "view == configcat.configs && viewItem == Config",
+					"group": "inline"
+				},
 				{
 					"command": "configcat.findUsages",
 					"when": "view == configcat.settings && viewItem == Setting",

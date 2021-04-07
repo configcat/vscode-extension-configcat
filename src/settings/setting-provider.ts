@@ -24,8 +24,7 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
     }
 
     getChildren(element?: Resource): Thenable<Resource[]> {
-
-        if (element !== null) {
+        if (element) {
             return Promise.resolve([]);
         }
 
@@ -33,10 +32,17 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
             this.authenticationProvider.getAuthenticationConfiguration(),
             this.workspaceConfigurationProvider.getWorkspaceConfiguration()
         ]).then(
-            (value) => {
-                const publicApiConfiguration = value[0];
-                const workspaceConfiguration = value[1];
+            values => {
+                console.log(values);
+
+                const statusBar = vscode.window.createStatusBarItem();
+                statusBar.text = 'ConfigCat - Loading Settings...';
+                statusBar.show();
+
+                const publicApiConfiguration = values[0];
+                const workspaceConfiguration = values[1];
                 if (!publicApiConfiguration || !workspaceConfiguration) {
+                    statusBar.hide();
                     return [];
                 }
 
@@ -45,11 +51,20 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
                     const items = settings.body.map((s, index) => new Resource(String(s.settingId), s.key ?? '',
                         s.name ?? '', s.hint ?? '',
                         vscode.TreeItemCollapsibleState.None));
-
+                    if (!items.length) {
+                        items.push(new Resource('-1', 'Could not find any Settings.', '', '', vscode.TreeItemCollapsibleState.None));
+                    }
+                    statusBar.hide();
                     return items;
-                }, () => { return []; });
+                }, (error) => {
+                    vscode.window.showWarningMessage('Could not load Settings. Error: ' + error);
+                    statusBar.hide();
+                    return [new Resource('-1', 'Could not load Settings.', '', '', vscode.TreeItemCollapsibleState.None)];
+                });
             },
-            () => { return []; });
+            () => {
+                return [];
+            });
     }
 
     registerProviders() {
@@ -58,6 +73,14 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
             showCollapseAll: true
         });
         this.context.subscriptions.push(treeView);
+        this.context.subscriptions.push(vscode.commands.registerCommand('configcat.refreshSettings', () => this.refresh()));
+        this.context.subscriptions.push(
+            vscode.workspace.onDidChangeConfiguration(async e => {
+                if (e.affectsConfiguration(WorkspaceConfigurationProvider.configurationKey)) {
+                    await this.refresh();
+                }
+            })
+        );
     }
 }
 
@@ -69,8 +92,9 @@ class Resource extends vscode.TreeItem {
         public readonly hint: string,
         public readonly collapsibleState: vscode.TreeItemCollapsibleState,
     ) {
-        super(`˙${key} (${name})`, collapsibleState);
-        super.description = hint;
-        super.contextValue = key;
+        super(key, collapsibleState);
+        super.description = name;
+        super.tooltip = hint;
+        super.contextValue = 'Setting';
     }
 }
