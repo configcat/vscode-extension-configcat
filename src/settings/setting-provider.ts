@@ -145,14 +145,16 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
             return;
         }
         if (description) {
-            this.treeView.title = `${description} - FEATURE FLAGS & SETTINGS`;
+            this.treeView.title = description;
+            this.treeView.description = 'FEATURE FLAGS & SETTINGS';
         }
         else {
             this.treeView.title = `FEATURE FLAGS & SETTINGS`;
+            this.treeView.description = undefined;
         }
     }
 
-    registerProviders() {
+    async registerProviders(): Promise<void> {
         this.treeView = vscode.window.createTreeView('configcat.settings', {
             treeDataProvider: this,
             showCollapseAll: true
@@ -182,6 +184,8 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
                 }
             })
         );
+
+        await this.refreshHeader();
     }
 }
 

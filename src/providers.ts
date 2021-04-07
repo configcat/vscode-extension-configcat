@@ -19,6 +19,6 @@ export async function registerProviders(context: vscode.ExtensionContext): Promi
     authenticationProvider.registerProviders();
     workspaceConfigurationProvider.registerProviders();
     configProvider.registerProviders();
-    settingProvider.registerProviders();
+    await settingProvider.registerProviders();
     helpProvider.registerProviders();
 }
