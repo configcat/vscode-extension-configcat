@@ -107,19 +107,14 @@
 				"icon": "$(log-out)"
 			},
 			{
+				"command": "configcat.refreshConfigs",
+				"title": "Refresh Configs",
+				"icon": "$(refresh)"
+			},
+			{
 				"command": "configcat.configs.connect",
 				"title": "Connect Config to Workspace",
 				"icon": "$(refresh)"
-			},
-			{
-				"command": "configcat.connectConfig",
-				"title": "Connect Config to Workspace",
-				"icon": "$(refresh)"
-			},
-			{
-				"command": "configcat.addSetting",
-				"title": "Add Feature Flag",
-				"icon": "$(add)"
 			},
 			{
 				"command": "configcat.refreshSettings",
@@ -127,9 +122,9 @@
 				"icon": "$(refresh)"
 			},
 			{
-				"command": "configcat.refreshConfigs",
-				"title": "Refresh Configs",
-				"icon": "$(refresh)"
+				"command": "configcat.addSetting",
+				"title": "Add Feature Flag",
+				"icon": "$(add)"
 			},
 			{
 				"command": "configcat.findUsages",
@@ -142,21 +137,47 @@
 				"icon": "$(clippy)"
 			}
 		],
+		"commandPalette": [
+			{
+				"command": "configcat.configs.connect",
+				"when": "false"
+			},
+			{
+				"command": "configcat.refreshConfigs",
+				"when": "configcat:initialized && configcat:authenticated"
+			},
+			{
+				"command": "configcat.refreshSettings",
+				"when": "configcat:initialized && configcat:authenticated && configcat:connected"
+			},
+			{
+				"command": "configcat.addSetting",
+				"when": "configcat:initialized && configcat:authenticated && configcat:connected"
+			},
+			{
+				"command": "configcat.findUsages",
+				"when": "false"
+			},
+			{
+				"command": "configcat.copyToClipboard",
+				"when": "false"
+			}
+		],
 		"menus": {
 			"view/title": [
 				{
 					"command": "configcat.refreshSettings",
-					"when": "view == configcat.settings",
+					"when": "configcat:initialized && configcat:authenticated && configcat:connected && view == configcat.settings",
 					"group": "navigation"
 				},
 				{
 					"command": "configcat.addSetting",
-					"when": "view == configcat.settings",
+					"when": "configcat:initialized && configcat:authenticated && configcat:connected && view == configcat.settings",
 					"group": "navigation"
 				},
 				{
 					"command": "configcat.refreshConfigs",
-					"when": "view == configcat.configs",
+					"when": "configcat:initialized && configcat:authenticated && view == configcat.configs",
 					"group": "navigation"
 				}
 			],
