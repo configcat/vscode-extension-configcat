@@ -130,6 +130,14 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
                 }
             })
         );
+
+        this.context.subscriptions.push(
+            this.context.secrets.onDidChange(async e => {
+                if (e.key === AuthenticationProvider.secretKey) {
+                    await this.refresh();
+                }
+            })
+        );
     }
 }
 

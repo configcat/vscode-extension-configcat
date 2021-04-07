@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { AuthInput } from '../inputs/auth-input';
 import { PublicApiConfiguration } from '../public-api/public-api-configuration';
 import { PublicApiService } from '../public-api/public-api.service';
 
@@ -36,40 +37,13 @@ export class AuthenticationProvider {
     }
 
     async authenticate(): Promise<PublicApiConfiguration | null> {
-        const basicAuthUsername = await vscode.window.showInputBox({
-            prompt: 'To use ConfigCat VSCode extension, you should authenticate with your Public API credentials. Please enter your Basic Auth UserName.',
-            placeHolder: 'Basic auth username',
-            validateInput: this.requiredValidator,
-            ignoreFocusOut: true,
-        });
-        if (!basicAuthUsername) {
+
+        let configuration: PublicApiConfiguration;
+        try {
+            configuration = await AuthInput.getAuthParameters();
+        } catch (error) {
             return null;
         }
-
-        const basicAuthPassword = await vscode.window.showInputBox({
-            prompt: 'Basic auth password',
-            placeHolder: 'Basic auth password',
-            validateInput: this.requiredValidator,
-            ignoreFocusOut: true,
-            password: true,
-        });
-        if (!basicAuthPassword) {
-            return null;
-        }
-
-        let basePath = await vscode.window.showInputBox({
-            prompt: 'API base URL',
-            placeHolder: `Leave blank for default (${PublicApiService.defaultBasePath})`,
-            ignoreFocusOut: true
-        });
-        if (basePath === undefined) {
-            return null;
-        }
-        if (!basePath) {
-            basePath = PublicApiService.defaultBasePath;
-        }
-
-        const configuration: PublicApiConfiguration = { basePath, basicAuthPassword, basicAuthUsername };
 
         const meService = this.publicApiService.createMeService(configuration);
 
@@ -95,12 +69,6 @@ export class AuthenticationProvider {
         await this.context.secrets.delete(AuthenticationProvider.secretKey);
     }
 
-    requiredValidator = (value: string) => {
-        if (value) {
-            return null;
-        }
-        return 'Field is required.';
-    };
 
     registerProviders() {
         this.context.subscriptions.push(vscode.commands.registerCommand('configcat.login', async () => {

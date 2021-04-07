@@ -110,7 +110,12 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
         const productsService = this.publicApiService.createProductsService(configuration);
         const products = await productsService.getProducts();
 
-        const productId = await ProductInput.pickProduct(products.body);
+        let productId: string;
+        try {
+            productId = await ProductInput.pickProduct(products.body);
+        } catch (error) {
+            return;
+        }
 
         if (!productId) {
             return;
@@ -119,7 +124,12 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
         const configsService = this.publicApiService.createConfigsService(configuration);
         const configs = await configsService.getConfigs(productId);
 
-        const configId = await ConfigInput.pickConfig(configs.body);
+        let configId: string;
+        try {
+            configId = await ConfigInput.pickConfig(configs.body);
+        } catch (error) {
+            return;
+        }
 
         if (!configId) {
             return;
