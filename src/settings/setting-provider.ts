@@ -9,6 +9,8 @@ import { WorkspaceConfigurationProvider } from './workspace-configuration-provid
 
 export class SettingProvider implements vscode.TreeDataProvider<Resource> {
 
+    treeView: vscode.TreeView<Resource> | null = null;
+
     constructor(private context: vscode.ExtensionContext,
         private authenticationProvider: AuthenticationProvider,
         private publicApiService: PublicApiService,
@@ -35,6 +37,7 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
             this.workspaceConfigurationProvider.getWorkspaceConfiguration()
         ]).then(
             values => {
+                this.setMessage(undefined);
                 const statusBar = vscode.window.createStatusBarItem();
                 statusBar.text = 'ConfigCat - Loading Settings...';
                 statusBar.show();
@@ -52,14 +55,15 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
                         s.name ?? '', s.hint ?? '',
                         vscode.TreeItemCollapsibleState.None));
                     if (!items.length) {
-                        items.push(new Resource('-1', 'Could not find any Settings.', '', '', vscode.TreeItemCollapsibleState.None));
+                        this.setMessage('Could not find any Settings.');
                     }
                     statusBar.hide();
                     return items;
                 }, (error) => {
                     vscode.window.showWarningMessage('Could not load Settings. Error: ' + error);
                     statusBar.hide();
-                    return [new Resource('-1', 'Could not load Settings.', '', '', vscode.TreeItemCollapsibleState.None)];
+                    this.setMessage('Could not load Settings.');
+                    return [];
                 });
             },
             () => {
@@ -108,12 +112,26 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
         }
     }
 
+    setMessage(message: string | undefined) {
+        if (!this.treeView) {
+            return;
+        }
+        this.treeView.message = message;
+    }
+
+    setDescription(description: string | undefined) {
+        if (!this.treeView) {
+            return;
+        }
+        this.treeView.description = description;
+    }
+
     registerProviders() {
-        const treeView = vscode.window.createTreeView('configcat.settings', {
+        this.treeView = vscode.window.createTreeView('configcat.settings', {
             treeDataProvider: this,
             showCollapseAll: true
         });
-        this.context.subscriptions.push(treeView);
+        this.context.subscriptions.push(this.treeView);
         this.context.subscriptions.push(vscode.commands.registerCommand('configcat.settings.refresh',
             () => this.refresh()));
         this.context.subscriptions.push(vscode.commands.registerCommand('configcat.settings.copyToClipboard',
