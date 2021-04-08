@@ -50,7 +50,6 @@ export class AuthenticationProvider {
         try {
             const me = await meService.getMe();
             await this.context.secrets.store(AuthenticationProvider.secretKey, JSON.stringify(configuration));
-            await vscode.commands.executeCommand('setContext', contextIsAuthenticated, true);
             await vscode.window.showInformationMessage('Logged in to ConfigCat. Email: ' + me.body.email);
             return configuration;
         } catch (error) {
@@ -68,7 +67,6 @@ export class AuthenticationProvider {
         await vscode.commands.executeCommand('setContext', contextIsAuthenticated, false);
         await this.context.secrets.delete(AuthenticationProvider.secretKey);
     }
-
 
     registerProviders() {
         this.context.subscriptions.push(vscode.commands.registerCommand('configcat.login', async () => {

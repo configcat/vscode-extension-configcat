@@ -116,6 +116,11 @@
 				"icon": "$(plug)"
 			},
 			{
+				"command": "configcat.configs.add",
+				"title": "ConfigCat - Create Config",
+				"icon": "$(plus)"
+			},
+			{
 				"command": "configcat.settings.refresh",
 				"title": "Refresh Feature Flags & Settings",
 				"icon": "$(refresh)"
@@ -151,6 +156,10 @@
 			},
 			{
 				"command": "configcat.configs.refresh",
+				"when": "configcat:initialized && configcat:authenticated"
+			},
+			{
+				"command": "configcat.configs.add",
 				"when": "configcat:initialized && configcat:authenticated"
 			},
 			{

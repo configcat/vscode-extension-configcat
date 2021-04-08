@@ -138,16 +138,37 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
         return await this.workspaceConfigurationProvider.setConfiguration(productId, configId);
     }
 
+    async addConfig(resource: Resource | null | undefined) {
+        let productId = '';
+        if (resource?.resourceType !== ResourceType.product) {
+
+            const configuration = await this.authenticationProvider.getAuthenticationConfiguration();
+            if (!configuration) {
+                return;
+            }
+            const productsService = this.publicApiService.createProductsService(configuration);
+            const products = await productsService.getProducts();
+
+            productId = await ProductInput.pickProduct(products.body);
+        } else {
+            productId = resource.resourceId;
+        }
+    }
+
     registerProviders() {
         const treeView = vscode.window.createTreeView('configcat.configs', {
             treeDataProvider: this,
             showCollapseAll: true
         });
         this.context.subscriptions.push(treeView);
-        this.context.subscriptions.push(vscode.commands.registerCommand('configcat.configs.refresh', () => this.refresh()));
-        this.context.subscriptions.push(vscode.commands.registerCommand('configcat.configs.connect', async (resource) => {
-            await this.connectConfig(resource);
-        }));
+        this.context.subscriptions.push(vscode.commands.registerCommand('configcat.configs.refresh',
+            () => this.refresh()));
+        this.context.subscriptions.push(vscode.commands.registerCommand('configcat.configs.add',
+            async (resource) => await this.addConfig(resource)));
+        this.context.subscriptions.push(vscode.commands.registerCommand('configcat.configs.connect',
+            async (resource) => {
+                await this.connectConfig(resource);
+            }));
         this.context.subscriptions.push(this.context.secrets.onDidChange(e => {
             if (e.key === AuthenticationProvider.secretKey) {
                 this.refresh();
