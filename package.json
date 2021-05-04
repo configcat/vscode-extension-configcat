@@ -12,7 +12,7 @@
 		"Other"
 	],
 	"license": "SEE LICENSE IN LICENSE.txt",
-	"icon": "https://configcat.com/images/shared/configcat-logo-cat-canvas-192.png",
+	"icon": "resources/logo.png",
 	"activationEvents": [
 		"onView:configcat.settings",
 		"onView:configcat.configs",
@@ -20,7 +20,10 @@
 		"onCommand:configcat.login",
 		"onCommand:configcat.logout",
 		"onCommand:configcat.configs.connect",
-		"onCommand:configcat.configs.add"
+		"onCommand:configcat.configs.add",
+		"onCommand:configcat.configs.refresh",
+		"onCommand:configcat.settings.refresh",
+		"onCommand:configcat.settings.add"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
