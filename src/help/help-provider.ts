@@ -12,11 +12,23 @@ export class HelpProvider implements vscode.TreeDataProvider<HelpItem> {
 
     getChildren(element?: HelpItem): Thenable<HelpItem[]> {
         if (!element) {
-            const docsElement = new HelpItem('Docs', vscode.TreeItemCollapsibleState.None, {
+            const docsElement = new HelpItem('ConfigCat Docs', vscode.TreeItemCollapsibleState.None, {
                 command: 'vscode.open', title: 'ConfigCat Docs',
                 arguments: [vscode.Uri.parse('https://configcat.com/docs')]
             }, '$(info)');
-            return Promise.resolve([docsElement]);
+            const issueElement = new HelpItem('Report issues', vscode.TreeItemCollapsibleState.None, {
+                command: 'vscode.open', title: 'Github Issues',
+                arguments: [vscode.Uri.parse('https://github.com/configcat/vscode-extension-configcat/issues')]
+            }, '$(info)');
+            const extensionDocsElement = new HelpItem('How to use the extension', vscode.TreeItemCollapsibleState.None, {
+                command: 'vscode.open', title: 'How to use the extension',
+                arguments: [vscode.Uri.parse('https://configcat.com/docs/integrations/vscode')]
+            }, '$(info)');
+            const dashboardElement = new HelpItem('ConfigCat Dashboard', vscode.TreeItemCollapsibleState.None, {
+                command: 'vscode.open', title: 'ConfigCat Dashboard',
+                arguments: [vscode.Uri.parse('https://app.configcat.com')]
+            }, 'info');
+            return Promise.resolve([docsElement, dashboardElement, extensionDocsElement, issueElement]);
         }
 
         return Promise.resolve([]);
