@@ -89,8 +89,8 @@
 				"when": "configcat:initialized && !configcat:authenticated"
 			},
 			{
-				"view": "configcat.setting",
-				"contents": "You should connect a Config to this workspace first. \n [Authenticate](command:configcat.connect)",
+				"view": "configcat.settings",
+				"contents": "You should connect a Config to this workspace first. \n [Connect Config](command:configcat.configs.connect)",
 				"when": "configcat:initialized && configcat:authenticated && !configcat:connected"
 			}
 		],
