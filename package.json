@@ -147,6 +147,11 @@
 				"icon": "$(plug)"
 			},
 			{
+				"command": "configcat.configs.openInDashboard",
+				"title": "ConfigCat - Open Config in ConfigCat Dashboard",
+				"icon": "$(link-external)"
+			},
+			{
 				"command": "configcat.configs.add",
 				"title": "ConfigCat - Create Config",
 				"icon": "$(plus)"
@@ -165,6 +170,11 @@
 				"command": "configcat.settings.findUsages",
 				"title": "Find usages",
 				"icon": "$(search)"
+			},
+			{
+				"command": "configcat.settings.openInDashboard",
+				"title": "ConfigCat - Open Config in ConfigCat Dashboard",
+				"icon": "$(link-external)"
 			},
 			{
 				"command": "configcat.settings.copyToClipboard",
@@ -194,12 +204,20 @@
 				"when": "configcat:initialized && configcat:authenticated"
 			},
 			{
+				"command": "configcat.configs.openInDashboard",
+				"when": "configcat:initialized && configcat:authenticated"
+			},
+			{
 				"command": "configcat.settings.refresh",
 				"when": "configcat:initialized && configcat:authenticated && configcat:connected"
 			},
 			{
 				"command": "configcat.settings.add",
 				"when": "configcat:initialized && configcat:authenticated && configcat:connected"
+			},
+			{
+				"command": "configcat.settings.openInDashboard",
+				"when": "false"
 			},
 			{
 				"command": "configcat.settings.findUsages",
@@ -223,6 +241,11 @@
 					"group": "navigation"
 				},
 				{
+					"command": "configcat.settings.openInDashboard",
+					"when": "configcat:initialized && configcat:authenticated && configcat:connected && view == configcat.settings",
+					"group": "navigation"
+				},
+				{
 					"command": "configcat.configs.refresh",
 					"when": "configcat:initialized && configcat:authenticated && view == configcat.configs",
 					"group": "navigation"
@@ -236,6 +259,11 @@
 				},
 				{
 					"command": "configcat.configs.connect",
+					"when": "view == configcat.configs && viewItem == Config",
+					"group": "inline"
+				},
+				{
+					"command": "configcat.configs.openInDashboard",
 					"when": "view == configcat.configs && viewItem == Config",
 					"group": "inline"
 				},

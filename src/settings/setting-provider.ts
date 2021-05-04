@@ -131,6 +131,22 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
         }
     }
 
+    async openInDashboard() {
+        let workspaceConfiguration: ConfigCatWorkspaceConfiguration | null;
+        try {
+            workspaceConfiguration = await this.workspaceConfigurationProvider.getWorkspaceConfiguration();
+        } catch (error) {
+            return;
+        }
+
+        if (!workspaceConfiguration || !workspaceConfiguration.dashboardBaseUrl || !workspaceConfiguration.configId || !workspaceConfiguration.productId) {
+            return;
+        }
+
+        return await vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(workspaceConfiguration.dashboardBaseUrl + '/'
+            + workspaceConfiguration.productId + '/' + workspaceConfiguration.configId));
+    }
+
     setMessage(message: string | undefined) {
         if (!this.treeView) {
             return;
@@ -160,6 +176,8 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
         this.context.subscriptions.push(this.treeView);
         this.context.subscriptions.push(vscode.commands.registerCommand('configcat.settings.refresh',
             async () => await this.refresh()));
+        this.context.subscriptions.push(vscode.commands.registerCommand('configcat.settings.openInDashboard',
+            async () => await this.openInDashboard()));
         this.context.subscriptions.push(vscode.commands.registerCommand('configcat.settings.copyToClipboard',
             (resource: Resource) => vscode.env.clipboard.writeText(resource.key)));
         this.context.subscriptions.push(vscode.commands.registerCommand('configcat.settings.findUsages',

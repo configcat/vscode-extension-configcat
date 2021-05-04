@@ -215,6 +215,59 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
         return await this.workspaceConfigurationProvider.setConfiguration(productId, config.body.configId);
     }
 
+
+    async openInDashboard(resource: any): Promise<void> {
+
+        let authenticationConfiguration = null;
+        let workspaceConfiguration = null;
+        try {
+            authenticationConfiguration = await this.authenticationProvider.getAuthenticationConfiguration();
+            workspaceConfiguration = await this.workspaceConfigurationProvider.getWorkspaceConfiguration();
+        } catch (error) {
+            return;
+        }
+        if (!authenticationConfiguration || !workspaceConfiguration || !workspaceConfiguration.dashboardBaseUrl || !workspaceConfiguration.publicApiBaseUrl) {
+            return;
+        }
+
+        if (resource && resource.parentResourceId && resource.resourceId) {
+            return await vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(workspaceConfiguration.dashboardBaseUrl + '/'
+                + resource.parentResourceId + '/' + resource.resourceId));
+        }
+
+        const productsService = this.publicApiService.createProductsService(authenticationConfiguration, workspaceConfiguration.publicApiBaseUrl);
+        const products = await productsService.getProducts();
+
+        let productId: string;
+        try {
+            productId = await ProductInput.pickProduct(products.body);
+        } catch (error) {
+            return;
+        }
+
+        if (!productId) {
+            return;
+        }
+
+        const configsService = this.publicApiService.createConfigsService(authenticationConfiguration, workspaceConfiguration.publicApiBaseUrl);
+        const configs = await configsService.getConfigs(productId);
+
+        let configId: string;
+        try {
+            configId = await ConfigInput.pickConfig(configs.body);
+        } catch (error) {
+            return;
+        }
+
+        if (!configId) {
+            return;
+        }
+
+        return await vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(workspaceConfiguration.dashboardBaseUrl + '/'
+            + productId + '/' + configId));
+    }
+
+
     registerProviders() {
         const treeView = vscode.window.createTreeView('configcat.configs', {
             treeDataProvider: this,
@@ -225,6 +278,8 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
             () => this.refresh()));
         this.context.subscriptions.push(vscode.commands.registerCommand('configcat.configs.add',
             async (resource) => await this.addConfig(resource)));
+        this.context.subscriptions.push(vscode.commands.registerCommand('configcat.configs.openInDashboard',
+            async (resource) => await this.openInDashboard(resource)));
         this.context.subscriptions.push(vscode.commands.registerCommand('configcat.configs.connect',
             async (resource) => {
                 await this.connectConfig(resource);
