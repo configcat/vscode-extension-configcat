@@ -17,8 +17,10 @@ export class WorkspaceConfigurationProvider {
 
     async checkConfiguration() {
         try {
-            await this.getWorkspaceConfiguration();
-            await vscode.commands.executeCommand('setContext', WorkspaceConfigurationProvider.connectedContextKey, true);
+            const configuration = await this.getWorkspaceConfiguration();
+
+            await vscode.commands.executeCommand('setContext', WorkspaceConfigurationProvider.connectedContextKey,
+                configuration?.configId && configuration?.productId && configuration?.publicApiBaseUrl && configuration?.dashboardBaseUrl);
         } catch {
             await vscode.commands.executeCommand('setContext', WorkspaceConfigurationProvider.connectedContextKey, false);
         }
@@ -28,13 +30,15 @@ export class WorkspaceConfigurationProvider {
         const config = vscode.workspace.getConfiguration(WorkspaceConfigurationProvider.configurationKey);
         const productId = config.get('productId');
         const configId = config.get('configId');
+        const publicApiBaseUrl = config.get('publicApiBaseUrl');
+        const dashboardBaseUrl = config.get('dashboardBaseUrl');
 
-        if (productId && configId) {
-            const configuration = { productId: String(productId), configId: String(configId) };
-            return Promise.resolve(configuration);
-        }
-
-        return Promise.reject();
+        return Promise.resolve({
+            productId: String(productId),
+            configId: String(configId),
+            publicApiBaseUrl: String(publicApiBaseUrl),
+            dashboardBaseUrl: String(dashboardBaseUrl),
+        });
     }
 
     registerProviders() {

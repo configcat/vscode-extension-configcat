@@ -28,11 +28,12 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
         try {
             const publicApiConfiguration = await this.authenticationProvider.getAuthenticationConfiguration();
             const workspaceConfiguration = await this.workspaceConfigurationProvider.getWorkspaceConfiguration();
-            if (!publicApiConfiguration || !workspaceConfiguration) {
+            if (!publicApiConfiguration || !workspaceConfiguration
+                || !workspaceConfiguration.publicApiBaseUrl || !workspaceConfiguration.configId) {
                 this.setDescription(undefined);
                 return;
             }
-            const configsService = this.publicApiService.createConfigsService(publicApiConfiguration);
+            const configsService = this.publicApiService.createConfigsService(publicApiConfiguration, workspaceConfiguration.publicApiBaseUrl);
             const config = await configsService.getConfig(workspaceConfiguration.configId);
             this.setDescription(config.body.name || '');
         } catch (error) {
@@ -65,12 +66,13 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
 
                 const publicApiConfiguration = values[0];
                 const workspaceConfiguration = values[1];
-                if (!publicApiConfiguration || !workspaceConfiguration) {
+                if (!publicApiConfiguration || !workspaceConfiguration
+                    || !workspaceConfiguration.publicApiBaseUrl || !workspaceConfiguration.configId) {
                     statusBar.hide();
                     return [];
                 }
 
-                const settingsService = this.publicApiService.createSettingsService(publicApiConfiguration);
+                const settingsService = this.publicApiService.createSettingsService(publicApiConfiguration, workspaceConfiguration.publicApiBaseUrl);
                 return settingsService.getSettings(workspaceConfiguration.configId).then(settings => {
                     const items = settings.body.map((s, index) => new Resource(String(s.settingId), s.key ?? '',
                         s.name ?? '', s.hint ?? '',
@@ -100,7 +102,7 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
             return;
         }
 
-        if (!publicApiConfiguration || !workspaceConfiguration) {
+        if (!publicApiConfiguration || !workspaceConfiguration || !workspaceConfiguration.publicApiBaseUrl || !workspaceConfiguration.configId) {
             return;
         }
 
@@ -118,7 +120,7 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
         statusBar.text = 'ConfigCat - Creating Feature Flag...';
         statusBar.show();
 
-        const settingsService = new PublicApiService().createSettingsService(publicApiConfiguration);
+        const settingsService = new PublicApiService().createSettingsService(publicApiConfiguration, workspaceConfiguration.publicApiBaseUrl);
         try {
             await settingsService.createSetting(workspaceConfiguration.configId, setting);
             this.refreshSettings();

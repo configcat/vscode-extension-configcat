@@ -28,19 +28,7 @@ export class AuthInput {
             return Promise.reject();
         }
 
-        let basePath = await vscode.window.showInputBox({
-            prompt: 'API base URL',
-            placeHolder: `Leave blank for default (${PublicApiService.defaultBasePath})`,
-            ignoreFocusOut: true
-        });
-        if (basePath === undefined) {
-            return Promise.reject();
-        }
-        if (!basePath) {
-            basePath = PublicApiService.defaultBasePath;
-        }
-
-        return { basePath, basicAuthPassword, basicAuthUsername };
+        return { basicAuthPassword, basicAuthUsername };
     }
 
     static requiredValidator = (value: string) => {

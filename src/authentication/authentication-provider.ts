@@ -2,6 +2,8 @@ import * as vscode from 'vscode';
 import { AuthInput } from '../inputs/auth-input';
 import { PublicApiConfiguration } from '../public-api/public-api-configuration';
 import { PublicApiService } from '../public-api/public-api.service';
+import { ConfigCatWorkspaceConfiguration } from '../settings/workspace-configuration';
+import { WorkspaceConfigurationProvider } from '../settings/workspace-configuration-provider';
 
 export const contextIsAuthenticated = 'configcat:authenticated';
 
@@ -10,7 +12,9 @@ export class AuthenticationProvider {
     public static secretKey = 'configcat:publicapi-credentials';
     public publicApiConfiguration: PublicApiConfiguration | null = null;
 
-    constructor(private context: vscode.ExtensionContext, private publicApiService: PublicApiService) {
+    constructor(private context: vscode.ExtensionContext,
+        private publicApiService: PublicApiService,
+        private workspaceConfigurationProvider: WorkspaceConfigurationProvider) {
     }
 
     async checkAuthenticated(): Promise<void> {
@@ -29,7 +33,7 @@ export class AuthenticationProvider {
         }
 
         const credentials: PublicApiConfiguration = JSON.parse(credentialsString);
-        if (!credentials || !credentials.basePath || !credentials.basicAuthUsername || !credentials.basicAuthPassword) {
+        if (!credentials || !credentials.basicAuthUsername || !credentials.basicAuthPassword) {
             return Promise.reject();
         }
 
@@ -45,7 +49,18 @@ export class AuthenticationProvider {
             return null;
         }
 
-        const meService = this.publicApiService.createMeService(configuration);
+        let workspaceConfiguration: ConfigCatWorkspaceConfiguration | null;
+        try {
+            workspaceConfiguration = await this.workspaceConfigurationProvider.getWorkspaceConfiguration();
+        } catch (error) {
+            return null;
+        }
+
+        if (!workspaceConfiguration || !workspaceConfiguration.publicApiBaseUrl) {
+            return null;
+        }
+
+        const meService = this.publicApiService.createMeService(configuration, workspaceConfiguration.publicApiBaseUrl);
 
         try {
             const me = await meService.getMe();

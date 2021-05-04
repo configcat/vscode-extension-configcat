@@ -43,15 +43,21 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
 
     getProducts(): Thenable<Resource[]> {
 
-        return this.authenticationProvider.getAuthenticationConfiguration().then(configuration => {
-            if (!configuration) {
+        return Promise.all([
+            this.authenticationProvider.getAuthenticationConfiguration(),
+            this.workspaceConfigurationProvider.getWorkspaceConfiguration()
+        ]).then(values => {
+            const publicApiConfiguration = values[0];
+            const workspaceConfiguration = values[1];
+
+            if (!publicApiConfiguration || !workspaceConfiguration || !workspaceConfiguration.publicApiBaseUrl) {
                 return [];
             }
             const statusBar = vscode.window.createStatusBarItem();
             statusBar.text = 'ConfigCat - Loading Products...';
             statusBar.show();
 
-            const productsService = this.publicApiService.createProductsService(configuration);
+            const productsService = this.publicApiService.createProductsService(publicApiConfiguration, workspaceConfiguration.publicApiBaseUrl);
             return productsService.getProducts().then(products => {
                 const items = products.body.map((p, index) => new Resource(p.productId ?? '', '', p.name ?? '', ResourceType.product, index === 0 ? vscode.TreeItemCollapsibleState.Expanded : vscode.TreeItemCollapsibleState.Collapsed));
                 statusBar.hide();
@@ -71,15 +77,22 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
 
     getConfigs(productId: string): Thenable<Resource[]> {
 
-        return this.authenticationProvider.getAuthenticationConfiguration().then(configuration => {
-            if (!configuration) {
+        return Promise.all([
+            this.authenticationProvider.getAuthenticationConfiguration(),
+            this.workspaceConfigurationProvider.getWorkspaceConfiguration()
+        ]).then(values => {
+            const publicApiConfiguration = values[0];
+            const workspaceConfiguration = values[1];
+
+            if (!publicApiConfiguration || !workspaceConfiguration || !workspaceConfiguration.publicApiBaseUrl) {
                 return [];
             }
+
             const statusBar = vscode.window.createStatusBarItem();
             statusBar.text = 'ConfigCat - Loading Configs...';
             statusBar.show();
 
-            const configsService = this.publicApiService.createConfigsService(configuration);
+            const configsService = this.publicApiService.createConfigsService(publicApiConfiguration, workspaceConfiguration.publicApiBaseUrl);
             return configsService.getConfigs(productId).then(configs => {
                 const items = configs.body.map(c => new Resource(c.configId ?? '', productId, c.name ?? '', ResourceType.config, vscode.TreeItemCollapsibleState.None));
                 statusBar.hide();
@@ -102,17 +115,19 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
             return await this.workspaceConfigurationProvider.setConfiguration(resource.parentResourceId, resource.resourceId);
         }
 
-        let configuration = null;
+        let authenticationConfiguration = null;
+        let workspaceConfiguration = null;
         try {
-            configuration = await this.authenticationProvider.getAuthenticationConfiguration();
+            authenticationConfiguration = await this.authenticationProvider.getAuthenticationConfiguration();
+            workspaceConfiguration = await this.workspaceConfigurationProvider.getWorkspaceConfiguration();
         } catch (error) {
             return;
         }
-        if (!configuration) {
+        if (!authenticationConfiguration || !workspaceConfiguration || !workspaceConfiguration.publicApiBaseUrl) {
             return;
         }
 
-        const productsService = this.publicApiService.createProductsService(configuration);
+        const productsService = this.publicApiService.createProductsService(authenticationConfiguration, workspaceConfiguration.publicApiBaseUrl);
         const products = await productsService.getProducts();
 
         let productId: string;
@@ -126,7 +141,7 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
             return;
         }
 
-        const configsService = this.publicApiService.createConfigsService(configuration);
+        const configsService = this.publicApiService.createConfigsService(authenticationConfiguration, workspaceConfiguration.publicApiBaseUrl);
         const configs = await configsService.getConfigs(productId);
 
         let configId: string;
@@ -144,20 +159,22 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
     }
 
     async addConfig(resource: Resource | null | undefined) {
-        let configuration = null;
+
+        let authenticationConfiguration = null;
+        let workspaceConfiguration = null;
         try {
-            configuration = await this.authenticationProvider.getAuthenticationConfiguration();
+            authenticationConfiguration = await this.authenticationProvider.getAuthenticationConfiguration();
+            workspaceConfiguration = await this.workspaceConfigurationProvider.getWorkspaceConfiguration();
         } catch (error) {
             return;
         }
-
-        if (!configuration) {
+        if (!authenticationConfiguration || !workspaceConfiguration || !workspaceConfiguration.publicApiBaseUrl) {
             return;
         }
 
         let productId = '';
         if (resource?.resourceType !== ResourceType.product) {
-            const productsService = this.publicApiService.createProductsService(configuration);
+            const productsService = this.publicApiService.createProductsService(authenticationConfiguration, workspaceConfiguration.publicApiBaseUrl);
             const products = await productsService.getProducts();
             productId = await ProductInput.pickProduct(products.body);
         } else {
@@ -178,7 +195,7 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
             return;
         }
 
-        const configsService = this.publicApiService.createConfigsService(configuration);
+        const configsService = this.publicApiService.createConfigsService(authenticationConfiguration, workspaceConfiguration.publicApiBaseUrl);
         let config = null;
         try {
             config = await configsService.createConfig(productId, { name: configName });
@@ -217,6 +234,13 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
                 this.refresh();
             }
         }));
+        this.context.subscriptions.push(
+            vscode.workspace.onDidChangeConfiguration(e => {
+                if (e.affectsConfiguration(WorkspaceConfigurationProvider.configurationKey)) {
+                    this.refresh();
+                }
+            })
+        );
     }
 }
 

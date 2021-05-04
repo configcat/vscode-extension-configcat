@@ -48,6 +48,16 @@
 					"type": "string",
 					"default": "",
 					"markdownDescription": "Your ConfigCat Config's Identifier."
+				},
+				"configcat.publicApiBaseUrl": {
+					"type": "string",
+					"default": "https://api.configcat.com",
+					"markdownDescription": "ConfigCat Public Management Base URL. Defaults to https://api.configcat.com."
+				},
+				"configcat.dashboardBaseUrl": {
+					"type": "string",
+					"default": "https://app.configcat.com",
+					"markdownDescription": "ConfigCat Dashboard Base URL. Defaults to https://app.configcat.com."
 				}
 			}
 		},
