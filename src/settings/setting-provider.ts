@@ -75,13 +75,10 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
                     const items = settings.body.map((s, index) => new Resource(String(s.settingId), s.key ?? '',
                         s.name ?? '', s.hint ?? '',
                         vscode.TreeItemCollapsibleState.None));
-                    if (!items.length) {
-                        this.setMessage('Could not find any Settings.');
-                    }
                     statusBar.hide();
                     return items;
                 }, (error) => {
-                    vscode.window.showWarningMessage('Could not load Settings. Error: ' + error);
+                    vscode.window.showWarningMessage('Could not load Settings. Error: ' + error + '. ' + (error?.response?.body ?? ''));
                     statusBar.hide();
                     this.setMessage('Could not load Settings.');
                     return [];
@@ -127,7 +124,7 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
             this.refreshSettings();
             statusBar.hide();
         } catch (error) {
-            vscode.window.showWarningMessage('Could not create Feature Flag. Error: ' + error + (error?.response ?? '') + (error?.body ?? ''));
+            vscode.window.showWarningMessage('Could not create Feature Flag. Error: ' + error + '. ' + (error?.response?.body ?? ''));
             statusBar.hide();
         }
     }

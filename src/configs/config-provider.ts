@@ -60,7 +60,7 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
                 }
                 return items;
             }, error => {
-                vscode.window.showWarningMessage('Could not load Products. Error: ' + error);
+                vscode.window.showWarningMessage('Could not load Products. Error: ' + error + '. ' + (error?.response?.body ?? ''));
                 statusBar.hide();
                 return [new Resource('-1', '', 'Could not load Products.', ResourceType.unknown, vscode.TreeItemCollapsibleState.None)];
             });
@@ -88,7 +88,7 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
                 }
                 return items;
             }, error => {
-                vscode.window.showWarningMessage('Could not load Configs. Error: ' + error);
+                vscode.window.showWarningMessage('Could not load Configs. Error: ' + error + '. ' + (error?.response?.body ?? ''));
                 statusBar.hide();
                 return [new Resource('-1', '', 'Could not load Configs.', ResourceType.unknown, vscode.TreeItemCollapsibleState.None)];
             });
@@ -144,24 +144,22 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
     }
 
     async addConfig(resource: Resource | null | undefined) {
+        let configuration = null;
+        try {
+            configuration = await this.authenticationProvider.getAuthenticationConfiguration();
+        } catch (error) {
+            return;
+        }
+
+        if (!configuration) {
+            return;
+        }
+
         let productId = '';
         if (resource?.resourceType !== ResourceType.product) {
-
-            let configuration = null;
-            try {
-                configuration = await this.authenticationProvider.getAuthenticationConfiguration();
-            } catch (error) {
-                return;
-            }
-
-            if (!configuration) {
-                return;
-            }
             const productsService = this.publicApiService.createProductsService(configuration);
             const products = await productsService.getProducts();
-
             productId = await ProductInput.pickProduct(products.body);
-
         } else {
             productId = resource.resourceId;
         }
@@ -169,6 +167,35 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
         if (!productId) {
             return;
         }
+
+        let configName: string;
+        try {
+            configName = await ConfigInput.configInput();
+        } catch (error) {
+            return;
+        }
+        if (!configName) {
+            return;
+        }
+
+        const configsService = this.publicApiService.createConfigsService(configuration);
+        let config = null;
+        try {
+            config = await configsService.createConfig(productId, { name: configName });
+        } catch (error) {
+            vscode.window.showWarningMessage('Could not create Config. Error: ' + error + '. ' + (error?.response?.body ?? ''));
+        }
+
+        if (!config || !config.body.configId) {
+            return;
+        }
+
+        const connect = await ConfigInput.askConnect();
+        if (connect !== 'Yes') {
+            return;
+        }
+
+        return await this.workspaceConfigurationProvider.setConfiguration(productId, config.body.configId);
     }
 
     registerProviders() {

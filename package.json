@@ -97,6 +97,11 @@
 				"view": "configcat.settings",
 				"contents": "You should connect a Config to this workspace first. \n [Connect Config](command:configcat.configs.connect)",
 				"when": "configcat:initialized && configcat:authenticated && !configcat:connected"
+			},
+			{
+				"view": "configcat.settings",
+				"contents": "Could not find any Feature Flags or Setting. \n [Add Feature Flag](command:configcat.settings.add)",
+				"when": "configcat:initialized && configcat:authenticated && configcat:connected"
 			}
 		],
 		"commands": [
@@ -203,6 +208,11 @@
 				}
 			],
 			"view/item/context": [
+				{
+					"command": "configcat.configs.add",
+					"when": "view == configcat.configs && viewItem == Product",
+					"group": "inline"
+				},
 				{
 					"command": "configcat.configs.connect",
 					"when": "view == configcat.configs && viewItem == Config",
