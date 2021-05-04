@@ -7,5 +7,7 @@
         "out": true // set this to false to include "out" folder in search results
     },
     // Turn off tsc task auto detection since we have the necessary tasks as npm scripts
-    "typescript.tsc.autoDetect": "off"
+    "typescript.tsc.autoDetect": "off",
+    "configcat.productId": "08d8d8e2-e74b-4038-8dd8-e1afdb067420",
+    "configcat.configId": "08d90eeb-01e0-42a9-8ebf-87d393be539e"
 }
