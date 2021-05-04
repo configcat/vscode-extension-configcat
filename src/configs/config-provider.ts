@@ -98,15 +98,20 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
     }
 
     async connectConfig(resource: any): Promise<void> {
-        console.log(resource);
         if (resource && resource.parentResourceId && resource.resourceId) {
             return await this.workspaceConfigurationProvider.setConfiguration(resource.parentResourceId, resource.resourceId);
         }
 
-        const configuration = await this.authenticationProvider.getAuthenticationConfiguration();
+        let configuration = null;
+        try {
+            configuration = await this.authenticationProvider.getAuthenticationConfiguration();
+        } catch (error) {
+            return;
+        }
         if (!configuration) {
             return;
         }
+
         const productsService = this.publicApiService.createProductsService(configuration);
         const products = await productsService.getProducts();
 
@@ -142,7 +147,13 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
         let productId = '';
         if (resource?.resourceType !== ResourceType.product) {
 
-            const configuration = await this.authenticationProvider.getAuthenticationConfiguration();
+            let configuration = null;
+            try {
+                configuration = await this.authenticationProvider.getAuthenticationConfiguration();
+            } catch (error) {
+                return;
+            }
+
             if (!configuration) {
                 return;
             }
@@ -150,8 +161,13 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
             const products = await productsService.getProducts();
 
             productId = await ProductInput.pickProduct(products.body);
+
         } else {
             productId = resource.resourceId;
+        }
+
+        if (!productId) {
+            return;
         }
     }
 

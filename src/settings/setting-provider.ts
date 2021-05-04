@@ -127,7 +127,6 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
             this.refreshSettings();
             statusBar.hide();
         } catch (error) {
-            console.log(error);
             vscode.window.showWarningMessage('Could not create Feature Flag. Error: ' + error + (error?.response ?? '') + (error?.body ?? ''));
             statusBar.hide();
         }
