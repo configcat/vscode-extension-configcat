@@ -9,7 +9,7 @@ import { WorkspaceConfigurationProvider } from './settings/workspace-configurati
 export async function registerProviders(context: vscode.ExtensionContext): Promise<void> {
     const workspaceConfigurationProvider = new WorkspaceConfigurationProvider(context);
     const publicApiService = new PublicApiService();
-    const authenticationProvider = new AuthenticationProvider(context, publicApiService);
+    const authenticationProvider = new AuthenticationProvider(context, publicApiService, workspaceConfigurationProvider);
     await authenticationProvider.checkAuthenticated();
     await workspaceConfigurationProvider.checkConfiguration();
     const helpProvider = new HelpProvider(context);
