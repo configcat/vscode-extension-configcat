@@ -5,6 +5,9 @@ ConfigCat Visual Studio Code extension to manage feature flags from Visual Studi
 ConfigCat is a hosted feature flag service: https://configcat.com. Manage feature toggles across frontend, backend, mobile, desktop apps. Alternative to LaunchDarkly. Management app + feature flag SDKs.
 
 ## Feature overview
+
+<img src="resources/help/usage.gif" alt="Usage of ConfigCat Feature Flags Visual Studio Code Extension" width="640"/>  
+
 - View your Products & Configs.
 - Create Configs within Visual Studio Code.
 - Connect a Config to your Workspace.
@@ -12,7 +15,7 @@ ConfigCat is a hosted feature flag service: https://configcat.com. Manage featur
 - Find Feature Flag usages in your code.
 - Copy a Feature Flag's key to the clipboard.
 - Create Feature Flags within Visual Studio Code.
-- Manage your Feature Flag Values right from Visual Studio Code.
+- Manage your Feature Flag Values right from Visual Studio Code.  
 
 ## Installation
 ### Marketplace
@@ -28,6 +31,9 @@ ConfigCat is a hosted feature flag service: https://configcat.com. Manage featur
 
 ## Configuration
 ### Authentication
+
+<img src="resources/help/auth.gif" alt="Installation of ConfigCat Feature Flags Visual Studio Code Extension" width="640"/>  
+
 1. Get your ConfigCat Public API credentials from [ConfigCat Dashboard/Public Management API credentials](https://app.configcat.com/my-account/public-api-credentials).
 1. Authenticate ConfigCat in Visual Studio Code by
     - clicking on the ConfigCat Feature Flags icon on the Activity Bar and clicking on any of the Authenticate buttons.
