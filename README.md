@@ -30,13 +30,13 @@ ConfigCat is a hosted feature flag service: https://configcat.com. Manage featur
 ### Authentication
 1. Get your ConfigCat Public API credentials from [ConfigCat Dashboard/Public Management API credentials](https://app.configcat.com/my-account/public-api-credentials).
 1. Authenticate ConfigCat in Visual Studio Code by
-- clicking on the ConfigCat Feature Flags icon on the Activity Bar and clicking on any of the Authenticate buttons.
-- or running the `ConfigCat - Log In` command from the Command Palette.
+    - clicking on the ConfigCat Feature Flags icon on the Activity Bar and clicking on any of the Authenticate buttons.
+    - or running the `ConfigCat - Log In` command from the Command Palette.
 
 ### Advanced
 If you are trying to use the ConfigCat Feature Flags extension for Visual Studio Code with a dedicated ConfigCat instance, you can specify your custom urls by executing the `Preferences: Open Workspace Settings` command from the Command Palette and search for `Extensions/ConfigCat`. Important settings:
-- `Public Api Base URL`: the base url for the ConfigCat Public Management Api. Defaults to https://api.configcat.com
-- `Dashboard Base URL`: the base url for ConfigCat Dashboard. Defaults to https://app.configcat.com
+   - `Public Api Base URL`: the base url for the ConfigCat Public Management Api. Defaults to https://api.configcat.com
+   - `Dashboard Base URL`: the base url for ConfigCat Dashboard. Defaults to https://app.configcat.com
 
 ## Usage
 ### ConfigCat Feature Flags Views
