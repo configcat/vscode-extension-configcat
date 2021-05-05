@@ -22,10 +22,10 @@ ConfigCat is a hosted feature flag service: https://configcat.com. Manage featur
 1. Open [ConfigCat Feature Flags Extension](https://marketplace.visualstudio.com/items?itemName=ConfigCat.configcat-feature-flags) at Visual Studio Marketplace.
 1. Click on the Install button.
 ### Within Visual Studio Code
-1. Search for ConfigCat Feature Flags at the Extensions page
+1. Search for ConfigCat Feature Flags at the Extensions page.
 1. Click on the Install button.
 ### Install from VSIX file
-1. Open [ConfigCat Feature Flags Extension](https://marketplace.visualstudio.com/items?itemName=ConfigCat.configcat-feature-flags) at Visual Studio Marketplace 
+1. Open [ConfigCat Feature Flags Extension](https://marketplace.visualstudio.com/items?itemName=ConfigCat.configcat-feature-flags) at Visual Studio Marketplace.
 1. Click on the Download Extension link.
 1. Click on the More Actions icon on the Extensions page in Visual Studio Code and select Install from VSIX...
 
@@ -41,8 +41,8 @@ ConfigCat is a hosted feature flag service: https://configcat.com. Manage featur
 
 ### Advanced
 If you are trying to use the ConfigCat Feature Flags extension for Visual Studio Code with a dedicated ConfigCat instance, you can specify your custom urls by executing the `Preferences: Open Workspace Settings` command from the Command Palette and search for `Extensions/ConfigCat`. Important settings:
-   - `Public Api Base URL`: the base url for the ConfigCat Public Management Api. Defaults to https://api.configcat.com
-   - `Dashboard Base URL`: the base url for ConfigCat Dashboard. Defaults to https://app.configcat.com
+   - `Public Api Base URL`: the base url for the ConfigCat Public Management Api. Defaults to: https://api.configcat.com.
+   - `Dashboard Base URL`: the base url for ConfigCat Dashboard. Defaults to: https://app.configcat.com.
 
 ## Usage
 ### ConfigCat Feature Flags Views
