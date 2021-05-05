@@ -1,6 +1,7 @@
 .vscode/**
 .vscode-test/**
 src/**
+webpanel/**
 .gitignore
 .yarnrc
 vsc-extension-quickstart.md
@@ -9,4 +10,3 @@ vsc-extension-quickstart.md
 **/*.map
 **/*.ts
 node_modules/**
-out/**

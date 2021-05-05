@@ -1,9 +1,11 @@
 import { CreateSettingModel } from 'configcat-publicapi-node-client';
 import * as vscode from 'vscode';
 import { AuthenticationProvider } from '../authentication/authentication-provider';
+import { EnvironmentInput } from '../inputs/environment-input';
 import { SettingInput } from '../inputs/setting-input';
 import { PublicApiConfiguration } from '../public-api/public-api-configuration';
 import { PublicApiService } from '../public-api/public-api.service';
+import { WebPanel } from '../webpanel/webpanel';
 import { ConfigCatWorkspaceConfiguration } from './workspace-configuration';
 import { WorkspaceConfigurationProvider } from './workspace-configuration-provider';
 
@@ -147,6 +149,47 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
             + workspaceConfiguration.productId + '/' + workspaceConfiguration.configId));
     }
 
+    async openSettingPanel(resource: Resource) {
+        if (!resource) {
+            return;
+        }
+
+        let authenticationConfiguration = null;
+        let workspaceConfiguration = null;
+        try {
+            authenticationConfiguration = await this.authenticationProvider.getAuthenticationConfiguration();
+            workspaceConfiguration = await this.workspaceConfigurationProvider.getWorkspaceConfiguration();
+        } catch (error) {
+            return;
+        }
+        if (!authenticationConfiguration
+            || !workspaceConfiguration
+            || !workspaceConfiguration.publicApiBaseUrl
+            || !workspaceConfiguration.configId
+            || !workspaceConfiguration.productId) {
+            return;
+        }
+
+
+        const environmentsService = this.publicApiService.createEnvironmentsService(authenticationConfiguration, workspaceConfiguration.publicApiBaseUrl);
+        const environments = await environmentsService.getEnvironments(workspaceConfiguration.productId);
+
+        let environmentId: string;
+        try {
+            environmentId = await EnvironmentInput.pickEnvironment(environments.body);
+        } catch (error) {
+            return;
+        }
+
+        if (!environmentId) {
+            return;
+        }
+
+        const environmentName = environments.body.filter(e => e.environmentId === environmentId)[0].name;
+
+        new WebPanel(this.context, authenticationConfiguration, workspaceConfiguration, environmentId, environmentName || '', +resource.resourceId, resource.key);
+    }
+
     setMessage(message: string | undefined) {
         if (!this.treeView) {
             return;
@@ -182,6 +225,9 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
             (resource: Resource) => vscode.env.clipboard.writeText(resource.key)));
         this.context.subscriptions.push(vscode.commands.registerCommand('configcat.settings.findUsages',
             (resource: Resource) => vscode.commands.executeCommand('search.action.openNewEditor', { query: resource.label })));
+
+        this.context.subscriptions.push(vscode.commands.registerCommand('configcat.settings.values',
+            (resource: Resource) => this.openSettingPanel(resource)));
 
         this.context.subscriptions.push(vscode.commands.registerCommand('configcat.settings.add',
             async () => await this.addSetting()));

@@ -1,5 +1,6 @@
 import {
     ConfigsApi,
+    EnvironmentsApi,
     FeatureFlagsSettingsApi,
     MeApi, ProductsApi
 } from 'configcat-publicapi-node-client';
@@ -19,6 +20,10 @@ export class PublicApiService {
 
     createConfigsService(configuration: PublicApiConfiguration, basePath: string) {
         return new ConfigsApi(configuration.basicAuthUsername, configuration.basicAuthPassword, basePath ?? PublicApiService.defaultBasePath);
+    }
+
+    createEnvironmentsService(configuration: PublicApiConfiguration, basePath: string) {
+        return new EnvironmentsApi(configuration.basicAuthUsername, configuration.basicAuthPassword, basePath ?? PublicApiService.defaultBasePath);
     }
 
     createSettingsService(configuration: PublicApiConfiguration, basePath: string) {

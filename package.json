@@ -32,7 +32,8 @@
 		"onCommand:configcat.configs.add",
 		"onCommand:configcat.configs.refresh",
 		"onCommand:configcat.settings.refresh",
-		"onCommand:configcat.settings.add"
+		"onCommand:configcat.settings.add",
+		"onCommand:configcat.openpanel"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -181,6 +182,11 @@
 				"command": "configcat.settings.copyToClipboard",
 				"title": "Copy Key to clipboard",
 				"icon": "$(clippy)"
+			},
+			{
+				"command": "configcat.settings.values",
+				"title": "ConfigCat - View or Update Feature Flag values",
+				"icon": "$(gear)"
 			}
 		],
 		"commandPalette": [
@@ -226,6 +232,10 @@
 			},
 			{
 				"command": "configcat.settings.copyToClipboard",
+				"when": "false"
+			},
+			{
+				"command": "configcat.settings.values",
 				"when": "false"
 			}
 		],
@@ -277,15 +287,21 @@
 					"command": "configcat.settings.copyToClipboard",
 					"when": "view == configcat.settings && viewItem == Setting",
 					"group": "inline"
+				},
+				{
+					"command": "configcat.settings.values",
+					"when": "view == configcat.settings && viewItem == Setting",
+					"group": "inline"
 				}
 			]
 		}
 	},
 	"scripts": {
-		"vscode:prepublish": "npm run -S esbuild-base -- --minify",
+		"vscode:prepublish": "npm run -S webpanel-build && npm run -S esbuild-base -- --minify",
 		"esbuild-base": "esbuild ./src/extension.ts --bundle --outfile=out/extension.js --external:vscode --format=cjs --platform=node",
 		"esbuild": "npm run -S esbuild-base -- --sourcemap",
 		"esbuild-watch": "npm run -S esbuild-base -- --sourcemap --watch",
+		"webpanel-build": "npm run build --prefix webpanel",
 		"test-compile": "tsc -p ./",
 		"compile": "tsc -p ./",
 		"watch": "tsc -watch -p ./",

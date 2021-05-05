@@ -1,0 +1,81 @@
+@import '~@angular/material/theming';
+// Plus imports for other components in your app.
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat-core();
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+$configcat-primary: mat-palette($mat-indigo, 400);
+$configcat-accent: mat-palette($mat-pink, A200, A100, A400);
+// The warn palette is optional (defaults to red).
+$configcat-warn: mat-palette($mat-red);
+// Create the theme object (a Sass map containing all of the palettes).
+$configcat-theme: mat-light-theme($configcat-primary, $configcat-accent, $configcat-warn);
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include angular-material-theme($configcat-theme);
+$custom-typography: mat-typography-config($font-family: 'Montserrat, Roboto, "Helvetica Neue", sans-serif');
+@include mat-core($custom-typography);
+
+body {
+    margin: 0;
+    font-family: Montserrat, Roboto, "Helvetica Neue", sans-serif;
+    font-weight: 300;
+    font-size: inherit;
+    background-color: #fff;
+    color: inherit;
+
+    a {
+        color: #007bff;
+        text-decoration: none;
+    }
+}
+
+code {
+    color: inherit;
+}
+
+html {
+    overflow: -moz-scrollbars-vertical;
+    overflow-y: scroll;
+}
+
+h3 {
+    font-weight: 600;
+}
+
+b {
+    font-weight: 600;
+}
+
+
+.green-snackbar {
+    background-color: #4caf50;
+    color: white;
+
+    span {
+        font-size: 16px;
+        font-weight: bold;
+    }
+}
+
+.red-snackbar {
+    background-color: #A32B2D;
+    color: white;
+
+    button {
+        color: white;
+    }
+}
+
+.yellow-snackbar {
+    background-color: #f7941c;
+    color: black;
+
+    button {
+        color: black;
+    }
+}
