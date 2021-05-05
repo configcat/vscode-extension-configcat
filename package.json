@@ -185,8 +185,8 @@
 			},
 			{
 				"command": "configcat.settings.values",
-				"title": "ConfigCat - View or Update Feature Flag values",
-				"icon": "$(gear)"
+				"title": "View or Update Feature Flag values",
+				"icon": "$(circuit-board)"
 			}
 		],
 		"commandPalette": [
