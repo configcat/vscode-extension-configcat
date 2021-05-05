@@ -15,7 +15,7 @@ ConfigCat is a hosted feature flag service: https://configcat.com. Manage featur
 - Find Feature Flag usages in your code.
 - Copy a Feature Flag's key to the clipboard.
 - Create Feature Flags within Visual Studio Code.
-- Manage your Feature Flag Values right from Visual Studio Code.  
+- Manage your Feature Flag values right from Visual Studio Code.  
 
 ## Installation
 ### Marketplace
@@ -71,7 +71,7 @@ The Help & Feedback view provides you some quick links to open ConfigCat's Docum
 ## Contribution
 Contributions are welcome.
 
-## About ConfigCat
+## Useful links
 - [ConfigCat](https://configcat.com)
 - [Github](https://github.com/configcat)
 - [Documentation](https://configcat.com/docs)
