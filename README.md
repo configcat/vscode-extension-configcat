@@ -6,7 +6,7 @@ ConfigCat is a hosted feature flag service: https://configcat.com. Manage featur
 
 ## Feature overview
 
-<img src="resources/help/usage.gif" alt="Usage of ConfigCat Feature Flags Visual Studio Code Extension" width="640"/>  
+<img src="resources/help/usage.gif" alt="Usage of ConfigCat Feature Flags Visual Studio Code Extension" width="100%"/>  
 
 - View your Products & Configs.
 - Create Configs within Visual Studio Code.
@@ -32,7 +32,7 @@ ConfigCat is a hosted feature flag service: https://configcat.com. Manage featur
 ## Configuration
 ### Authentication
 
-<img src="resources/help/auth.gif" alt="Installation of ConfigCat Feature Flags Visual Studio Code Extension" width="640"/>  
+<img src="resources/help/auth.gif" alt="Installation of ConfigCat Feature Flags Visual Studio Code Extension"  width="100%"/>  
 
 1. Get your ConfigCat Public API credentials from [ConfigCat Dashboard/Public Management API credentials](https://app.configcat.com/my-account/public-api-credentials).
 1. Authenticate ConfigCat in Visual Studio Code by
