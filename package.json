@@ -32,8 +32,7 @@
 		"onCommand:configcat.configs.add",
 		"onCommand:configcat.configs.refresh",
 		"onCommand:configcat.settings.refresh",
-		"onCommand:configcat.settings.add",
-		"onCommand:configcat.openpanel"
+		"onCommand:configcat.settings.add"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
