@@ -2,10 +2,10 @@
 	"name": "configcat-feature-flags",
 	"displayName": "ConfigCat Feature Flags",
 	"description": "ConfigCat Visual Studio Code extension to manage feature flags from Visual Studio Code.",
-	"version": "0.0.4",
+	"version": "1.0.0",
 	"publisher": "ConfigCat",
 	"repository": "https://github.com/configcat/vscode-extension-configcat",
-	"preview": true,
+	"preview": false,
 	"engines": {
 		"vscode": "^1.46.0"
 	},
