@@ -62,12 +62,14 @@ On the Products & Configs View you can:
 - Open your Configs on the ConfigCat Dashboard.
 
 #### Feature Flags & Settings View
-After you successfully connected a Config to your Workspace, on the Feature Flags & Settings View you can:
+After you successfully connected a Config to your Workspace, from the Feature Flags & Settings View you can:
+- Turn features On / Off right from Visual Studio Code.
+- Add Targeting or Percentage Rules from Visual Studio Code.
+- View or Update your Feature Flag's value.
 - View the connected Config's Feature Flags.
 - Create new Feature Flags.
 - Copy a Feature Flag's key to clipboard.
 - Find your Feature Flag's usages in your code.
-- View or Update your Feature Flag's value.
 
 #### Help & Feedback View
 The Help & Feedback view provides you some quick links to open ConfigCat's Documentation, ConfigCat's Dashboard and gives you the opportunity to report any issues.
