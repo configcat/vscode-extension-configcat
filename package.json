@@ -117,7 +117,7 @@
 			},
 			{
 				"view": "configcat.settings",
-				"contents": "You should connect a Config to this workspace first. \n [Connect Config](command:configcat.configs.connect)",
+				"contents": "You should connect a Config to this workspace first. \n [Connect Config to Workspace](command:configcat.configs.connect)",
 				"when": "configcat:initialized && configcat:authenticated && !configcat:connected"
 			},
 			{

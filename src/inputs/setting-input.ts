@@ -3,10 +3,10 @@ import * as vscode from 'vscode';
 
 export class SettingInput {
 
-    private static booleanSettingDescription = 'Feature Flag';
-    private static textSettingDescription = 'Text';
-    private static wholeNumberSettingDescription = 'Whole number';
-    private static decimalNumberSettingDescription = 'Decimal number';
+    private static booleanSettingDescription = 'Feature Flag (boolean)';
+    private static textSettingDescription = 'Text (string)';
+    private static wholeNumberSettingDescription = 'Whole number (integer)';
+    private static decimalNumberSettingDescription = 'Decimal number (double)';
 
     static async settingInput(): Promise<CreateSettingModel> {
         const settingTypeString = await vscode.window.showQuickPick(
