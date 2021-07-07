@@ -54,7 +54,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /***************************************************************************************************
  * Zone JS is required by default for Angular itself.
  */
-require("zone.js/dist/zone"); // Included with Angular CLI.
+require("zone.js"); // Included with Angular CLI.
 /***************************************************************************************************
  * APPLICATION IMPORTS
  */
