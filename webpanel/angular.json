@@ -24,8 +24,7 @@
         "@schematics/angular:interceptor": {
           "skipTests": true
         },
-        "@schematics/angular:module": {
-        },
+        "@schematics/angular:module": {},
         "@schematics/angular:pipe": {
           "skipTests": true
         },
@@ -78,6 +77,9 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
+              "allowedCommonJsDependencies": [
+                "semver"
+              ],
               "budgets": [
                 {
                   "type": "initial",

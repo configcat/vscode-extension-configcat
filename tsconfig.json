@@ -14,6 +14,7 @@
 		"strict": true
 	},
 	"exclude": [
+		"webpanel",
 		"node_modules",
 		".vscode-test"
 	]

@@ -6,6 +6,7 @@ import { NgConfigCatPublicApiUIModule } from 'ng-configcat-publicapi-ui';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AppData } from './app-data';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -16,6 +17,7 @@ import { AppData } from './app-data';
     FormsModule,
     ReactiveFormsModule,
     AppRoutingModule,
+    HttpClientModule,
     NgConfigCatPublicApiUIModule.forRoot(() => ({
       basePath: (window as any).CONFIGCAT_APPDATA.publicApiBaseUrl,
       basicAuthUsername: (window as any).CONFIGCAT_APPDATA.basicAuthUsername,
