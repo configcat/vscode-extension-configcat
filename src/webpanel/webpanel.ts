@@ -16,19 +16,17 @@ export class WebPanel {
     private static readonly viewType = 'angular';
 
     private readonly panel: vscode.WebviewPanel;
-    private readonly extensionPath: string;
-    private readonly builtAppFolder: string;
+    private readonly extensionUri: vscode.Uri;
 
     constructor(private context: vscode.ExtensionContext,
         publicApiConfiguration: PublicApiConfiguration, workspaceConfiguration: ConfigCatWorkspaceConfiguration,
         environmentId: string, environmentName: string, settingId: number, settingKey: string) {
 
-        this.extensionPath = context.extensionPath;
-        this.builtAppFolder = 'out\\dist';
+        this.extensionUri = context.extensionUri;
 
         this.panel = vscode.window.createWebviewPanel(WebPanel.viewType, settingKey + ' (' + environmentName + ')', vscode.ViewColumn.One, {
             enableScripts: true,
-            localResourceRoots: [vscode.Uri.file(path.join(this.extensionPath, this.builtAppFolder))]
+            localResourceRoots: [vscode.Uri.file(path.join(context.extensionPath, 'out', 'dist'))]
         });
         this.panel.webview.html = this._getHtmlForWebview(publicApiConfiguration, workspaceConfiguration, environmentId, settingId);
         context.subscriptions.push(this.panel);
@@ -40,20 +38,19 @@ export class WebPanel {
     private _getHtmlForWebview(publicApiConfiguration: PublicApiConfiguration, workspaceConfiguration: ConfigCatWorkspaceConfiguration,
         environmentId: string, settingId: number) {
         // path to dist folder
-        const appDistPath = path.join(this.extensionPath, 'out', 'dist');
-        const appDistPathUri = vscode.Uri.file(appDistPath);
+        const appDistPath = vscode.Uri.joinPath(this.extensionUri, 'out', 'dist');
 
         // path as uri
-        const baseUri = this.panel.webview.asWebviewUri(appDistPathUri);
+        const baseUri = appDistPath.with({ 'scheme': 'vscode-resource' });
 
         // get path to index.html file from dist folder
-        const indexPath = path.join(appDistPath, 'index.html');
+        const indexPath = vscode.Uri.joinPath(appDistPath, 'index.html');
 
         // read index file from file system
-        let indexHtml = fs.readFileSync(indexPath, { encoding: 'utf8' });
-
+        let indexHtml = fs.readFileSync(indexPath.fsPath, { encoding: 'utf8' });
+        indexHtml = indexHtml.replace('<base href="/">', `<base href="${baseUri.toString()}/">`);
+       
         // update the base URI tag
-        indexHtml = indexHtml.replace('<base href="/">', `<base href="${String(baseUri)}/">`);
         const config = {
             publicApiBaseUrl: workspaceConfiguration.publicApiBaseUrl,
             basicAuthUsername: publicApiConfiguration.basicAuthUsername,
