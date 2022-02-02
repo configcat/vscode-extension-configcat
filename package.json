@@ -7,7 +7,7 @@
 	"repository": "https://github.com/configcat/vscode-extension-configcat",
 	"preview": false,
 	"engines": {
-		"vscode": "^1.46.0"
+		"vscode": "^1.63.2"
 	},
 	"categories": [
 		"Other"
