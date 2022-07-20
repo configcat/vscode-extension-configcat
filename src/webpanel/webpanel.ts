@@ -55,7 +55,7 @@ export class WebPanel {
             publicApiBaseUrl: workspaceConfiguration.publicApiBaseUrl,
             basicAuthUsername: publicApiConfiguration.basicAuthUsername,
             basicAuthPassword: publicApiConfiguration.basicAuthPassword,
-
+            dashboardBasePath: workspaceConfiguration.dashboardBaseUrl,
             productId: workspaceConfiguration.productId,
             configId: workspaceConfiguration.configId,
             environmentId: environmentId,

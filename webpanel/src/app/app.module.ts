@@ -20,6 +20,7 @@ import { HttpClientModule } from '@angular/common/http';
     HttpClientModule,
     NgConfigCatPublicApiUIModule.forRoot(() => ({
       basePath: (window as any).CONFIGCAT_APPDATA.publicApiBaseUrl,
+      dashboardBasePath: (window as any).CONFIGCAT_APPDATA.dashboardBasePath,
       basicAuthUsername: (window as any).CONFIGCAT_APPDATA.basicAuthUsername,
       basicAuthPassword: (window as any).CONFIGCAT_APPDATA.basicAuthPassword
     }))
