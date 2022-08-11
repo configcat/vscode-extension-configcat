@@ -116,5 +116,7 @@
       }
     }
   },
-  "defaultProject": "webpanel"
+  "cli": {
+    "analytics": false
+  }
 }
