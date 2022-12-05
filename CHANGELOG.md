@@ -19,3 +19,8 @@
 
 - Security package updates
 - Small UI improvements
+
+## 1.5.0
+
+- Security package updates
+- Fixed the webview to show feature flag values
