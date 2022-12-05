@@ -41,7 +41,7 @@ export class WebPanel {
         const appDistPath = vscode.Uri.joinPath(this.extensionUri, 'out', 'dist');
 
         // path as uri
-        const baseUri = appDistPath.with({ 'scheme': 'vscode-resource' });
+        const baseUri = this.panel.webview.asWebviewUri(appDistPath);;
 
         // get path to index.html file from dist folder
         const indexPath = vscode.Uri.joinPath(appDistPath, 'index.html');
