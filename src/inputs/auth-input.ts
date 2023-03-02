@@ -1,7 +1,5 @@
 import * as vscode from 'vscode';
-import { ConfigModel } from "configcat-publicapi-node-client";
 import { PublicApiConfiguration } from '../public-api/public-api-configuration';
-import { PublicApiService } from '../public-api/public-api.service';
 
 export class AuthInput {
 

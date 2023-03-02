@@ -70,7 +70,7 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
                 statusBar.hide();
                 return [new Resource('-1', '', 'Could not load Products.', ResourceType.unknown, vscode.TreeItemCollapsibleState.None)];
             });
-        }, error => {
+        }, () => {
             return [];
         });
     }
@@ -105,7 +105,7 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
                 statusBar.hide();
                 return [new Resource('-1', '', 'Could not load Configs.', ResourceType.unknown, vscode.TreeItemCollapsibleState.None)];
             });
-        }, error => {
+        }, () => {
             return [];
         });
     }

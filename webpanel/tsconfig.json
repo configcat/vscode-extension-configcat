@@ -20,7 +20,9 @@
       "es2018",
       "dom"
     ],
-    "useDefineForClassFields": false
+    "useDefineForClassFields": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
