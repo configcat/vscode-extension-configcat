@@ -76,7 +76,7 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
 
                 const settingsService = this.publicApiService.createSettingsService(publicApiConfiguration, workspaceConfiguration.publicApiBaseUrl);
                 return settingsService.getSettings(workspaceConfiguration.configId).then(settings => {
-                    const items = settings.body.map((s, index) => new Resource(String(s.settingId), s.key ?? '',
+                    const items = settings.body.map((s) => new Resource(String(s.settingId), s.key ?? '',
                         s.name ?? '', s.hint ?? '',
                         vscode.TreeItemCollapsibleState.None));
                     statusBar.hide();
