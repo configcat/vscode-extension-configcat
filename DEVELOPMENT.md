@@ -6,6 +6,9 @@ The code is splitted into 2 parts.
 The webpanel is an Angular project, which can show and update Feature Flag values.
 Source: `./webpanel`
 Build it with `npm run webpanel-build`
+ 
+#### Local cache
+If the webpanel does not show changes made in the code or in the `ng-configcat-publicapi-ui` dependency the cache clean can help. In the webpanel folder use the following command: `ng cache clean`
 
 ### VS Code extension
 Source: `./src`
