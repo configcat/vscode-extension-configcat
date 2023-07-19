@@ -8,6 +8,7 @@ import { PublicApiService } from '../public-api/public-api.service';
 import { WebPanel } from '../webpanel/webpanel';
 import { ConfigCatWorkspaceConfiguration } from './workspace-configuration';
 import { WorkspaceConfigurationProvider } from './workspace-configuration-provider';
+import { handleError } from '../error-handler';
 
 export class SettingProvider implements vscode.TreeDataProvider<Resource> {
 
@@ -82,7 +83,7 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
                     statusBar.hide();
                     return items;
                 }, (error) => {
-                    vscode.window.showWarningMessage('Could not load Settings. Error: ' + error + '. ' + (error?.response?.body ?? ''));
+                    handleError('Could not load Settings.', error);
                     statusBar.hide();
                     this.setMessage('Could not load Settings.');
                     return [];
@@ -128,7 +129,7 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
             this.refreshSettings();
             statusBar.hide();
         } catch (error) {
-            vscode.window.showWarningMessage('Could not create Feature Flag. Error: ' + error + '. ' + (error?.response?.body ?? ''));
+            handleError('Could not create Feature Flag.', error);
             statusBar.hide();
         }
     }

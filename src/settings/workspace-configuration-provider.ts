@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { ConfigCatWorkspaceConfiguration } from './workspace-configuration';
+import { handleError } from '../error-handler';
 
 export class WorkspaceConfigurationProvider {
 
@@ -10,9 +11,13 @@ export class WorkspaceConfigurationProvider {
     }
 
     async setConfiguration(productId: string, configId: string) {
-        const config = vscode.workspace.getConfiguration(WorkspaceConfigurationProvider.configurationKey);
-        await config.update('productId', productId);
-        await config.update('configId', configId);
+        try {
+            const config = vscode.workspace.getConfiguration(WorkspaceConfigurationProvider.configurationKey);
+            await config.update('productId', productId);
+            await config.update('configId', configId);
+        } catch (error) {
+            handleError('Workspace Configuration faild.', error);
+        }
     }
 
     async checkConfiguration() {

@@ -4,6 +4,7 @@ import { ConfigInput } from '../inputs/config-input';
 import { ProductInput } from '../inputs/product-input';
 import { PublicApiService } from '../public-api/public-api.service';
 import { WorkspaceConfigurationProvider } from '../settings/workspace-configuration-provider';
+import { handleError } from '../error-handler';
 
 export enum ResourceType {
     unknown = 'Unknown',
@@ -66,7 +67,7 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
                 }
                 return items;
             }, error => {
-                vscode.window.showWarningMessage('Could not load Products. Error: ' + error + '. ' + (error?.response?.body ?? ''));
+                handleError('Could not load Products.', error);
                 statusBar.hide();
                 return [new Resource('-1', '', 'Could not load Products.', ResourceType.unknown, vscode.TreeItemCollapsibleState.None)];
             });
@@ -101,7 +102,7 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
                 }
                 return items;
             }, error => {
-                vscode.window.showWarningMessage('Could not load Configs. Error: ' + error + '. ' + (error?.response?.body ?? ''));
+                handleError('Could not load Configs.', error);
                 statusBar.hide();
                 return [new Resource('-1', '', 'Could not load Configs.', ResourceType.unknown, vscode.TreeItemCollapsibleState.None)];
             });
@@ -200,7 +201,7 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
         try {
             config = await configsService.createConfig(productId, { name: configName });
         } catch (error) {
-            vscode.window.showWarningMessage('Could not create Config. Error: ' + error + '. ' + (error?.response?.body ?? ''));
+            handleError('Could not create Config.', error)
         }
 
         if (!config || !config.body.configId) {

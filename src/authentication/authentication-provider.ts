@@ -4,6 +4,7 @@ import { PublicApiConfiguration } from '../public-api/public-api-configuration';
 import { PublicApiService } from '../public-api/public-api.service';
 import { ConfigCatWorkspaceConfiguration } from '../settings/workspace-configuration';
 import { WorkspaceConfigurationProvider } from '../settings/workspace-configuration-provider';
+import { handleError } from '../error-handler';
 
 export const contextIsAuthenticated = 'configcat:authenticated';
 
@@ -68,7 +69,7 @@ export class AuthenticationProvider {
             await vscode.window.showInformationMessage('Logged in to ConfigCat. Email: ' + me.body.email);
             return configuration;
         } catch (error) {
-            await vscode.window.showWarningMessage('Could not log in to ConfigCat');
+            await handleError('Could not log in to ConfigCat.', '');
             return null;
         }
     }
