@@ -16,7 +16,7 @@ export class WorkspaceConfigurationProvider {
             await config.update('productId', productId);
             await config.update('configId', configId);
         } catch (error) {
-            handleError('Workspace Configuration faild.', error);
+            handleError('Workspace configuration failed.', error);
         }
     }
 
