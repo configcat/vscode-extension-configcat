@@ -36,9 +36,6 @@
 	],
 	"main": "./out/extension.js",
 	"contributes": {
-		"configurationDefaults": {
-			"window.dialogStyle": "custom"
-		},
 		"configuration": {
 			"type": "object",
 			"title": "ConfigCat",
