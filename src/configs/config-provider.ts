@@ -5,6 +5,7 @@ import { ProductInput } from '../inputs/product-input';
 import { PublicApiService } from '../public-api/public-api.service';
 import { WorkspaceConfigurationProvider } from '../settings/workspace-configuration-provider';
 import { handleError } from '../error-handler';
+import { EvaluationVersion } from 'configcat-publicapi-node-client';
 
 export enum ResourceType {
     unknown = 'Unknown',
@@ -196,10 +197,21 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
             return;
         }
 
+        let evaluationVersion: EvaluationVersion;
+
+        try {
+            evaluationVersion = await ConfigInput.configVersionInput();
+        } catch (error) {
+            return;
+        }
+        if (!evaluationVersion) {
+            return;
+        }
+
         const configsService = this.publicApiService.createConfigsService(authenticationConfiguration, workspaceConfiguration.publicApiBaseUrl);
         let config = null;
         try {
-            config = await configsService.createConfig(productId, { name: configName });
+            config = await configsService.createConfig(productId, { name: configName, evaluationVersion: evaluationVersion });
         } catch (error) {
             handleError('Could not create Config.', error)
         }

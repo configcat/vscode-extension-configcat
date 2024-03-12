@@ -1,5 +1,5 @@
+import { ConfigModel, EvaluationVersion } from 'configcat-publicapi-node-client';
 import * as vscode from 'vscode';
-import { ConfigModel } from "configcat-publicapi-node-client";
 
 export class ConfigInput {
 
@@ -36,6 +36,24 @@ export class ConfigInput {
 
         return Promise.resolve(name);
     }
+
+    
+    static async configVersionInput(): Promise<EvaluationVersion> {
+        
+        const pick = await vscode.window.showQuickPick(
+            ["V1", "V2 (Beta)"],
+            {
+                canPickMany: false,
+                placeHolder: 'Select the config version'
+            });
+    
+            if (!pick) {
+                return Promise.reject();
+            }
+    
+            return Promise.resolve(EvaluationVersion[pick]);
+    }
+
 
     static async askConnect(): Promise<string> {
 

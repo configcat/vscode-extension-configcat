@@ -1,4 +1,4 @@
-import { CreateSettingModel } from 'configcat-publicapi-node-client';
+import { ConfigModel, CreateSettingModel, EvaluationVersion } from 'configcat-publicapi-node-client';
 import * as vscode from 'vscode';
 import { AuthenticationProvider } from '../authentication/authentication-provider';
 import { EnvironmentInput } from '../inputs/environment-input';
@@ -188,7 +188,15 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
 
         const environmentName = environments.body.filter(e => e.environmentId === environmentId)[0].name;
 
-        new WebPanel(this.context, authenticationConfiguration, workspaceConfiguration, environmentId, environmentName || '', +resource.resourceId, resource.key);
+        const configsService = this.publicApiService.createConfigsService(authenticationConfiguration, workspaceConfiguration.publicApiBaseUrl);
+        let configModel: ConfigModel | undefined; 
+        try {
+            configModel = (await configsService.getConfig(workspaceConfiguration.configId)).body
+        } catch (error) {
+            return
+        }
+        let evaluationVersion = configModel?.evaluationVersion ? configModel?.evaluationVersion : EvaluationVersion.V1;
+        new WebPanel(this.context, authenticationConfiguration, workspaceConfiguration, environmentId, environmentName || '', +resource.resourceId, resource.key, evaluationVersion);
     }
 
     setMessage(message: string | undefined) {

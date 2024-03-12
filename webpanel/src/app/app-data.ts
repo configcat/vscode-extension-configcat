@@ -7,4 +7,5 @@ export class AppData {
     configId = '';
     environmentId = 'string';
     settingId = 0;
+    evaluationVersion = ''
 }
