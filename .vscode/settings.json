@@ -8,6 +8,5 @@
     },
     // Turn off tsc task auto detection since we have the necessary tasks as npm scripts
     "typescript.tsc.autoDetect": "off",
-    "configcat.productId": "08daf7cd-a3a1-4697-8466-433f4463f8c1",
-    "configcat.configId": "08dc42a8-48a6-4fe0-888f-8e0739bb7227"
+
 }
