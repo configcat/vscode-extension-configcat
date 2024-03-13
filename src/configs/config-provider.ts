@@ -5,7 +5,8 @@ import { ProductInput } from '../inputs/product-input';
 import { PublicApiService } from '../public-api/public-api.service';
 import { WorkspaceConfigurationProvider } from '../settings/workspace-configuration-provider';
 import { handleError } from '../error-handler';
-import { EvaluationVersion } from 'configcat-publicapi-node-client/dist/model';
+import { EvaluationVersion } from 'configcat-publicapi-node-client';
+
 
 export enum ResourceType {
     unknown = 'Unknown',

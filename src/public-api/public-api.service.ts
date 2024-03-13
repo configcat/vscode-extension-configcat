@@ -5,7 +5,7 @@ import {
     MeApi, ProductsApi
 } from 'configcat-publicapi-node-client';
 import { PublicApiConfiguration } from './public-api-configuration';
-import { Configuration } from 'configcat-publicapi-node-client/dist/configuration';
+import { Configuration } from 'configcat-publicapi-node-client';
 
 export class PublicApiService {
 

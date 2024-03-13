@@ -1,4 +1,4 @@
-import { ConfigModel, EvaluationVersion } from 'configcat-publicapi-node-client/dist/model';
+import { ConfigModel, EvaluationVersion } from 'configcat-publicapi-node-client';
 import * as vscode from 'vscode';
 
 export class ConfigInput {

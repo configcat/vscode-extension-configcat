@@ -1,4 +1,4 @@
-import { ConfigModel, CreateSettingInitialValues, EvaluationVersion } from 'configcat-publicapi-node-client/dist/model';
+import { ConfigModel, CreateSettingInitialValues, EvaluationVersion } from 'configcat-publicapi-node-client';
 import * as vscode from 'vscode';
 import { AuthenticationProvider } from '../authentication/authentication-provider';
 import { EnvironmentInput } from '../inputs/environment-input';
