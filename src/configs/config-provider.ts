@@ -5,7 +5,7 @@ import { ProductInput } from '../inputs/product-input';
 import { PublicApiService } from '../public-api/public-api.service';
 import { WorkspaceConfigurationProvider } from '../settings/workspace-configuration-provider';
 import { handleError } from '../error-handler';
-import { EvaluationVersion } from 'configcat-publicapi-node-client';
+import { EvaluationVersion } from 'configcat-publicapi-node-client/dist/model';
 
 export enum ResourceType {
     unknown = 'Unknown',
@@ -61,7 +61,7 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
 
             const productsService = this.publicApiService.createProductsService(publicApiConfiguration, workspaceConfiguration.publicApiBaseUrl);
             return productsService.getProducts().then(products => {
-                const items = products.body.map((p, index) => new Resource(p.productId ?? '', '', p.name ?? '', ResourceType.product, index === 0 ? vscode.TreeItemCollapsibleState.Expanded : vscode.TreeItemCollapsibleState.Collapsed));
+                const items = products.data.map((p, index) => new Resource(p.productId ?? '', '', p.name ?? '', ResourceType.product, index === 0 ? vscode.TreeItemCollapsibleState.Expanded : vscode.TreeItemCollapsibleState.Collapsed));
                 statusBar.hide();
                 if (!items.length) {
                     items.push(new Resource('-1', '', 'Could not find any Products.', ResourceType.unknown, vscode.TreeItemCollapsibleState.None));
@@ -96,7 +96,7 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
 
             const configsService = this.publicApiService.createConfigsService(publicApiConfiguration, workspaceConfiguration.publicApiBaseUrl);
             return configsService.getConfigs(productId).then(configs => {
-                const items = configs.body.map(c => new Resource(c.configId ?? '', productId, c.name ?? '', ResourceType.config, vscode.TreeItemCollapsibleState.None));
+                const items = configs.data.map(c => new Resource(c.configId ?? '', productId, c.name ?? '', ResourceType.config, vscode.TreeItemCollapsibleState.None));
                 statusBar.hide();
                 if (!items.length) {
                     items.push(new Resource('-1', '', 'Could not find any Configs.', ResourceType.unknown, vscode.TreeItemCollapsibleState.None));
@@ -134,7 +134,7 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
 
         let productId: string;
         try {
-            productId = await ProductInput.pickProduct(products.body);
+            productId = await ProductInput.pickProduct(products.data);
         } catch (error) {
             return;
         }
@@ -148,7 +148,7 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
 
         let configId: string;
         try {
-            configId = await ConfigInput.pickConfig(configs.body);
+            configId = await ConfigInput.pickConfig(configs.data);
         } catch (error) {
             return;
         }
@@ -178,7 +178,7 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
         if (resource?.resourceType !== ResourceType.product) {
             const productsService = this.publicApiService.createProductsService(authenticationConfiguration, workspaceConfiguration.publicApiBaseUrl);
             const products = await productsService.getProducts();
-            productId = await ProductInput.pickProduct(products.body);
+            productId = await ProductInput.pickProduct(products.data);
         } else {
             productId = resource.resourceId;
         }
@@ -216,7 +216,7 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
             handleError('Could not create Config.', error)
         }
 
-        if (!config || !config.body.configId) {
+        if (!config || !config.data.configId) {
             return;
         }
 
@@ -225,7 +225,7 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
             return;
         }
 
-        return await this.workspaceConfigurationProvider.setConfiguration(productId, config.body.configId);
+        return await this.workspaceConfigurationProvider.setConfiguration(productId, config.data.configId);
     }
 
 
@@ -253,7 +253,7 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
 
         let productId: string;
         try {
-            productId = await ProductInput.pickProduct(products.body);
+            productId = await ProductInput.pickProduct(products.data);
         } catch (error) {
             return;
         }
@@ -267,7 +267,7 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
 
         let configId: string;
         try {
-            configId = await ConfigInput.pickConfig(configs.body);
+            configId = await ConfigInput.pickConfig(configs.data);
         } catch (error) {
             return;
         }

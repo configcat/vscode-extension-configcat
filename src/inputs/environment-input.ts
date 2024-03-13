@@ -1,4 +1,4 @@
-import { EnvironmentModel } from 'configcat-publicapi-node-client';
+import { EnvironmentModel } from 'configcat-publicapi-node-client/dist/model';
 import * as vscode from 'vscode';
 
 export class EnvironmentInput {

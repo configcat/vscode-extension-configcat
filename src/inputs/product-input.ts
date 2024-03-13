@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { ProductModel } from "configcat-publicapi-node-client";
+import { ProductModel } from "configcat-publicapi-node-client/dist/model";
 
 export class ProductInput {
     static async pickProduct(products: ProductModel[]): Promise<string> {

@@ -1,4 +1,4 @@
-import { ConfigModel, CreateSettingModel, EvaluationVersion } from 'configcat-publicapi-node-client';
+import { ConfigModel, CreateSettingInitialValues, EvaluationVersion } from 'configcat-publicapi-node-client/dist/model';
 import * as vscode from 'vscode';
 import { AuthenticationProvider } from '../authentication/authentication-provider';
 import { EnvironmentInput } from '../inputs/environment-input';
@@ -38,7 +38,7 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
             }
             const configsService = this.publicApiService.createConfigsService(publicApiConfiguration, workspaceConfiguration.publicApiBaseUrl);
             const config = await configsService.getConfig(workspaceConfiguration.configId);
-            this.setDescription(config.body.name || '');
+            this.setDescription(config.data.name || '');
         } catch (error) {
             this.setDescription(undefined);
         }
@@ -77,7 +77,7 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
 
                 const settingsService = this.publicApiService.createSettingsService(publicApiConfiguration, workspaceConfiguration.publicApiBaseUrl);
                 return settingsService.getSettings(workspaceConfiguration.configId).then(settings => {
-                    const items = settings.body.map((s) => new Resource(String(s.settingId), s.key ?? '',
+                    const items = settings.data.map((s) => new Resource(String(s.settingId), s.key ?? '',
                         s.name ?? '', s.hint ?? '',
                         vscode.TreeItemCollapsibleState.None));
                     statusBar.hide();
@@ -109,7 +109,7 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
             return;
         }
 
-        let setting: CreateSettingModel;
+        let setting: CreateSettingInitialValues;
         try {
             setting = await SettingInput.settingInput();
         } catch (error) {
@@ -177,7 +177,7 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
 
         let environmentId: string;
         try {
-            environmentId = await EnvironmentInput.pickEnvironment(environments.body);
+            environmentId = await EnvironmentInput.pickEnvironment(environments.data);
         } catch (error) {
             return;
         }
@@ -186,12 +186,12 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
             return;
         }
 
-        const environmentName = environments.body.filter(e => e.environmentId === environmentId)[0].name;
+        const environmentName = environments.data.filter(e => e.environmentId === environmentId)[0].name;
 
         const configsService = this.publicApiService.createConfigsService(authenticationConfiguration, workspaceConfiguration.publicApiBaseUrl);
         let configModel: ConfigModel | undefined; 
         try {
-            configModel = (await configsService.getConfig(workspaceConfiguration.configId)).body
+            configModel = (await configsService.getConfig(workspaceConfiguration.configId)).data
         } catch (error) {
             return
         }

@@ -1,4 +1,4 @@
-import { CreateSettingModel, SettingType } from 'configcat-publicapi-node-client';
+import { CreateSettingInitialValues, SettingType } from 'configcat-publicapi-node-client/dist/model';
 import * as vscode from 'vscode';
 
 export class SettingInput {
@@ -8,7 +8,7 @@ export class SettingInput {
     private static wholeNumberSettingDescription = 'Whole number (integer)';
     private static decimalNumberSettingDescription = 'Decimal number (double)';
 
-    static async settingInput(): Promise<CreateSettingModel> {
+    static async settingInput(): Promise<CreateSettingInitialValues> {
         const settingTypeString = await vscode.window.showQuickPick(
             [this.booleanSettingDescription, this.textSettingDescription, this.wholeNumberSettingDescription, this.decimalNumberSettingDescription],
             {

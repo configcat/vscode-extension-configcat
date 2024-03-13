@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as vscode from 'vscode';
 import { PublicApiConfiguration } from '../public-api/public-api-configuration';
 import { ConfigCatWorkspaceConfiguration } from '../settings/workspace-configuration';
-import { EvaluationVersion } from 'configcat-publicapi-node-client';
+import { EvaluationVersion } from 'configcat-publicapi-node-client/dist/model';
 
 /**
  * Manages webview panels
