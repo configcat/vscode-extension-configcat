@@ -38,7 +38,7 @@ export class SettingInput {
         }
 
         const name = await vscode.window.showInputBox({
-            prompt: 'Description',
+            prompt: 'Name for hoomans',
             placeHolder: 'Is my awesome feature enabled',
             validateInput: this.requiredValidator
         });
@@ -46,7 +46,7 @@ export class SettingInput {
             return Promise.reject();
         }
         const key = await vscode.window.showInputBox({
-            prompt: 'Key',
+            prompt: 'Key for programs',
             placeHolder: 'isMyAwesomeFeatureEnabled',
             validateInput: this.requiredValidator
         });
