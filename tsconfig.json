@@ -11,7 +11,7 @@
 		"rootDir": "src",
 		"moduleResolution": "node",
 		"esModuleInterop": true,
-		"strict": true
+		"strict": false
 	},
 	"exclude": [
 		"webpanel",
