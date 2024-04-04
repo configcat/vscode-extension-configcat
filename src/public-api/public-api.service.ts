@@ -5,29 +5,39 @@ import {
     MeApi, ProductsApi
 } from 'configcat-publicapi-node-client';
 import { PublicApiConfiguration } from './public-api-configuration';
+import { Configuration } from 'configcat-publicapi-node-client';
 
 export class PublicApiService {
 
     public static defaultBasePath = 'https://api.configcat.com';
 
-    createMeService(configuration: PublicApiConfiguration, basePath: string) {
-        return new MeApi(configuration.basicAuthUsername, configuration.basicAuthPassword, basePath ?? PublicApiService.defaultBasePath);
+    createMeService(publicApiConfiguration: PublicApiConfiguration, basePath: string) {
+        let configuration = this.convertPublicApiConfigurationToConfiguration(publicApiConfiguration)
+        return new MeApi(configuration, basePath ?? PublicApiService.defaultBasePath);
     }
 
-    createProductsService(configuration: PublicApiConfiguration, basePath: string) {
-        return new ProductsApi(configuration.basicAuthUsername, configuration.basicAuthPassword, basePath ?? PublicApiService.defaultBasePath);
+    createProductsService(publicApiConfiguration: PublicApiConfiguration, basePath: string) {
+        let configuration = this.convertPublicApiConfigurationToConfiguration(publicApiConfiguration)
+        return new ProductsApi(configuration, basePath ?? PublicApiService.defaultBasePath);
     }
 
-    createConfigsService(configuration: PublicApiConfiguration, basePath: string) {
-        return new ConfigsApi(configuration.basicAuthUsername, configuration.basicAuthPassword, basePath ?? PublicApiService.defaultBasePath);
+    createConfigsService(publicApiConfiguration: PublicApiConfiguration, basePath: string) {
+        let configuration = this.convertPublicApiConfigurationToConfiguration(publicApiConfiguration)
+        return new ConfigsApi(configuration, basePath ?? PublicApiService.defaultBasePath);
     }
 
-    createEnvironmentsService(configuration: PublicApiConfiguration, basePath: string) {
-        return new EnvironmentsApi(configuration.basicAuthUsername, configuration.basicAuthPassword, basePath ?? PublicApiService.defaultBasePath);
+    createEnvironmentsService(publicApiConfiguration: PublicApiConfiguration, basePath: string) {
+        let configuration = this.convertPublicApiConfigurationToConfiguration(publicApiConfiguration)
+        return new EnvironmentsApi(configuration, basePath ?? PublicApiService.defaultBasePath);
     }
 
-    createSettingsService(configuration: PublicApiConfiguration, basePath: string) {
-        return new FeatureFlagsSettingsApi(configuration.basicAuthUsername, configuration.basicAuthPassword, basePath ?? PublicApiService.defaultBasePath);
+    createSettingsService(publicApiConfiguration: PublicApiConfiguration, basePath: string) {
+        let configuration = this.convertPublicApiConfigurationToConfiguration(publicApiConfiguration)
+        return new FeatureFlagsSettingsApi(configuration, basePath ?? PublicApiService.defaultBasePath);
+    }
+
+    convertPublicApiConfigurationToConfiguration(publicApiConfiguration: PublicApiConfiguration) : Configuration {
+        return new Configuration({username: publicApiConfiguration.basicAuthUsername, password: publicApiConfiguration.basicAuthPassword})
     }
 }
 

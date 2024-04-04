@@ -5,6 +5,7 @@ export class AppData {
 
     productId = '';
     configId = '';
-    environmentId = 'string';
+    environmentId = '';
     settingId = 0;
+    evaluationVersion = ''
 }

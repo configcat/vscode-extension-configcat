@@ -55,6 +55,11 @@
               "src/styles.scss"
             ],
             "scripts": [],
+            "allowedCommonJsDependencies": [
+              "semver",
+              "ace-builds",
+              "papaparse"
+            ],
             "vendorChunk": true,
             "extractLicenses": false,
             "buildOptimizer": false,
@@ -77,9 +82,6 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
-              "allowedCommonJsDependencies": [
-                "semver"
-              ],
               "budgets": [
                 {
                   "type": "initial",

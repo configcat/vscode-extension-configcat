@@ -3,6 +3,7 @@ import * as path from 'path';
 import * as vscode from 'vscode';
 import { PublicApiConfiguration } from '../public-api/public-api-configuration';
 import { ConfigCatWorkspaceConfiguration } from '../settings/workspace-configuration';
+import { EvaluationVersion } from 'configcat-publicapi-node-client';
 
 /**
  * Manages webview panels
@@ -20,7 +21,7 @@ export class WebPanel {
 
     constructor(private context: vscode.ExtensionContext,
         publicApiConfiguration: PublicApiConfiguration, workspaceConfiguration: ConfigCatWorkspaceConfiguration,
-        environmentId: string, environmentName: string, settingId: number, settingKey: string) {
+        environmentId: string, environmentName: string, settingId: number, settingKey: string, evaluationVersion: EvaluationVersion) {
 
         this.extensionUri = context.extensionUri;
 
@@ -28,7 +29,7 @@ export class WebPanel {
             enableScripts: true,
             localResourceRoots: [vscode.Uri.file(path.join(context.extensionPath, 'out', 'dist'))]
         });
-        this.panel.webview.html = this._getHtmlForWebview(publicApiConfiguration, workspaceConfiguration, environmentId, settingId);
+        this.panel.webview.html = this._getHtmlForWebview(publicApiConfiguration, workspaceConfiguration, environmentId, settingId, evaluationVersion);
         context.subscriptions.push(this.panel);
     }
 
@@ -36,7 +37,7 @@ export class WebPanel {
      * Returns html of the start page (index.html)
      */
     private _getHtmlForWebview(publicApiConfiguration: PublicApiConfiguration, workspaceConfiguration: ConfigCatWorkspaceConfiguration,
-        environmentId: string, settingId: number) {
+        environmentId: string, settingId: number, evaluationVersion: EvaluationVersion) {
         // path to dist folder
         const appDistPath = vscode.Uri.joinPath(this.extensionUri, 'out', 'dist');
 
@@ -59,7 +60,8 @@ export class WebPanel {
             productId: workspaceConfiguration.productId,
             configId: workspaceConfiguration.configId,
             environmentId: environmentId,
-            settingId: settingId
+            settingId: settingId,
+            evaluationVersion: evaluationVersion
         };
         indexHtml = indexHtml.replace('window.CONFIGCAT_APPDATA = {};', 'window.CONFIGCAT_APPDATA = ' + JSON.stringify(config) + ';');
 
