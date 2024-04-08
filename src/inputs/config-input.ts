@@ -41,7 +41,7 @@ export class ConfigInput {
     static async configVersionInput(): Promise<EvaluationVersion> {
         
         const pick = await vscode.window.showQuickPick(
-            [{label:"V1"} ,{label: "V2", description: "(Beta)"} ],
+            [{label: "V2"}, {label:"V1", description: "(Legacy)"} ],
             {
                 canPickMany: false,
                 placeHolder: 'Select the config version'
