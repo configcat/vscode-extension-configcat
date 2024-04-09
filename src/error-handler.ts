@@ -2,12 +2,12 @@ import * as vscode from 'vscode';
 
 export async function handleError(errorTitle: string, error: any): Promise<void> {
     let errorDetails = '';
-    if (error?.response?.body) {
+    if (error?.response?.data) {
 
-        if (typeof error?.response?.body == "string") {
-            errorDetails = error?.response?.body;
+        if (typeof error?.response?.data == "string") {
+            errorDetails = error?.response?.data;
         } else {
-            for (const [p, val] of Object.entries(error?.response?.body)) {
+            for (const [p, val] of Object.entries(error?.response?.data)) {
                 errorDetails += `${p}: ${val}\n`;
             }
         }
