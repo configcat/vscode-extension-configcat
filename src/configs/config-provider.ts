@@ -62,16 +62,16 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
 
             const productsService = this.publicApiService.createProductsService(publicApiConfiguration, workspaceConfiguration.publicApiBaseUrl);
             return productsService.getProducts().then(products => {
-                const items = products.data.map((p, index) => new Resource(p.productId ?? '', '', p.name ?? '', ResourceType.product, index === 0 ? vscode.TreeItemCollapsibleState.Expanded : vscode.TreeItemCollapsibleState.Collapsed));
+                const items = products.data.map((p, index) => new Resource(p.productId ?? '', '', p.name ?? '', ResourceType.product, index === 0 ? vscode.TreeItemCollapsibleState.Expanded : vscode.TreeItemCollapsibleState.Collapsed, p.description ?? ''));
                 statusBar.hide();
                 if (!items.length) {
-                    items.push(new Resource('-1', '', 'Could not find any Products.', ResourceType.unknown, vscode.TreeItemCollapsibleState.None));
+                    items.push(new Resource('-1', '', 'Could not find any Products.', ResourceType.unknown, vscode.TreeItemCollapsibleState.None, ''));
                 }
                 return items;
             }, error => {
                 handleError('Could not load Products.', error);
                 statusBar.hide();
-                return [new Resource('-1', '', 'Could not load Products.', ResourceType.unknown, vscode.TreeItemCollapsibleState.None)];
+                return [new Resource('-1', '', 'Could not load Products.', ResourceType.unknown, vscode.TreeItemCollapsibleState.None, '')];
             });
         }, () => {
             return [];
@@ -97,16 +97,16 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
 
             const configsService = this.publicApiService.createConfigsService(publicApiConfiguration, workspaceConfiguration.publicApiBaseUrl);
             return configsService.getConfigs(productId).then(configs => {
-                const items = configs.data.map(c => new Resource(c.configId ?? '', productId, c.name ?? '', ResourceType.config, vscode.TreeItemCollapsibleState.None));
+                const items = configs.data.map(c => new Resource(c.configId ?? '', productId, c.name ?? '', ResourceType.config, vscode.TreeItemCollapsibleState.None, c.description ?? ''));
                 statusBar.hide();
                 if (!items.length) {
-                    items.push(new Resource('-1', '', 'Could not find any Configs.', ResourceType.unknown, vscode.TreeItemCollapsibleState.None));
+                    items.push(new Resource('-1', '', 'Could not find any Configs.', ResourceType.unknown, vscode.TreeItemCollapsibleState.None, ''));
                 }
                 return items;
             }, error => {
                 handleError('Could not load Configs.', error);
                 statusBar.hide();
-                return [new Resource('-1', '', 'Could not load Configs.', ResourceType.unknown, vscode.TreeItemCollapsibleState.None)];
+                return [new Resource('-1', '', 'Could not load Configs.', ResourceType.unknown, vscode.TreeItemCollapsibleState.None, '')];
             });
         }, () => {
             return [];
@@ -198,21 +198,18 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
             return;
         }
 
-        let evaluationVersion: EvaluationVersion;
+        let configDescription: string;
 
         try {
-            evaluationVersion = await ConfigInput.configVersionInput();
+            configDescription = await ConfigInput.configDescriptionInput();
         } catch (error) {
-            return;
-        }
-        if (!evaluationVersion) {
             return;
         }
 
         const configsService = this.publicApiService.createConfigsService(authenticationConfiguration, workspaceConfiguration.publicApiBaseUrl);
         let config = null;
         try {
-            config = await configsService.createConfig(productId, { name: configName, evaluationVersion: evaluationVersion });
+            config = await configsService.createConfig(productId, { name: configName, evaluationVersion: EvaluationVersion.V2, description: configDescription });
         } catch (error) {
             handleError('Could not create Config.', error)
         }
@@ -320,8 +317,10 @@ class Resource extends vscode.TreeItem {
         public readonly label: string,
         public resourceType: ResourceType,
         public readonly collapsibleState: vscode.TreeItemCollapsibleState,
+        public readonly tooltip: string,
     ) {
         super(label, collapsibleState);
+        super.tooltip = tooltip;
         super.contextValue = resourceType;
     }
 }
