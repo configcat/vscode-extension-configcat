@@ -1,7 +1,7 @@
 # ConfigCat Feature Flags extension for Visual Studio Code
 ConfigCat Visual Studio Code extension to manage feature flags from Visual Studio Code. 
 
-Connect your Product and Config to your Workspace. Find your Feature Flag's usages in your code easily.
+Connect your ConfigCat Product and Config to your Visual Studio Code Workspace. Find your Feature Flag's usages in your code easily.
 Turn features On / Off right from VSCode. You can also easily modify the linked flags to edit or add new Targeting or Percentage Rules.
 
 ## About ConfigCat
@@ -22,18 +22,18 @@ ConfigCat is a hosted feature flag service: https://configcat.com. Manage featur
 <img src="resources/help/ff_setting_view.gif" alt="Usage of ConfigCat Feature Flags Visual Studio Code Extension" width="100%"/>  
 
 ## Install extension
-### Visual Studio Code Marketplace
-1. Open [ConfigCat Feature Flags Extension](https://marketplace.visualstudio.com/items?itemName=ConfigCat.configcat-feature-flags) at Visual Studio Marketplace.
+### Install from Visual Studio Code Marketplace
+1.  In the Visual Studio Marketplace, open the [ConfigCat Feature Flags Extension](https://marketplace.visualstudio.com/items?itemName=ConfigCat.configcat-feature-flags).
 1. Click on the Install button.
 1. Configure extension (see below)
 
-### or within Visual Studio Code
-1. Search for ConfigCat Feature Flags on the Extensions page.
+### Install within Visual Studio Code
+1. In Visual Studio Code, open the Extensions page, and search for ConfigCat Feature Flags.
 1. Click on the Install button.
 1. Configure extension (see below).
 
-### or install from VSIX file
-1. Open [ConfigCat Feature Flags Extension](https://marketplace.visualstudio.com/items?itemName=ConfigCat.configcat-feature-flags) at Visual Studio Marketplace.
+### Install from VSIX file
+1. Visual Studio Marketplace, open the [ConfigCat Feature Flags Extension](https://marketplace.visualstudio.com/items?itemName=ConfigCat.configcat-feature-flags).
 1. Click on the Download Extension link.
 1. Click on the More Actions icon on the Extensions page in Visual Studio Code and select Install from VSIX...
 1. Configure extension (see below).
@@ -50,18 +50,18 @@ ConfigCat is a hosted feature flag service: https://configcat.com. Manage featur
 
 
 ### Advanced
-If you are trying to use the ConfigCat Feature Flags extension for Visual Studio Code with a `dedicated hosted`/[on-premise](https://configcat.com/on-premise/) ConfigCat instance. In that case, you can specify your custom URLs by executing the `Preferences: Open Workspace Settings` command from the Command Palette and searching for `Extensions/ConfigCat` or clicking the manage button on the ConfigCat Feature Flags extension's page. Important settings:
+This section is for you if you use a  `dedicated hosted`/[on-premise](https://configcat.com/on-premise/) ConfigCat instance. In that case, you can specify your custom ConfigCat URLs  in Visual Studio Code. You can do that by executing the `Preferences: Open Workspace Settings` command from the Command Palette and searching for `Extensions/ConfigCat` or clicking the manage button on the ConfigCat Feature Flags extension's page. Important settings:
    - `Public Api Base URL`: the base URL for the ConfigCat Public Management API. Defaults to: https://api.configcat.com.
    - `Dashboard Base URL`: the base URL for ConfigCat Dashboard. Defaults to: https://app.configcat.com.
 
 ## Usage of ConfigCat Feature Flags Views
-The ConfigCat Feature Flags Views can be opened by clicking the ConfigCat Feature Flags icon on the Activity Bar. There are three different views.
+The ConfigCat Feature Flags Views can be opened by clicking the ConfigCat Feature Flags icon on the Visual Studio Code's Activity Bar. There are three different views.
 
 Check out the [documentation] (https://configcat.com/docs/integrations/vscode/) to learn more about the Views and the ConfigCat Visual Studio Code extension.
 
 
 ### Products & Configs View
-On the Products & Configs View, you can: 
+Manage your products and configs on the Products & Configs View by performing the following actions:
 - View all of your Products & Configs.
 - Create Configs under a Product.
 - Connect a Config to your current Workspace.
@@ -70,7 +70,7 @@ On the Products & Configs View, you can:
 <img src="resources/help/prod_config_view.gif" alt="Usage of ConfigCat Products & Configs View"  width="100%"/>  
 
 ### Feature Flags & Settings View
-After you successfully connect a Config to your Workspace from the Feature Flags & Settings View, you can:
+After you successfully connect your ConfigCat Config to your Visual Studio Code Workspace, open the Feature Flags & Settings View and:
 - Turn features On / Off right from Visual Studio Code.
 - Add Targeting or Percentage Rules from Visual Studio Code.
 - View or Update your Feature Flag's value.
