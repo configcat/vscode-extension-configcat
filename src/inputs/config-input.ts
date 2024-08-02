@@ -1,4 +1,4 @@
-import { ConfigModel, EvaluationVersion } from 'configcat-publicapi-node-client';
+import { ConfigModel } from 'configcat-publicapi-node-client';
 import * as vscode from 'vscode';
 
 export class ConfigInput {
@@ -37,23 +37,20 @@ export class ConfigInput {
         return Promise.resolve(name);
     }
 
-    
-    static async configVersionInput(): Promise<EvaluationVersion> {
-        
-        const pick = await vscode.window.showQuickPick(
-            [{label: "V2"}, {label:"V1", description: "(Legacy)"} ],
-            {
-                canPickMany: false,
-                placeHolder: 'Select the config version'
-            });
-    
-            if (!pick) {
-                return Promise.reject();
-            }
-    
-            return Promise.resolve(EvaluationVersion[pick.label]);
-    }
+    static async configDescriptionInput(): Promise<string> {
 
+        const description = await vscode.window.showInputBox({
+            prompt: 'Please enter the description of the Config',
+            placeHolder: 'This config is responsible for...',
+            ignoreFocusOut: true,
+            value: ''
+        });
+        if (description  === undefined) {
+            return Promise.reject();
+        }
+
+        return Promise.resolve(description);
+    }
 
     static async askConnect(): Promise<string> {
 
