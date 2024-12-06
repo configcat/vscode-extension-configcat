@@ -220,6 +220,7 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
 
         const connect = await ConfigInput.askConnect();
         if (connect !== 'Yes') {
+            this.refresh()
             return;
         }
 
