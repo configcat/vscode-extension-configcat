@@ -46,7 +46,7 @@ ConfigCat is a hosted feature flag service: https://configcat.com. Manage featur
     - clicking on the ConfigCat Feature Flags icon on the Activity Bar and clicking on any of the Authenticate buttons.
     - or running the `ConfigCat - Log In` command from the Command Palette.
 
-<img src="resources/help/auth.gif" alt="Installation of ConfigCat Feature Flags Visual Studio Code Extension"  width="100%"/>  
+<img src="resources/help/auth.gif" alt="Installation of ConfigCat Feature Flags Visual Studio Code Extension" width="100%"/>  
 
 
 ### Advanced
@@ -67,7 +67,7 @@ Manage your products and configs on the Products & Configs View by performing th
 - Connect a Config to your current Workspace.
 - Open your Configs on the ConfigCat Dashboard.
 
-<img src="resources/help/prod_config_view.gif" alt="Usage of ConfigCat Products & Configs View"  width="100%"/>  
+<img src="resources/help/prod_config_view.gif" alt="Usage of ConfigCat Products & Configs View" width="100%"/>  
 
 ### Feature Flags & Settings View
 After you successfully connect your ConfigCat Config to your Visual Studio Code Workspace, open the Feature Flags & Settings View and:
@@ -79,7 +79,7 @@ After you successfully connect your ConfigCat Config to your Visual Studio Code 
 - Copy a Feature Flag's key to the clipboard.
 - Find your Feature Flag's usages in your code.
 
-<img src="resources/help/ff_setting_view.gif" alt="Usage of ConfigCat Feature Flags and Settings View"  width="100%"/>  
+<img src="resources/help/ff_setting_view.gif" alt="Usage of ConfigCat Feature Flags and Settings View" width="100%"/>  
 
 ### Help & Feedback View
 The Help & Feedback view provides quick links to open ConfigCat's Documentation and Dashboard and allows you to report issues.
