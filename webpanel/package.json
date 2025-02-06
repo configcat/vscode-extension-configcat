@@ -18,8 +18,8 @@
     "@angular/platform-browser": "^18.2.12",
     "@angular/platform-browser-dynamic": "^18.2.12",
     "@angular/router": "^18.2.12",
-    "ng-configcat-publicapi": "^4.4.1",
-    "ng-configcat-publicapi-ui": "^4.2.1",
+    "ng-configcat-publicapi": "^4.4.2",
+    "ng-configcat-publicapi-ui": "^4.2.2",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
     "zone.js": "~0.14.10"
