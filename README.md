@@ -32,12 +32,6 @@ ConfigCat is a hosted feature flag service: https://configcat.com. Manage featur
 1. Click on the Install button.
 1. Configure extension (see below).
 
-### Install from VSIX file
-1. Visual Studio Marketplace, open the [ConfigCat Feature Flags Extension](https://marketplace.visualstudio.com/items?itemName=ConfigCat.configcat-feature-flags).
-1. Click on the Download Extension link.
-1. Click on the More Actions icon on the Extensions page in Visual Studio Code and select Install from VSIX...
-1. Configure extension (see below).
-
 ## Configure extension
 ### Authentication
 
