@@ -7,7 +7,7 @@
 	"repository": "https://github.com/configcat/vscode-extension-configcat",
 	"preview": false,
 	"engines": {
-		"vscode": "^1.63.2"
+		"vscode": "^1.104.0"
 	},
 	"categories": [
 		"Other"
@@ -310,21 +310,21 @@
 		"deploy": "vsce publish"
 	},
 	"devDependencies": {
-		"@types/glob": "^7.1.3",
-		"@types/mocha": "^8.0.4",
-		"@types/node": "^12.11.7",
-		"@types/vscode": "^1.63.2",
-		"@typescript-eslint/eslint-plugin": "^4.14.1",
-		"@typescript-eslint/parser": "^4.14.1",
-		"esbuild": "^0.11.18",
-		"eslint": "^7.19.0",
-		"glob": "^7.1.6",
-		"mocha": "^9.2.0",
-		"typescript": "~4.4.4",
+		"@types/glob": "^9.0.0",
+		"@types/mocha": "^10.0.10",
+		"@types/node": "^22.15.30",
+		"@types/vscode": "^1.104.0",
+		"@typescript-eslint/eslint-plugin": "^8.44.0",
+		"@typescript-eslint/parser": "^8.44.0",
+		"esbuild": "^0.25.10",
+    	"eslint": "^9.36.0",
+		"glob": "^11.0.3",
+		"mocha": "^11.7.2",
+    	"typescript": "~5.9.2",
 		"@vscode/vsce": "^2.24.0",
 		"vscode-test": "^1.6.1"
 	},
 	"dependencies": {
-		"configcat-publicapi-node-client": "^2.0.2"
+		"configcat-publicapi-node-client": "^3.0.1"
 	}
 }
