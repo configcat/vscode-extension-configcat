@@ -1,11 +1,15 @@
-<configcat-setting-item *ngIf="appData.evaluationVersion === EvaluationVersion.V1"
+@if (appData.evaluationVersion === EvaluationVersion.V1) {
+  <configcat-setting-item
     [productId]="appData.productId" [configId]="appData.configId"
     [environmentId]="appData.environmentId" [settingId]="appData.settingId" [showEnvironmentName]="false"
     [canDeleteSetting]="false">
-</configcat-setting-item>
+  </configcat-setting-item>
+}
 
-<configcat-feature-flag-item *ngIf="appData.evaluationVersion === EvaluationVersion.V2"
+@if (appData.evaluationVersion === EvaluationVersion.V2) {
+  <configcat-feature-flag-item
     [productId]="appData.productId" [configId]="appData.configId"
     [environmentId]="appData.environmentId" [settingId]="appData.settingId" [showEnvironmentName]="false"
     [canDeleteSetting]="false">
-</configcat-feature-flag-item>
+  </configcat-feature-flag-item>
+}

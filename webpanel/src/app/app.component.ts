@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { AppData } from './app-data';
 import { EvaluationVersion } from 'ng-configcat-publicapi';
 
@@ -9,10 +9,9 @@ import { EvaluationVersion } from 'ng-configcat-publicapi';
     standalone: false
 })
 export class AppComponent {
+  appData = inject(AppData);
+
   title = 'webpanel';
   EvaluationVersion = EvaluationVersion;
-
-  constructor(public appData: AppData) {
-  }
 
 }
