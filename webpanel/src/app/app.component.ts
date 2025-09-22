@@ -3,9 +3,10 @@ import { AppData } from './app-data';
 import { EvaluationVersion } from 'ng-configcat-publicapi';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: 'app.component.html',
-  styles: []
+    selector: 'app-root',
+    templateUrl: 'app.component.html',
+    styles: [],
+    standalone: false
 })
 export class AppComponent {
   title = 'webpanel';
