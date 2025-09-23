@@ -30,6 +30,12 @@ export class WebPanel {
             localResourceRoots: [vscode.Uri.file(path.join(context.extensionPath, 'out', 'dist'))]
         });
         this.panel.webview.html = this._getHtmlForWebview(publicApiConfiguration, workspaceConfiguration, environmentId, settingId, evaluationVersion);
+        context.subscriptions.push(
+            vscode.window.onDidChangeActiveColorTheme(async colorTheme => {
+              let configCatTheme =  this._getConfigCatTheme(colorTheme);
+              this.panel.webview.postMessage({ command: 'themeChange', value: configCatTheme });
+            })
+        )
         context.subscriptions.push(this.panel);
     }
 
@@ -51,6 +57,7 @@ export class WebPanel {
         let indexHtml = fs.readFileSync(indexPath.fsPath, { encoding: 'utf8' });
         indexHtml = indexHtml.replace('<base href="/">', `<base href="${baseUri.toString()}/">`);
        
+        let vsCodeTheme = this._getConfigCatTheme(vscode.window.activeColorTheme)
         // update the base URI tag
         const config = {
             publicApiBaseUrl: workspaceConfiguration.publicApiBaseUrl,
@@ -61,10 +68,16 @@ export class WebPanel {
             configId: workspaceConfiguration.configId,
             environmentId: environmentId,
             settingId: settingId,
-            evaluationVersion: evaluationVersion
+            evaluationVersion: evaluationVersion,
+            vsCodeTheme: vsCodeTheme
         };
         indexHtml = indexHtml.replace('window.CONFIGCAT_APPDATA = {};', 'window.CONFIGCAT_APPDATA = ' + JSON.stringify(config) + ';');
 
         return indexHtml;
+    }
+
+    private _getConfigCatTheme(vsCodeColorTheme: vscode.ColorTheme): string{
+        let vsCodeThemeKind = vsCodeColorTheme.kind.valueOf();
+        return vsCodeThemeKind === 1 || vsCodeThemeKind === 4 ? 'light' : 'dark';
     }
 }

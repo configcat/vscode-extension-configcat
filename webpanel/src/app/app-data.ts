@@ -7,5 +7,6 @@ export class AppData {
     configId = '';
     environmentId = '';
     settingId = 0;
-    evaluationVersion = ''
+    evaluationVersion = '';
+    vsCodeTheme: 'dark' | 'light' = 'light';
 }
