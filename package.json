@@ -307,6 +307,8 @@
 		"pretest": "npm run compile && npm run lint",
 		"lint": "eslint src --ext ts",
 		"lint-fix": "eslint src --ext ts --fix",
+		"webpanel-lint": "eslint webpanel",
+		"webpanel-lint-fix": "eslint webpanel --fix",
 		"package": "vsce package",
 		"deploy": "vsce publish"
 	},

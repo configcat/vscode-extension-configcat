@@ -9,8 +9,8 @@ import {
   withRouterConfig,
 } from "@angular/router";
 import { CONFIGCAT_PUBLICAPI_UI_CONFIGURATION, provideConfigCatPublicApiUi } from "ng-configcat-publicapi-ui";
-import { routes } from "./app-routing.module";
 import { AppData } from "./app-data";
+import { routes } from "./app-routing.module";
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -27,16 +27,16 @@ export const appConfig: ApplicationConfig = {
     ),
     {
       provide: AppData,
-      useValue: (window as any).CONFIGCAT_APPDATA
+      useValue: (window as any).CONFIGCAT_APPDATA,
     },
     provideHttpClient(withInterceptorsFromDi()),
     {
       provide: CONFIGCAT_PUBLICAPI_UI_CONFIGURATION,
-      useValue: { 
-        basePath: (window as any).CONFIGCAT_APPDATA.publicApiBaseUrl, 
+      useValue: {
+        basePath: (window as any).CONFIGCAT_APPDATA.publicApiBaseUrl,
         dashboardBasePath: (window as any).CONFIGCAT_APPDATA.dashboardBaseUrl,
         basicAuthUsername: (window as any).CONFIGCAT_APPDATA.basicAuthUsername,
-        basicAuthPassword: (window as any).CONFIGCAT_APPDATA.basicAuthPassword
+        basicAuthPassword: (window as any).CONFIGCAT_APPDATA.basicAuthPassword,
       },
     },
     provideConfigCatPublicApiUi(),

@@ -1,12 +1,12 @@
 export class AppData {
-    public publicApiBaseUrl = '';
-    public basicAuthUsername = '';
-    public basicAuthPassword = '';
+  public publicApiBaseUrl = "";
+  public basicAuthUsername = "";
+  public basicAuthPassword = "";
 
-    productId = '';
-    configId = '';
-    environmentId = '';
-    settingId = 0;
-    evaluationVersion = '';
-    vsCodeTheme: 'dark' | 'light' = 'light';
+  productId = "";
+  configId = "";
+  environmentId = "";
+  settingId = 0;
+  evaluationVersion = "";
+  vsCodeTheme: "dark" | "light" = "light";
 }
