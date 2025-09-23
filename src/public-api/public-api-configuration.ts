@@ -1,4 +1,4 @@
 export interface PublicApiConfiguration {
-    basicAuthUsername: string;
-    basicAuthPassword: string;
+  basicAuthUsername: string;
+  basicAuthPassword: string;
 }

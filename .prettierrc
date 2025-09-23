@@ -1,0 +1,22 @@
+{
+  "overrides": [
+    {
+      "files": "*.html",
+      "options": {
+        "parser": "angular",
+        "htmlWhitespaceSensitivity": "ignore"
+      }
+    }
+  ],
+  "bracketSpacing": true,
+  "bracketSameLine": true,
+  "printWidth": 120,
+  "tabWidth": 2,
+  "singleQuote": false,
+  "useTabs": false,
+  "trailingComma": "es5",
+  "arrowParens": "avoid",
+  "semi": true,
+  "quoteProps": "as-needed",
+  "endOfLine": "auto"
+}
