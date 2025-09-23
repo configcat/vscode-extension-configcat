@@ -1,11 +1,11 @@
 @if (appData.evaluationVersion === EvaluationVersion.V1) {
-  <configcat-setting-item [productId]="appData.productId" [configId]="appData.configId"
+  <app-setting-item [productId]="appData.productId" [configId]="appData.configId"
     [environmentId]="appData.environmentId" [settingId]="appData.settingId" [showEnvironmentName]="false"
     [canDeleteSetting]="false" />
 }
 
 @if (appData.evaluationVersion === EvaluationVersion.V2) {
-  <configcat-feature-flag-item [productId]="appData.productId" [configId]="appData.configId"
+  <app-feature-flag-item [productId]="appData.productId" [configId]="appData.configId"
     [environmentId]="appData.environmentId" [settingId]="appData.settingId" [showEnvironmentName]="false"
     [canDeleteSetting]="false" />
 }

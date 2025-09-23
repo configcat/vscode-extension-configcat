@@ -28,7 +28,9 @@
     "@angular/build": "^20.3.2",
     "@angular/cli": "^20.2.1",
     "@angular/compiler-cli": "^20.2.3",
+    "@rxweb/reactive-form-validators": "^13.0.1", 
     "@types/node": "^22.15.30",
+    "ts-node": "~10.9.1",
     "typescript": "~5.9.2"
   }
 }
