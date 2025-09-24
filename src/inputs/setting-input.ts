@@ -58,7 +58,7 @@ export class SettingInput {
       placeHolder: "",
       value: "",
     });
-    if (!hint) {
+    if (typeof hint === "undefined") {
       return Promise.reject(new Error("Missing hint."));
     }
 

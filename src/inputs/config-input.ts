@@ -44,7 +44,7 @@ export class ConfigInput {
       ignoreFocusOut: true,
       value: "",
     });
-    if (!description) {
+    if (typeof description === "undefined") {
       return Promise.reject(new Error("Input box dismissed."));
     }
 

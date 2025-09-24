@@ -19,8 +19,8 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
     private readonly publicApiService: PublicApiService,
     private readonly workspaceConfigurationProvider: WorkspaceConfigurationProvider) {
   }
-  private readonly _onDidChangeTreeData: vscode.EventEmitter<Resource | undefined | void> = new vscode.EventEmitter<Resource | undefined | void>();
-  readonly onDidChangeTreeData: vscode.Event<Resource | undefined | void> = this._onDidChangeTreeData.event;
+  private readonly _onDidChangeTreeData: vscode.EventEmitter<void> = new vscode.EventEmitter<void>();
+  readonly onDidChangeTreeData: vscode.Event<void> = this._onDidChangeTreeData.event;
 
   async refresh(): Promise<void> {
     this.refreshSettings();
@@ -32,14 +32,15 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
       const publicApiConfiguration = await this.authenticationProvider.getAuthenticationConfiguration();
       const workspaceConfiguration = await this.workspaceConfigurationProvider.getWorkspaceConfiguration();
       if (!publicApiConfiguration || !workspaceConfiguration?.publicApiBaseUrl || !workspaceConfiguration.configId) {
-        this.setDescription(undefined);
+        this.setDescription("");
         return;
       }
       const configsService = this.publicApiService.createConfigsService(publicApiConfiguration, workspaceConfiguration.publicApiBaseUrl);
       const config = await configsService.getConfig(workspaceConfiguration.configId);
       this.setDescription(config.data.name || "");
-    } catch (error) {
-      this.setDescription(undefined);
+    } catch (error: unknown) {
+      console.log(error);
+      this.setDescription("");
     }
   }
 
@@ -61,7 +62,7 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
       this.workspaceConfigurationProvider.getWorkspaceConfiguration(),
     ]).then(
       values => {
-        this.setMessage(undefined);
+        this.setMessage("");
         const statusBar = vscode.window.createStatusBarItem();
         statusBar.text = "ConfigCat - Loading Settings...";
         statusBar.show();
@@ -80,8 +81,8 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
             vscode.TreeItemCollapsibleState.None));
           statusBar.hide();
           return items;
-        }, (error) => {
-          handleError("Could not load Settings.", error);
+        }, (error: unknown) => {
+          void handleError("Could not load Settings.", error as Error);
           statusBar.hide();
           this.setMessage("Could not load Settings.");
           return [];
@@ -99,7 +100,8 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
     try {
       publicApiConfiguration = await this.authenticationProvider.getAuthenticationConfiguration();
       workspaceConfiguration = await this.workspaceConfigurationProvider.getWorkspaceConfiguration();
-    } catch (error) {
+    } catch (error: unknown) {
+      console.log(error);
       return;
     }
 
@@ -110,7 +112,8 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
     let setting: CreateSettingInitialValues;
     try {
       setting = await SettingInput.settingInput();
-    } catch (error) {
+    } catch (error: unknown) {
+      console.log(error);
       return;
     }
     if (!setting) {
@@ -126,8 +129,8 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
       await settingsService.createSetting(workspaceConfiguration.configId, setting);
       this.refreshSettings();
       statusBar.hide();
-    } catch (error) {
-      handleError("Could not create Feature Flag.", error);
+    } catch (error: unknown) {
+      void handleError("Could not create Feature Flag.", error as Error);
       statusBar.hide();
     }
   }
@@ -136,7 +139,8 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
     let workspaceConfiguration: ConfigCatWorkspaceConfiguration | null;
     try {
       workspaceConfiguration = await this.workspaceConfigurationProvider.getWorkspaceConfiguration();
-    } catch (error) {
+    } catch (error: unknown) {
+      console.log(error);
       return;
     }
 
@@ -158,7 +162,8 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
     try {
       authenticationConfiguration = await this.authenticationProvider.getAuthenticationConfiguration();
       workspaceConfiguration = await this.workspaceConfigurationProvider.getWorkspaceConfiguration();
-    } catch (error) {
+    } catch (error: unknown) {
+      console.log(error);
       return;
     }
     if (!authenticationConfiguration
@@ -174,7 +179,8 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
     let environmentId: string;
     try {
       environmentId = await EnvironmentInput.pickEnvironment(environments.data);
-    } catch (error) {
+    } catch (error: unknown) {
+      console.log(error);
       return;
     }
 
@@ -182,27 +188,28 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
       return;
     }
 
-    const environmentName = environments.data.filter(e => e.environmentId === environmentId)[0].name;
+    const environmentName = environments.data.find(e => e.environmentId === environmentId)?.name;
 
     const configsService = this.publicApiService.createConfigsService(authenticationConfiguration, workspaceConfiguration.publicApiBaseUrl);
     let configModel: ConfigModel | undefined;
     try {
       configModel = (await configsService.getConfig(workspaceConfiguration.configId)).data;
-    } catch (error) {
+    } catch (error: unknown) {
+      console.log(error);
       return;
     }
     const evaluationVersion = configModel?.evaluationVersion ? configModel?.evaluationVersion : EvaluationVersion.V1;
-    new WebPanel(this.context, authenticationConfiguration, workspaceConfiguration, environmentId, environmentName || "", +resource.resourceId, resource.key, evaluationVersion);
+    return new WebPanel(this.context, authenticationConfiguration, workspaceConfiguration, environmentId, environmentName || "", +resource.resourceId, resource.key, evaluationVersion);
   }
 
-  setMessage(message: string | undefined) {
+  setMessage(message: string) {
     if (!this.treeView) {
       return;
     }
     this.treeView.message = message;
   }
 
-  setDescription(description: string | undefined) {
+  setDescription(description: string) {
     if (!this.treeView) {
       return;
     }
@@ -211,7 +218,7 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
       this.treeView.description = "FEATURE FLAGS & SETTINGS";
     } else {
       this.treeView.title = "FEATURE FLAGS & SETTINGS";
-      this.treeView.description = undefined;
+      this.treeView.description = "";
     }
   }
 
@@ -261,11 +268,11 @@ class Resource extends vscode.TreeItem {
     public readonly key: string,
     public readonly name: string,
     public readonly hint: string,
-    public readonly collapsibleState: vscode.TreeItemCollapsibleState
+    public override readonly collapsibleState: vscode.TreeItemCollapsibleState
   ) {
     super(key, collapsibleState);
-    super.description = name;
-    super.tooltip = hint;
-    super.contextValue = "Setting";
+    this.description = name;
+    this.tooltip = hint;
+    this.contextValue = "Setting";
   }
 }

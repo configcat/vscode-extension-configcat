@@ -12,7 +12,7 @@ export class WebPanel {
   /**
      * Track the currently panel. Only allow a single panel to exist at a time.
      */
-  public static currentPanel: WebPanel | undefined;
+  public static readonly currentPanel: WebPanel | undefined;
 
   private static readonly viewType = "angular";
 
@@ -29,11 +29,11 @@ export class WebPanel {
       enableScripts: true,
       localResourceRoots: [vscode.Uri.file(path.join(context.extensionPath, "out", "dist"))],
     });
-    this.panel.webview.html = this._getHtmlForWebview(publicApiConfiguration, workspaceConfiguration, environmentId, settingId, evaluationVersion);
+    this.panel.webview.html = this.getHtmlForWebview(publicApiConfiguration, workspaceConfiguration, environmentId, settingId, evaluationVersion);
     context.subscriptions.push(
       vscode.window.onDidChangeActiveColorTheme(async colorTheme => {
-        const configCatTheme = this._getConfigCatTheme(colorTheme);
-        this.panel.webview.postMessage({ command: "themeChange", value: configCatTheme });
+        const configCatTheme = this.getConfigCatTheme(colorTheme);
+        await this.panel.webview.postMessage({ command: "themeChange", value: configCatTheme });
       })
     );
     context.subscriptions.push(this.panel);
@@ -42,7 +42,7 @@ export class WebPanel {
   /**
      * Returns html of the start page (index.html)
      */
-  private _getHtmlForWebview(publicApiConfiguration: PublicApiConfiguration, workspaceConfiguration: ConfigCatWorkspaceConfiguration,
+  private getHtmlForWebview(publicApiConfiguration: PublicApiConfiguration, workspaceConfiguration: ConfigCatWorkspaceConfiguration,
     environmentId: string, settingId: number, evaluationVersion: EvaluationVersion) {
     // path to dist folder
     const appDistPath = vscode.Uri.joinPath(this.extensionUri, "out", "dist");
@@ -57,7 +57,7 @@ export class WebPanel {
     let indexHtml = fs.readFileSync(indexPath.fsPath, { encoding: "utf8" });
     indexHtml = indexHtml.replace('<base href="/">', `<base href="${baseUri.toString()}/">`);
 
-    const vsCodeTheme = this._getConfigCatTheme(vscode.window.activeColorTheme);
+    const vsCodeTheme = this.getConfigCatTheme(vscode.window.activeColorTheme);
     // update the base URI tag
     const config = {
       publicApiBaseUrl: workspaceConfiguration.publicApiBaseUrl,
@@ -76,7 +76,7 @@ export class WebPanel {
     return indexHtml;
   }
 
-  private _getConfigCatTheme(vsCodeColorTheme: vscode.ColorTheme): string {
+  private getConfigCatTheme(vsCodeColorTheme: vscode.ColorTheme): string {
     const vsCodeThemeKind = vsCodeColorTheme.kind.valueOf();
     return vsCodeThemeKind === 1 || vsCodeThemeKind === 4 ? "light" : "dark";
   }
