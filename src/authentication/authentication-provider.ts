@@ -10,7 +10,7 @@ export const contextIsAuthenticated = "configcat:authenticated";
 
 export class AuthenticationProvider {
 
-  public static secretKey = "configcat:publicapi-credentials";
+  public static readonly secretKey = "configcat:publicapi-credentials";
   public publicApiConfiguration: PublicApiConfiguration | null = null;
 
   constructor(private readonly context: vscode.ExtensionContext,
@@ -22,7 +22,8 @@ export class AuthenticationProvider {
     try {
       await this.getAuthenticationConfiguration();
       await vscode.commands.executeCommand("setContext", contextIsAuthenticated, true);
-    } catch (error) {
+    } catch (error: unknown) {
+      console.log(error);
       await this.clear();
     }
   }
@@ -30,12 +31,12 @@ export class AuthenticationProvider {
   async getAuthenticationConfiguration(): Promise<PublicApiConfiguration | null> {
     const credentialsString = await this.context.secrets.get(AuthenticationProvider.secretKey);
     if (!credentialsString) {
-      return Promise.reject();
+      return Promise.reject(new Error("Missing credentials."));
     }
 
-    const credentials: PublicApiConfiguration = JSON.parse(credentialsString);
+    const credentials = JSON.parse(credentialsString) as PublicApiConfiguration;
     if (!credentials?.basicAuthUsername || !credentials.basicAuthPassword) {
-      return Promise.reject();
+      return Promise.reject(new Error("Missing credentials."));
     }
 
     return Promise.resolve(credentials);
@@ -46,14 +47,16 @@ export class AuthenticationProvider {
     let configuration: PublicApiConfiguration;
     try {
       configuration = await AuthInput.getAuthParameters();
-    } catch (error) {
+    } catch (error: unknown) {
+      console.log(error);
       return null;
     }
 
     let workspaceConfiguration: ConfigCatWorkspaceConfiguration | null;
     try {
       workspaceConfiguration = await this.workspaceConfigurationProvider.getWorkspaceConfiguration();
-    } catch (error) {
+    } catch (error: unknown) {
+      console.log(error);
       return null;
     }
 
@@ -68,8 +71,8 @@ export class AuthenticationProvider {
       await this.context.secrets.store(AuthenticationProvider.secretKey, JSON.stringify(configuration));
       await vscode.window.showInformationMessage("Logged in to ConfigCat. Email: " + me.data.email);
       return configuration;
-    } catch (error) {
-      await handleError("Could not log in to ConfigCat.", "");
+    } catch (error: unknown) {
+      await handleError("Could not log in to ConfigCat.", error as Error);
       return null;
     }
   }
