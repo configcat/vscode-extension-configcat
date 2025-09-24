@@ -2,6 +2,7 @@ export class AppData {
   public publicApiBaseUrl = "";
   public basicAuthUsername = "";
   public basicAuthPassword = "";
+  public dashboardBasePath = "";
 
   productId = "";
   configId = "";

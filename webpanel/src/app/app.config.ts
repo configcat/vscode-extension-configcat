@@ -12,6 +12,12 @@ import { CONFIGCAT_PUBLICAPI_UI_CONFIGURATION, provideConfigCatPublicApiUi } fro
 import { AppData } from "./app-data";
 import { routes } from "./app-routing.module";
 
+declare global {
+  interface Window {
+    CONFIGCAT_APPDATA: AppData;
+  }
+}
+
 export const appConfig: ApplicationConfig = {
   providers: [
     importProvidersFrom(
@@ -27,16 +33,16 @@ export const appConfig: ApplicationConfig = {
     ),
     {
       provide: AppData,
-      useValue: (window as any).CONFIGCAT_APPDATA,
+      useValue: window["CONFIGCAT_APPDATA"],
     },
     provideHttpClient(withInterceptorsFromDi()),
     {
       provide: CONFIGCAT_PUBLICAPI_UI_CONFIGURATION,
       useValue: {
-        basePath: (window as any).CONFIGCAT_APPDATA.publicApiBaseUrl,
-        dashboardBasePath: (window as any).CONFIGCAT_APPDATA.dashboardBaseUrl,
-        basicAuthUsername: (window as any).CONFIGCAT_APPDATA.basicAuthUsername,
-        basicAuthPassword: (window as any).CONFIGCAT_APPDATA.basicAuthPassword,
+        basePath: window["CONFIGCAT_APPDATA"].publicApiBaseUrl,
+        dashboardBasePath: window["CONFIGCAT_APPDATA"].dashboardBasePath,
+        basicAuthUsername: window["CONFIGCAT_APPDATA"].basicAuthUsername,
+        basicAuthPassword: window["CONFIGCAT_APPDATA"].basicAuthPassword,
       },
     },
     provideConfigCatPublicApiUi(),

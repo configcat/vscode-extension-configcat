@@ -4,8 +4,8 @@ import { FeatureFlagItemComponent, SettingItemComponent, Theme, ThemeService } f
 import { AppData } from "./app-data";
 
 @Component({
-  selector: "app-root",
-  templateUrl: "app.component.html",
+  selector: "configcat-vscode-root",
+  templateUrl: "./app.component.html",
   styles: [],
   imports: [FeatureFlagItemComponent, SettingItemComponent],
 
@@ -27,6 +27,8 @@ export class AppComponent implements OnInit {
 
     window
       .addEventListener("message", (event: MessageEvent<({ command: string; value: string })>) => {
+        if (!event.origin.startsWith("vscode-webview"))
+          return;
         const message = event.data; // The JSON data our extension sent
         if (message.command === "themeChange") {
           const turnOn = message.value === "dark";

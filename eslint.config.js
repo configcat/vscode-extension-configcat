@@ -77,11 +77,11 @@ module.exports = tseslint.config(
       /* angular-eslint rules (https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/README.md#rules) */
       "@angular-eslint/component-selector": [
         "error",
-        { type: "element", prefix: ["configcat-trello"], style: "kebab-case" },
+        { type: "element", prefix: ["configcat-vscode"], style: "kebab-case" },
       ],
       "@angular-eslint/directive-selector": [
         "error",
-        { type: "attribute", prefix: ["configcat-trello"], style: "camelCase" },
+        { type: "attribute", prefix: ["configcat-vscode"], style: "camelCase" },
       ],
       "@angular-eslint/no-async-lifecycle-method": "error",
       "@angular-eslint/no-conflicting-lifecycle": "error",
