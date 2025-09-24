@@ -13,7 +13,7 @@ export class ProductInput {
     });
 
     if (!pick?.description) {
-      return Promise.reject();
+      return Promise.reject(new Error("No selected product."));
     }
 
     return Promise.resolve(pick.description);

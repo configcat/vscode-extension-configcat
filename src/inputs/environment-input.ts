@@ -15,7 +15,7 @@ export class EnvironmentInput {
     });
 
     if (!pick?.description) {
-      return Promise.reject();
+      return Promise.reject(new Error("No selected enviroment."));
     }
 
     return Promise.resolve(pick.description);

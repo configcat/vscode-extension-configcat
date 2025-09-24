@@ -4,8 +4,8 @@ import { ConfigCatWorkspaceConfiguration } from "./workspace-configuration";
 
 export class WorkspaceConfigurationProvider {
 
-  public static configurationKey = "configcat";
-  public static connectedContextKey = "configcat:connected";
+  public static readonly configurationKey = "configcat";
+  public static readonly connectedContextKey = "configcat:connected";
 
   constructor(private readonly context: vscode.ExtensionContext) {
   }
@@ -15,8 +15,8 @@ export class WorkspaceConfigurationProvider {
       const config = vscode.workspace.getConfiguration(WorkspaceConfigurationProvider.configurationKey);
       await config.update("productId", productId);
       await config.update("configId", configId);
-    } catch (error) {
-      handleError("Workspace configuration failed.", error);
+    } catch (error: unknown) {
+      await handleError("Workspace configuration failed.", error as Error);
     }
   }
 

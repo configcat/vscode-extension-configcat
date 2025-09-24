@@ -12,7 +12,7 @@ export class AuthInput {
       ignoreFocusOut: true,
     });
     if (!basicAuthUsername) {
-      return Promise.reject();
+      return Promise.reject(new Error("Missing basicAuthUsername."));
     }
 
     const basicAuthPassword = await vscode.window.showInputBox({
@@ -23,13 +23,13 @@ export class AuthInput {
       password: true,
     });
     if (!basicAuthPassword) {
-      return Promise.reject();
+      return Promise.reject(new Error("Missing basicAuthPassword."));
     }
 
     return { basicAuthPassword, basicAuthUsername };
   }
 
-  static requiredValidator = (value: string) => {
+  static readonly requiredValidator = (value: string) => {
     if (value) {
       return null;
     }

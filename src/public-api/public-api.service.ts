@@ -8,7 +8,7 @@ import { PublicApiConfiguration } from "./public-api-configuration";
 
 export class PublicApiService {
 
-  public static defaultBasePath = "https://api.configcat.com";
+  public static readonly defaultBasePath = "https://api.configcat.com";
 
   createMeService(publicApiConfiguration: PublicApiConfiguration, basePath: string) {
     const configuration = this.convertPublicApiConfigurationToConfiguration(publicApiConfiguration);

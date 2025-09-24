@@ -15,7 +15,7 @@ export class ConfigInput {
     });
 
     if (!pick?.description) {
-      return Promise.reject();
+      return Promise.reject(new Error("No selected config."));
     }
 
     return Promise.resolve(pick.description);
@@ -30,7 +30,7 @@ export class ConfigInput {
       ignoreFocusOut: true,
     });
     if (!name) {
-      return Promise.reject();
+      return Promise.reject(new Error("Missing name."));
     }
 
     return Promise.resolve(name);
@@ -44,8 +44,8 @@ export class ConfigInput {
       ignoreFocusOut: true,
       value: "",
     });
-    if (description === undefined) {
-      return Promise.reject();
+    if (!description) {
+      return Promise.reject(new Error("Input box dismissed."));
     }
 
     return Promise.resolve(description);
@@ -61,7 +61,7 @@ export class ConfigInput {
     return Promise.resolve(pick || "No");
   }
 
-  static requiredValidator = (value: string) => {
+  static readonly requiredValidator = (value: string) => {
     if (value) {
       return null;
     }

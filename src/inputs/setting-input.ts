@@ -16,7 +16,7 @@ export class SettingInput {
         placeHolder: "Pick a setting type",
       });
     if (!settingTypeString) {
-      return Promise.reject();
+      return Promise.reject(new Error("No selected setting type."));
     }
 
     let settingType: SettingType;
@@ -34,7 +34,7 @@ export class SettingInput {
         settingType = SettingType.Double;
         break;
       default:
-        return Promise.reject();
+        return Promise.reject(new Error("Not valid setting type selected."));
     }
 
     const name = await vscode.window.showInputBox({
@@ -43,7 +43,7 @@ export class SettingInput {
       validateInput: this.requiredValidator,
     });
     if (!name) {
-      return Promise.reject();
+      return Promise.reject(new Error("Missing name."));
     }
     const key = await vscode.window.showInputBox({
       prompt: "Key for programs",
@@ -51,15 +51,15 @@ export class SettingInput {
       validateInput: this.requiredValidator,
     });
     if (!key) {
-      return Promise.reject();
+      return Promise.reject(new Error("Missing key."));
     }
     const hint = await vscode.window.showInputBox({
       prompt: "Hint",
       placeHolder: "",
       value: "",
     });
-    if (hint === undefined) {
-      return Promise.reject();
+    if (!hint) {
+      return Promise.reject(new Error("Missing hint."));
     }
 
     const confirmText = await vscode.window.showQuickPick(["Yes", "No"], {
@@ -68,13 +68,13 @@ export class SettingInput {
     });
 
     if (confirmText !== "Yes") {
-      return Promise.reject();
+      return Promise.reject(new Error("Not confirmed."));
     }
 
     return Promise.resolve({ key, name, hint, settingType });
   }
 
-  static requiredValidator = (value: string) => {
+  static readonly requiredValidator = (value: string) => {
     if (value) {
       return null;
     }
