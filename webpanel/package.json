@@ -17,7 +17,6 @@
     "@angular/material": "^20.2.1",
     "@angular/platform-browser": "^20.2.3",
     "@angular/platform-browser-dynamic": "^20.2.3",
-    "@angular/router": "^20.2.3",
     "ng-configcat-publicapi": "^5.0.1",
     "ng-configcat-publicapi-ui": "^5.0.2",
     "rxjs": "~7.8.1",
