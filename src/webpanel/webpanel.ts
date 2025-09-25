@@ -57,7 +57,6 @@ export class WebPanel {
     let indexHtml = fs.readFileSync(indexPath.fsPath, { encoding: "utf8" });
     indexHtml = indexHtml.replace('<base href="/">', `<base href="${baseUri.toString()}/">`);
 
-    const vsCodeTheme = this.getConfigCatTheme(vscode.window.activeColorTheme);
     // update the base URI tag
     const config = {
       publicApiBaseUrl: workspaceConfiguration.publicApiBaseUrl,
@@ -69,7 +68,6 @@ export class WebPanel {
       environmentId: environmentId,
       settingId: settingId,
       evaluationVersion: evaluationVersion,
-      vsCodeTheme: vsCodeTheme,
     };
     indexHtml = indexHtml.replace("window.CONFIGCAT_APPDATA = {};", "window.CONFIGCAT_APPDATA = " + JSON.stringify(config) + ";");
 

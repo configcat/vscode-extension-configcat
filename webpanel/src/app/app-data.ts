@@ -9,5 +9,4 @@ export class AppData {
   environmentId = "";
   settingId = 0;
   evaluationVersion = "";
-  vsCodeTheme: "dark" | "light" = "light";
 }
