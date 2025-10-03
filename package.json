@@ -129,61 +129,73 @@
 		"commands": [
 			{
 				"command": "configcat.login",
-				"title": "ConfigCat - Log In",
+				"category": "ConfigCat",
+				"title": "Log In",
 				"icon": "$(log-in)"
 			},
 			{
 				"command": "configcat.logout",
-				"title": "ConfigCat - Log out",
+				"category": "ConfigCat",
+				"title": "Log out",
 				"icon": "$(log-out)"
 			},
 			{
 				"command": "configcat.configs.refresh",
+				"category": "ConfigCat",
 				"title": "Refresh Configs",
 				"icon": "$(refresh)"
 			},
 			{
 				"command": "configcat.configs.connect",
-				"title": "ConfigCat - Connect Config to Workspace",
+				"category": "ConfigCat",
+				"title": "Connect Config to Workspace",
 				"icon": "$(plug)"
 			},
 			{
 				"command": "configcat.configs.openInDashboard",
-				"title": "ConfigCat - Open Config in ConfigCat Dashboard",
+				"category": "ConfigCat",
+				"title": "Open Config in ConfigCat Dashboard",
 				"icon": "$(link-external)"
 			},
 			{
 				"command": "configcat.configs.add",
-				"title": "ConfigCat - Create Config",
+				"category": "ConfigCat",
+				"title": "Create Config",
 				"icon": "$(plus)"
 			},
 			{
 				"command": "configcat.settings.refresh",
+				"category": "ConfigCat",
 				"title": "Refresh Feature Flags & Settings",
 				"icon": "$(refresh)"
 			},
 			{
 				"command": "configcat.settings.add",
+				"category": "ConfigCat",
 				"title": "Add Feature Flag",
 				"icon": "$(add)"
 			},
 			{
 				"command": "configcat.settings.findUsages",
+				"category": "ConfigCat",
 				"title": "Find usages",
 				"icon": "$(search)"
 			},
 			{
 				"command": "configcat.settings.openInDashboard",
-				"title": "ConfigCat - Open Config in ConfigCat Dashboard",
+				"category": "ConfigCat",
+				"title": "Open Config in ConfigCat Dashboard",
 				"icon": "$(link-external)"
 			},
 			{
 				"command": "configcat.settings.copyToClipboard",
+				"category": "ConfigCat",
 				"title": "Copy Key to clipboard",
 				"icon": "$(clippy)"
 			},
 			{
 				"command": "configcat.settings.values",
+				"category": "ConfigCat",
 				"title": "View or Update Feature Flag values",
 				"icon": "$(circuit-board)"
 			}
