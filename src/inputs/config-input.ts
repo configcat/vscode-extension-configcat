@@ -1,5 +1,6 @@
 import { ConfigModel } from "configcat-publicapi-node-client";
 import * as vscode from "vscode";
+import { lengthValidator, requiredValidator } from "../input-validator-helper";
 
 export class ConfigInput {
 
@@ -26,7 +27,7 @@ export class ConfigInput {
     const name = await vscode.window.showInputBox({
       prompt: "Please enter the name of the Config",
       placeHolder: "Main Config",
-      validateInput: this.requiredValidator,
+      validateInput: this.nameValidator,
       ignoreFocusOut: true,
     });
     if (!name) {
@@ -61,10 +62,15 @@ export class ConfigInput {
     return Promise.resolve(pick || "No");
   }
 
-  static readonly requiredValidator = (value: string) => {
-    if (value) {
-      return null;
+  static readonly nameValidator = (value: string) => {
+    let validationResult = requiredValidator(value);
+    if (validationResult != null) {
+      return validationResult;
     }
-    return "Field is required.";
+    validationResult = lengthValidator(value);
+    if (validationResult != null) {
+      return validationResult;
+    }
+    return null;
   };
 }

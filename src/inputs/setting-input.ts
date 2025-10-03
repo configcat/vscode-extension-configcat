@@ -1,7 +1,10 @@
 import { CreateSettingInitialValues, SettingType } from "configcat-publicapi-node-client";
 import * as vscode from "vscode";
+import { lengthValidator, requiredValidator } from "../input-validator-helper";
 
 export class SettingInput {
+
+  private static readonly featureFlagKeyRegex = new RegExp("^[a-zA-Z]+[a-zA-Z0-9_-]*$");
 
   private static readonly booleanSettingDescription = "Feature Flag (boolean)";
   private static readonly textSettingDescription = "Text (string)";
@@ -40,7 +43,7 @@ export class SettingInput {
     const name = await vscode.window.showInputBox({
       prompt: "Name for hoomans",
       placeHolder: "Is my awesome feature enabled",
-      validateInput: this.requiredValidator,
+      validateInput: this.nameValidator,
     });
     if (!name) {
       return Promise.reject(new Error("Missing name."));
@@ -48,7 +51,7 @@ export class SettingInput {
     const key = await vscode.window.showInputBox({
       prompt: "Key for programs",
       placeHolder: "isMyAwesomeFeatureEnabled",
-      validateInput: this.requiredValidator,
+      validateInput: this.keyValidator,
     });
     if (!key) {
       return Promise.reject(new Error("Missing key."));
@@ -57,6 +60,8 @@ export class SettingInput {
       prompt: "Hint",
       placeHolder: "",
       value: "",
+      validateInput: lengthValidator,
+
     });
     if (typeof hint === "undefined") {
       return Promise.reject(new Error("Missing hint."));
@@ -74,10 +79,30 @@ export class SettingInput {
     return Promise.resolve({ key, name, hint, settingType });
   }
 
-  static readonly requiredValidator = (value: string) => {
-    if (value) {
-      return null;
+  static readonly nameValidator = (value: string) => {
+    let validationResult = requiredValidator(value);
+    if (validationResult != null) {
+      return validationResult;
     }
-    return "Field is required.";
+    validationResult = lengthValidator(value);
+    if (validationResult != null) {
+      return validationResult;
+    }
+    return null;
+  };
+
+  static readonly keyValidator = (value: string) => {
+    let validationResult = requiredValidator(value);
+    if (validationResult != null) {
+      return validationResult;
+    }
+    validationResult = lengthValidator(value);
+    if (validationResult != null) {
+      return validationResult;
+    }
+    if (!this.featureFlagKeyRegex.test(value)) {
+      return "Invalid key. Keys must start with a letter, followed by a combination of numbers, letters, underscores and hyphens.";
+    }
+    return null;
   };
 }
