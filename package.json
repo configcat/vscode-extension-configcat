@@ -347,6 +347,6 @@
 		"vscode-test": "^1.6.1"
 	},
 	"dependencies": {
-		"configcat-publicapi-node-client": "^3.0.1"
+		"configcat-publicapi-node-client": "^3.0.2"
 	}
 }
