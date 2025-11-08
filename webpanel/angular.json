@@ -68,6 +68,7 @@
             "sourceMap": true,
             "optimization": false,
             "namedChunks": true,
+            "preserveSymlinks": true,
             "browser": "src/main.ts"
           },
           "configurations": {
