@@ -238,12 +238,12 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
       (resource: Resource) => vscode.commands.executeCommand("search.action.openNewEditor", { query: resource.label })));
 
     this.context.subscriptions.push(vscode.commands.registerCommand("configcat.settings.values",
-      (resource: Resource) => this.openSettingPanel(resource, false));
+      (resource: Resource) => this.openSettingPanel(resource, false)));
 
     // this.context.subscriptions.push(vscode.commands.registerCommand("configcat.settings.add",
     //   async () => await this.addSetting()));
     this.context.subscriptions.push(vscode.commands.registerCommand("configcat.settings.add",
-     (resource: Resource) => this.openSettingPanel(resource, true)));
+      (resource: Resource) => this.openSettingPanel(resource, true)));
     this.context.subscriptions.push(
       vscode.workspace.onDidChangeConfiguration(async e => {
         if (e.affectsConfiguration(WorkspaceConfigurationProvider.configurationKey)) {
