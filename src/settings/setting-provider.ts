@@ -152,7 +152,7 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
             + workspaceConfiguration.productId + "/" + workspaceConfiguration.configId));
   }
 
-  async openSettingPanel(resource: Resource) {
+  async openSettingPanel(resource: Resource, isCreate: boolean) {
     if (!resource) {
       return;
     }
@@ -199,7 +199,7 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
       return;
     }
     const evaluationVersion = configModel?.evaluationVersion ? configModel?.evaluationVersion : EvaluationVersion.V1;
-    return new WebPanel(this.context, authenticationConfiguration, workspaceConfiguration, environmentId, environmentName || "", +resource.resourceId, resource.key, evaluationVersion);
+    return new WebPanel(this.context, authenticationConfiguration, workspaceConfiguration, environmentId, environmentName || "", +resource.resourceId, resource.key, evaluationVersion, isCreate);
   }
 
   setMessage(message: string) {
@@ -238,10 +238,12 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
       (resource: Resource) => vscode.commands.executeCommand("search.action.openNewEditor", { query: resource.label })));
 
     this.context.subscriptions.push(vscode.commands.registerCommand("configcat.settings.values",
-      (resource: Resource) => this.openSettingPanel(resource)));
+      (resource: Resource) => this.openSettingPanel(resource, false));
 
+    // this.context.subscriptions.push(vscode.commands.registerCommand("configcat.settings.add",
+    //   async () => await this.addSetting()));
     this.context.subscriptions.push(vscode.commands.registerCommand("configcat.settings.add",
-      async () => await this.addSetting()));
+     (resource: Resource) => this.openSettingPanel(resource, true)));
     this.context.subscriptions.push(
       vscode.workspace.onDidChangeConfiguration(async e => {
         if (e.affectsConfiguration(WorkspaceConfigurationProvider.configurationKey)) {

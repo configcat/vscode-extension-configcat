@@ -1,19 +1,28 @@
-@if (appData.evaluationVersion === EvaluationVersion.V1) {
-  <app-setting-item
-    [productId]="appData.productId"
-    [configId]="appData.configId"
-    [environmentId]="appData.environmentId"
-    [settingId]="appData.settingId"
-    [showEnvironmentName]="false"
-    [canDeleteSetting]="false" />
-}
+@if (appData.isCreate) {
+  <app-create-feature-flag
+    [authorizationParameters]="{
+      basicAuthUsername: appData.basicAuthUsername,
+      basicAuthPassword: appData.basicAuthPassword,
+    }"
+    (createInitiated)="createFeatureFlag($event)" />
+} @else {
+  @if (appData.evaluationVersion === EvaluationVersion.V1) {
+    <app-setting-item
+      [productId]="appData.productId"
+      [configId]="appData.configId"
+      [environmentId]="appData.environmentId"
+      [settingId]="appData.settingId"
+      [showEnvironmentName]="false"
+      [canDeleteSetting]="false" />
+  }
 
-@if (appData.evaluationVersion === EvaluationVersion.V2) {
-  <app-feature-flag-item
-    [productId]="appData.productId"
-    [configId]="appData.configId"
-    [environmentId]="appData.environmentId"
-    [settingId]="appData.settingId"
-    [showEnvironmentName]="false"
-    [canDeleteSetting]="false" />
+  @if (appData.evaluationVersion === EvaluationVersion.V2) {
+    <app-feature-flag-item
+      [productId]="appData.productId"
+      [configId]="appData.configId"
+      [environmentId]="appData.environmentId"
+      [settingId]="appData.settingId"
+      [showEnvironmentName]="false"
+      [canDeleteSetting]="false" />
+  }
 }

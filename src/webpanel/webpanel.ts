@@ -21,15 +21,26 @@ export class WebPanel {
 
   constructor(private readonly context: vscode.ExtensionContext,
     publicApiConfiguration: PublicApiConfiguration, workspaceConfiguration: ConfigCatWorkspaceConfiguration,
-    environmentId: string, environmentName: string, settingId: number, settingKey: string, evaluationVersion: EvaluationVersion) {
+    environmentId: string, environmentName: string, settingId: number, settingKey: string, evaluationVersion: EvaluationVersion, isCreate: boolean) {
 
     this.extensionUri = context.extensionUri;
 
+    // TODO title should be different for create
     this.panel = vscode.window.createWebviewPanel(WebPanel.viewType, settingKey + " (" + environmentName + ")", vscode.ViewColumn.One, {
       enableScripts: true,
       localResourceRoots: [vscode.Uri.file(path.join(context.extensionPath, "out", "dist"))],
     });
-    this.panel.webview.html = this.getHtmlForWebview(publicApiConfiguration, workspaceConfiguration, environmentId, settingId, evaluationVersion);
+
+    this.panel.webview.html = this.getHtmlForWebview(publicApiConfiguration, workspaceConfiguration, environmentId, settingId, evaluationVersion, isCreate);
+
+    this.panel.webview.onDidReceiveMessage(
+      this.listenWebViewCreateMessage,
+      null,
+      context.subscriptions
+    );
+    // TODO if isCreate the  this.panel.webview.onDidReceiveMessage and call success
+    // TODO call refresh on setting view?   this.context.subscriptions.push(vscode.commands.executeCommand("configcat.settings.refresh") ??
+    // TODO call await vscode.window.showInformationMessage("Logged in to ConfigCat. Email: " + me.data.email);
     context.subscriptions.push(
       vscode.window.onDidChangeActiveColorTheme(async colorTheme => {
         const configCatTheme = this.getConfigCatTheme(colorTheme);
@@ -39,11 +50,20 @@ export class WebPanel {
     context.subscriptions.push(this.panel);
   }
 
+  listenWebViewCreateMessage = (event: { command: string; text: string }): boolean => {
+    console.log(event);
+    if (event.command === "configcat-ff-create" && event.text === "success") {
+      vscode.commands.executeCommand("configcat.settings.refresh");
+      vscode.window.showInformationMessage("Successfull feature flag creation!");
+    }
+    return true;
+  };
+
   /**
      * Returns html of the start page (index.html)
      */
   private getHtmlForWebview(publicApiConfiguration: PublicApiConfiguration, workspaceConfiguration: ConfigCatWorkspaceConfiguration,
-    environmentId: string, settingId: number, evaluationVersion: EvaluationVersion) {
+    environmentId: string, settingId: number, evaluationVersion: EvaluationVersion, isCreate: boolean) {
     // path to dist folder
     const appDistPath = vscode.Uri.joinPath(this.extensionUri, "out", "dist");
 
@@ -63,6 +83,7 @@ export class WebPanel {
       basicAuthUsername: publicApiConfiguration.basicAuthUsername,
       basicAuthPassword: publicApiConfiguration.basicAuthPassword,
       dashboardBasePath: workspaceConfiguration.dashboardBaseUrl,
+      isCreate: isCreate,
       productId: workspaceConfiguration.productId,
       configId: workspaceConfiguration.configId,
       environmentId: environmentId,

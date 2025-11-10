@@ -1,18 +1,19 @@
 import { Component, DOCUMENT, inject, OnDestroy, OnInit } from "@angular/core";
 import { EvaluationVersion } from "ng-configcat-publicapi";
-import { FeatureFlagItemComponent, SettingItemComponent, Theme, ThemeService } from "ng-configcat-publicapi-ui";
+import { CreateFeatureFlagComponent, FeatureFlagItemComponent, LinkFeatureFlagParameters, SettingItemComponent, Theme, ThemeService } from "ng-configcat-publicapi-ui";
 import { AppData } from "./app-data";
 
 @Component({
   selector: "configcat-vscode-root",
   templateUrl: "./app.component.html",
   styles: [],
-  imports: [FeatureFlagItemComponent, SettingItemComponent],
+  imports: [FeatureFlagItemComponent, SettingItemComponent, CreateFeatureFlagComponent],
 
 })
 export class AppComponent implements OnInit, OnDestroy {
 
   private readonly themeService = inject(ThemeService);
+  vscode = acquireVsCodeApi();
 
   appData = inject(AppData);
   private readonly document = inject(DOCUMENT);
@@ -38,6 +39,17 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     window.addEventListener("message", this.postThemeChange);
+  }
+
+  createFeatureFlag(linkFeatureFlagParameters: LinkFeatureFlagParameters) {
+    console.log(linkFeatureFlagParameters);
+    // TODO refersh the view to load the newly created flag
+    // TODO ff create success message
+    // TODO close automaticly the webpanel
+    this.vscode.postMessage({
+      command: "configcat-ff-create",
+      text: "success",
+    });
   }
 
   ngOnDestroy(): void {
