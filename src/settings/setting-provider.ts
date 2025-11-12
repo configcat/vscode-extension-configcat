@@ -1,12 +1,11 @@
-import { ConfigModel, CreateSettingInitialValues, EvaluationVersion } from "configcat-publicapi-node-client";
+import { ConfigModel, EvaluationVersion, ProductModel } from "configcat-publicapi-node-client";
 import * as vscode from "vscode";
 import { AuthenticationProvider } from "../authentication/authentication-provider";
 import { handleError } from "../error-handler";
 import { EnvironmentInput } from "../inputs/environment-input";
-import { SettingInput } from "../inputs/setting-input";
-import { PublicApiConfiguration } from "../public-api/public-api-configuration";
 import { PublicApiService } from "../public-api/public-api.service";
-import { WebPanel } from "../webpanel/webpanel";
+import { CreateWebPanel } from "../webpanel/create-webpanel";
+import { SettingWebPanel } from "../webpanel/setting-webpanel";
 import { ConfigCatWorkspaceConfiguration } from "./workspace-configuration";
 import { WorkspaceConfigurationProvider } from "./workspace-configuration-provider";
 
@@ -93,48 +92,6 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
       });
   }
 
-  async addSetting() {
-
-    let publicApiConfiguration: PublicApiConfiguration | null;
-    let workspaceConfiguration: ConfigCatWorkspaceConfiguration | null;
-    try {
-      publicApiConfiguration = await this.authenticationProvider.getAuthenticationConfiguration();
-      workspaceConfiguration = await this.workspaceConfigurationProvider.getWorkspaceConfiguration();
-    } catch (error: unknown) {
-      console.log(error);
-      return;
-    }
-
-    if (!publicApiConfiguration || !workspaceConfiguration?.publicApiBaseUrl || !workspaceConfiguration.configId) {
-      return;
-    }
-
-    let setting: CreateSettingInitialValues;
-    try {
-      setting = await SettingInput.settingInput();
-    } catch (error: unknown) {
-      console.log(error);
-      return;
-    }
-    if (!setting) {
-      return;
-    }
-
-    const statusBar = vscode.window.createStatusBarItem();
-    statusBar.text = "ConfigCat - Creating Feature Flag...";
-    statusBar.show();
-
-    const settingsService = new PublicApiService().createSettingsService(publicApiConfiguration, workspaceConfiguration.publicApiBaseUrl);
-    try {
-      await settingsService.createSetting(workspaceConfiguration.configId, setting);
-      this.refreshSettings();
-      statusBar.hide();
-    } catch (error: unknown) {
-      void handleError("Could not create Feature Flag.", error as Error);
-      statusBar.hide();
-    }
-  }
-
   async openInDashboard() {
     let workspaceConfiguration: ConfigCatWorkspaceConfiguration | null;
     try {
@@ -152,7 +109,47 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
             + workspaceConfiguration.productId + "/" + workspaceConfiguration.configId));
   }
 
-  async openSettingPanel(resource: Resource, isCreate: boolean) {
+  async openCreatePanel() {
+    console.log("openCreatePanel");
+
+    let authenticationConfiguration = null;
+    let workspaceConfiguration = null;
+    try {
+      authenticationConfiguration = await this.authenticationProvider.getAuthenticationConfiguration();
+      workspaceConfiguration = await this.workspaceConfigurationProvider.getWorkspaceConfiguration();
+    } catch (error: unknown) {
+      console.log(error);
+      return;
+    }
+    if (!authenticationConfiguration
+            || !workspaceConfiguration?.publicApiBaseUrl
+            || !workspaceConfiguration.configId
+            || !workspaceConfiguration.productId) {
+      return;
+    }
+
+    const configsService = this.publicApiService.createConfigsService(authenticationConfiguration, workspaceConfiguration.publicApiBaseUrl);
+    let configModel: ConfigModel | undefined;
+    try {
+      configModel = (await configsService.getConfig(workspaceConfiguration.configId)).data;
+    } catch (error: unknown) {
+      console.log(error);
+      return;
+    }
+
+    const productService = this.publicApiService.createProductsService(authenticationConfiguration, workspaceConfiguration.publicApiBaseUrl);
+    let productModel: ProductModel | undefined;
+    try {
+      productModel = (await productService.getProduct(workspaceConfiguration.productId)).data;
+    } catch (error: unknown) {
+      console.log(error);
+      return;
+    }
+    // const evaluationVersion = configModel?.evaluationVersion ? configModel?.evaluationVersion : EvaluationVersion.V1;
+    return new CreateWebPanel(this.context, authenticationConfiguration, workspaceConfiguration, productModel.name, configModel.name);
+  }
+
+  async openSettingPanel(resource: Resource) {
     if (!resource) {
       return;
     }
@@ -199,7 +196,7 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
       return;
     }
     const evaluationVersion = configModel?.evaluationVersion ? configModel?.evaluationVersion : EvaluationVersion.V1;
-    return new WebPanel(this.context, authenticationConfiguration, workspaceConfiguration, environmentId, environmentName || "", +resource.resourceId, resource.key, evaluationVersion, isCreate);
+    return new SettingWebPanel(this.context, authenticationConfiguration, workspaceConfiguration, environmentId, environmentName || "", +resource.resourceId, resource.key, evaluationVersion);
   }
 
   setMessage(message: string) {
@@ -238,12 +235,10 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
       (resource: Resource) => vscode.commands.executeCommand("search.action.openNewEditor", { query: resource.label })));
 
     this.context.subscriptions.push(vscode.commands.registerCommand("configcat.settings.values",
-      (resource: Resource) => this.openSettingPanel(resource, false)));
+      (resource: Resource) => this.openSettingPanel(resource)));
 
-    // this.context.subscriptions.push(vscode.commands.registerCommand("configcat.settings.add",
-    //   async () => await this.addSetting()));
     this.context.subscriptions.push(vscode.commands.registerCommand("configcat.settings.add",
-      (resource: Resource) => this.openSettingPanel(resource, true)));
+      async () => this.openCreatePanel()));
     this.context.subscriptions.push(
       vscode.workspace.onDidChangeConfiguration(async e => {
         if (e.affectsConfiguration(WorkspaceConfigurationProvider.configurationKey)) {

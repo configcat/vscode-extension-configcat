@@ -43,9 +43,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   createFeatureFlag(linkFeatureFlagParameters: LinkFeatureFlagParameters) {
     console.log(linkFeatureFlagParameters);
-    // TODO refersh the view to load the newly created flag
-    // TODO ff create success message
-    // TODO close automaticly the webpanel
+    //TODO send info out for linking. env and setting id I guees
     this.vscode.postMessage({
       command: "configcat-ff-create",
       text: "success",

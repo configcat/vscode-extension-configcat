@@ -4,6 +4,12 @@
       basicAuthUsername: appData.basicAuthUsername,
       basicAuthPassword: appData.basicAuthPassword,
     }"
+    [presetProductAndConfig]="{
+      productId: appData.productId,
+      productName: appData.productName,
+      configId: appData.configId,
+      configName: appData.configName,
+    }"
     (createInitiated)="createFeatureFlag($event)" />
 } @else {
   @if (appData.evaluationVersion === EvaluationVersion.V1) {

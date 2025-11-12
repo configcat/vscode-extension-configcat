@@ -7,7 +7,9 @@ export class AppData {
   isCreate = false;
 
   productId = "";
+  productName = "";
   configId = "";
+  configName = "";
   environmentId = "";
   settingId = 0;
   evaluationVersion = "";
