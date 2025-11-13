@@ -48,7 +48,8 @@ export class CreateWebPanel extends WebPanel {
     console.log(event);
     if (event.command === "configcat-ff-create" && event.text === "success") {
       vscode.commands.executeCommand("configcat.settings.refresh");
-      vscode.window.showInformationMessage("Successfull feature flag creation!");
+      vscode.window.showInformationMessage("Feature Flag succesfully created!");
+      vscode.commands.executeCommand("configcat.settings.refresh");
       this.panel?.dispose();
     }
     return true;

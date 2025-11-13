@@ -1,5 +1,8 @@
 @if (appData.isCreate) {
   <app-create-feature-flag
+    targetSectionHeader="Product and Config"
+    targetSectionDescription="The feature flag will be created under the following product and config in ConfigCat."
+    [hideLinkSection]="true"
     [authorizationParameters]="{
       basicAuthUsername: appData.basicAuthUsername,
       basicAuthPassword: appData.basicAuthPassword,
