@@ -33,7 +33,7 @@ export class CreateWebPanel extends WebPanel {
       settingId: 0,
       evaluationVersion: "",
     };
-    this.panel.webview.html = this.getHtmlForWebview(appData);
+    this.panel.webview.html = this.getHtmlForWebview(appData, "createfeatureflag");
 
     this.panel.webview.onDidReceiveMessage(
       this.listenWebViewCreateMessage,

@@ -22,11 +22,6 @@ export class AppData {
  * Manages webview panels
  */
 export abstract class WebPanel {
-  /**
-     * Track the currently panel. Only allow a single panel to exist at a time.
-     */
-  public static readonly currentPanel: WebPanel | undefined;
-
   static readonly viewType = "angular";
 
   panel: vscode.WebviewPanel | undefined;
@@ -47,7 +42,8 @@ export abstract class WebPanel {
   /**
      * Returns html of the start page (index.html)
      */
-  getHtmlForWebview(appData: AppData): string {
+  getHtmlForWebview(appData: AppData, urlExtend: string): string {
+    console.log(urlExtend);
     // path to dist folder
     const appDistPath = vscode.Uri.joinPath(this.extensionUri, "out", "dist");
 

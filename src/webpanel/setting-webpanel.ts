@@ -36,7 +36,7 @@ export class SettingWebPanel extends WebPanel {
       evaluationVersion: evaluationVersion,
     };
 
-    this.panel.webview.html = this.getHtmlForWebview(appData);
+    this.panel.webview.html = this.getHtmlForWebview(appData, "featureflagsetting");
 
     context.subscriptions.push(this.panel);
   }
