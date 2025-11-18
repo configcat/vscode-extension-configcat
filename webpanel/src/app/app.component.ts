@@ -1,18 +1,21 @@
 import { Component, DOCUMENT, inject, OnDestroy, OnInit } from "@angular/core";
-import { RouterModule } from "@angular/router";
 import { Theme, ThemeService } from "ng-configcat-publicapi-ui";
+import { ViewData } from "./app.config";
+import { CreateFeatureFlagSettingComponent } from "./create-feature-flag/create-feature-flag-setting.component";
+import { FeatureFlagSettingComponent } from "./feature-flag-setting/feature-flag-setting.component";
 
 @Component({
   selector: "configcat-vscode-root",
   templateUrl: "./app.component.html",
   styles: [],
-  imports: [RouterModule],
+  imports: [CreateFeatureFlagSettingComponent, FeatureFlagSettingComponent],
 
 })
 export class AppComponent implements OnInit, OnDestroy {
 
   private readonly themeService = inject(ThemeService);
   private readonly document = inject(DOCUMENT);
+  viewData = inject(ViewData);
 
   title = "webpanel";
 
@@ -39,5 +42,9 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     window.removeEventListener("message", this.postThemeChange);
+  }
+
+  isComponentHidden(componentName: "none" | "featureflagsetting" | "createfeatureflag"): boolean {
+    return componentName !== this.viewData.view;
   }
 }

@@ -1,5 +1,4 @@
 <div>
-  <!-- <router-outlet /> -->
-  <a routerLink="./createfeatureflag">Create</a>
-  <a routerLink="./featureflagsetting">Setting</a>
+  <configcat-vscode-create-feature-flag [hidden]="isComponentHidden('createfeatureflag')" />
+  <configcat-vscode-feature-flag-setting [hidden]="isComponentHidden('featureflagsetting')" />
 </div>

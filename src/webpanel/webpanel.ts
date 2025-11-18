@@ -42,8 +42,8 @@ export abstract class WebPanel {
   /**
      * Returns html of the start page (index.html)
      */
-  getHtmlForWebview(appData: AppData, urlExtend: string): string {
-    console.log(urlExtend);
+  getHtmlForWebview(appData: AppData, view: string): string {
+    console.log(view);
     // path to dist folder
     const appDistPath = vscode.Uri.joinPath(this.extensionUri, "out", "dist");
 
@@ -59,6 +59,7 @@ export abstract class WebPanel {
 
     // update the base URI tag
     indexHtml = indexHtml.replace("window.CONFIGCAT_APPDATA = {};", "window.CONFIGCAT_APPDATA = " + JSON.stringify(appData) + ";");
+    indexHtml = indexHtml.replace("window.CONFIGCAT_APP_VIEW = {};", "window.CONFIGCAT_APP_VIEW = " + JSON.stringify({ view: view }) + ";");
 
     return indexHtml;
   }

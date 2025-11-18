@@ -2,14 +2,17 @@ import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http"
 import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } from "@angular/core";
 import { MatNativeDateModule } from "@angular/material/core";
 import { MatDialogModule } from "@angular/material/dialog";
-import { provideRouter, withComponentInputBinding, withInMemoryScrolling, withRouterConfig } from "@angular/router";
 import { CONFIGCAT_PUBLICAPI_UI_CONFIGURATION, provideConfigCatPublicApiUi } from "ng-configcat-publicapi-ui";
 import { AppData } from "./app-data";
-import { routes } from "./app-routing.module";
+
+export class ViewData {
+  public view: "none" | "featureflagsetting" | "createfeatureflag" = "none";
+}
 
 declare global {
   interface Window {
     CONFIGCAT_APPDATA: AppData;
+    CONFIGCAT_APP_VIEW: ViewData;
   }
 }
 
@@ -24,12 +27,10 @@ export const appConfig: ApplicationConfig = {
       provide: AppData,
       useValue: window["CONFIGCAT_APPDATA"],
     },
-    provideRouter(
-      routes,
-      withInMemoryScrolling({ scrollPositionRestoration: "enabled", anchorScrolling: "enabled" }),
-      withComponentInputBinding(),
-      withRouterConfig({ paramsInheritanceStrategy: "always" })
-    ),
+    {
+      provide: ViewData,
+      useValue: window["CONFIGCAT_APP_VIEW"],
+    },
     provideHttpClient(withInterceptorsFromDi()),
     {
       provide: CONFIGCAT_PUBLICAPI_UI_CONFIGURATION,

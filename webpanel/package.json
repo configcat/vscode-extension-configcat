@@ -28,7 +28,6 @@
     "@angular/build": "^20.3.7",
     "@angular/cli": "^20.3.7",
     "@angular/compiler-cli": "^20.3.7",
-    "@angular/router": "^20.3.7",
     "@configcat/sdk": "^1.0.2",
     "@rxweb/reactive-form-validators": "^13.0.1",
     "@types/node": "^22.15.30",

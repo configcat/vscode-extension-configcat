@@ -14,7 +14,6 @@ export class CreateFeatureFlagSettingComponent {
 
   createFeatureFlag(linkFeatureFlagParameters: LinkFeatureFlagParameters) {
     console.log(linkFeatureFlagParameters);
-    //TODO send info out for linking. env and setting id I guees
     this.vscode.postMessage({
       command: "configcat-ff-create",
       text: "success",
