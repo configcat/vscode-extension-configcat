@@ -1,72 +1,76 @@
-import { ConfigModel } from 'configcat-publicapi-node-client';
-import * as vscode from 'vscode';
+import { ConfigModel } from "configcat-publicapi-node-client";
+import * as vscode from "vscode";
+import { lengthValidator, requiredValidator } from "../input-validator-helper";
 
 export class ConfigInput {
 
-    static async pickConfig(configs: ConfigModel[]): Promise<string> {
+  static async pickConfig(configs: ConfigModel[]): Promise<string> {
 
-        const pickItems = configs.map(p => {
-            return { label: p.name || '', description: p.configId };
-        });
+    const pickItems = configs.map(p => {
+      return { label: p.name || "", description: p.configId };
+    });
 
-        const pick = await vscode.window.showQuickPick(pickItems, {
-            canPickMany: false,
-            placeHolder: 'Select a Config'
-        });
+    const pick = await vscode.window.showQuickPick(pickItems, {
+      canPickMany: false,
+      placeHolder: "Select a Config",
+    });
 
-        if (!pick?.description) {
-            return Promise.reject();
-        }
-
-        return Promise.resolve(pick.description);
+    if (!pick?.description) {
+      return Promise.reject(new Error("No selected config."));
     }
 
+    return Promise.resolve(pick.description);
+  }
 
-    static async configInput(): Promise<string> {
+  static async configInput(): Promise<string> {
 
-        const name = await vscode.window.showInputBox({
-            prompt: 'Please enter the name of the Config',
-            placeHolder: 'Main Config',
-            validateInput: this.requiredValidator,
-            ignoreFocusOut: true,
-        });
-        if (!name) {
-            return Promise.reject();
-        }
-
-        return Promise.resolve(name);
+    const name = await vscode.window.showInputBox({
+      prompt: "Please enter the name of the Config",
+      placeHolder: "Main Config",
+      validateInput: this.nameValidator,
+      ignoreFocusOut: true,
+    });
+    if (!name) {
+      return Promise.reject(new Error("Missing name."));
     }
 
-    static async configDescriptionInput(): Promise<string> {
+    return Promise.resolve(name);
+  }
 
-        const description = await vscode.window.showInputBox({
-            prompt: 'Please enter the description of the Config',
-            placeHolder: 'This config is responsible for...',
-            ignoreFocusOut: true,
-            value: ''
-        });
-        if (description  === undefined) {
-            return Promise.reject();
-        }
+  static async configDescriptionInput(): Promise<string> {
 
-        return Promise.resolve(description);
+    const description = await vscode.window.showInputBox({
+      prompt: "Please enter the description of the Config",
+      placeHolder: "This config is responsible for...",
+      ignoreFocusOut: true,
+      value: "",
+    });
+    if (typeof description === "undefined") {
+      return Promise.reject(new Error("Input box dismissed."));
     }
 
-    static async askConnect(): Promise<string> {
+    return Promise.resolve(description);
+  }
 
-        const pick = await vscode.window.showQuickPick(['Yes', 'No'], {
-            canPickMany: false,
-            placeHolder: 'Config created successfully. Would you like to connect this Config to the current workspace?'
-        });
+  static async askConnect(): Promise<string> {
 
-        return Promise.resolve(pick || 'No');
+    const pick = await vscode.window.showQuickPick(["Yes", "No"], {
+      canPickMany: false,
+      placeHolder: "Config created successfully. Would you like to connect this Config to the current workspace?",
+    });
+
+    return Promise.resolve(pick || "No");
+  }
+
+  static readonly nameValidator = (value: string) => {
+    let validationResult = requiredValidator(value);
+    if (validationResult != null) {
+      return validationResult;
     }
-
-
-    static requiredValidator = (value: string) => {
-        if (value) {
-            return null;
-        }
-        return 'Field is required.';
-    };
+    validationResult = lengthValidator(value);
+    if (validationResult != null) {
+      return validationResult;
+    }
+    return null;
+  };
 }

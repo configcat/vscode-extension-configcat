@@ -1,11 +1,12 @@
 export class AppData {
-    public publicApiBaseUrl = '';
-    public basicAuthUsername = '';
-    public basicAuthPassword = '';
+  public publicApiBaseUrl = "";
+  public basicAuthUsername = "";
+  public basicAuthPassword = "";
+  public dashboardBasePath = "";
 
-    productId = '';
-    configId = '';
-    environmentId = '';
-    settingId = 0;
-    evaluationVersion = ''
+  productId = "";
+  configId = "";
+  environmentId = "";
+  settingId = 0;
+  evaluationVersion = "";
 }
