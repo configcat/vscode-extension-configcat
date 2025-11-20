@@ -13,10 +13,9 @@ export class CreateFeatureFlagSettingComponent {
   vscode = acquireVsCodeApi();
 
   createFeatureFlag(linkFeatureFlagParameters: LinkFeatureFlagParameters) {
-    console.log(linkFeatureFlagParameters);
     this.vscode.postMessage({
-      command: "configcat-ff-create",
-      text: "success",
+      command: "configcat-ff-create-success",
+      settingId: linkFeatureFlagParameters.settingId,
     });
   }
 }

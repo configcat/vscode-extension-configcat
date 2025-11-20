@@ -12,6 +12,7 @@ import { WorkspaceConfigurationProvider } from "./workspace-configuration-provid
 export class SettingProvider implements vscode.TreeDataProvider<Resource> {
 
   treeView: vscode.TreeView<Resource> | null = null;
+  selectSettingAfterRefresh: string | null = null;
 
   constructor(private readonly context: vscode.ExtensionContext,
     private readonly authenticationProvider: AuthenticationProvider,
@@ -21,7 +22,10 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
   private readonly _onDidChangeTreeData: vscode.EventEmitter<void> = new vscode.EventEmitter<void>();
   readonly onDidChangeTreeData: vscode.Event<void> = this._onDidChangeTreeData.event;
 
-  async refresh(): Promise<void> {
+  async refresh(settingId?: string): Promise<void> {
+    if (settingId) {
+      this.selectSettingAfterRefresh = settingId;
+    }
     this.refreshSettings();
     await this.refreshHeader();
   }
@@ -51,8 +55,16 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
     return element;
   }
 
+  // we have to implement a dummy getParent to user treeView.reval
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  getParent(_element?: Resource): vscode.ProviderResult<Resource> {
+    // eslint-disable-next-line no-undefined
+    return undefined;
+  }
+
   getChildren(element?: Resource): Thenable<Resource[]> {
     if (element) {
+      this.selectSettingAfterRefresh = null;
       return Promise.resolve([]);
     }
 
@@ -70,6 +82,7 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
         const workspaceConfiguration = values[1];
         if (!publicApiConfiguration || !workspaceConfiguration?.publicApiBaseUrl || !workspaceConfiguration.configId) {
           statusBar.hide();
+          this.selectSettingAfterRefresh = null;
           return [];
         }
 
@@ -79,15 +92,24 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
             s.name ?? "", s.hint ?? "",
             vscode.TreeItemCollapsibleState.None));
           statusBar.hide();
+          if (this.selectSettingAfterRefresh) {
+            const selectedResource = items.find(resource => resource?.resourceId === this.selectSettingAfterRefresh);
+            if (selectedResource) {
+              this.treeView?.reveal(selectedResource, { select: true, focus: true, expand: false });
+            }
+            this.selectSettingAfterRefresh = null;
+          }
           return items;
         }, (error: unknown) => {
           void handleError("Could not load Settings.", error as Error);
           statusBar.hide();
           this.setMessage("Could not load Settings.");
+          this.selectSettingAfterRefresh = null;
           return [];
         });
       },
       () => {
+        this.selectSettingAfterRefresh = null;
         return [];
       });
   }
@@ -110,8 +132,6 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
   }
 
   async openCreatePanel() {
-    console.log("openCreatePanel");
-
     let authenticationConfiguration = null;
     let workspaceConfiguration = null;
     try {
@@ -226,7 +246,9 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
     });
     this.context.subscriptions.push(this.treeView);
     this.context.subscriptions.push(vscode.commands.registerCommand("configcat.settings.refresh",
-      async () => await this.refresh()));
+      async (selectedFlagKey: string) => {
+        await this.refresh(selectedFlagKey);
+      }));
     this.context.subscriptions.push(vscode.commands.registerCommand("configcat.settings.openInDashboard",
       async () => await this.openInDashboard()));
     this.context.subscriptions.push(vscode.commands.registerCommand("configcat.settings.copyToClipboard",

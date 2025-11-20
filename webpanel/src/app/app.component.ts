@@ -31,7 +31,6 @@ export class AppComponent implements OnInit, OnDestroy {
   };
 
   ngOnInit(): void {
-    console.log("app init");
     const vscodeThemeKind = this.document.body.getAttribute("data-vscode-theme-kind");
     if (vscodeThemeKind === "vscode-dark" || vscodeThemeKind === "vscode-high-contrast") {
       this.themeService.setTheme(Theme.Dark);

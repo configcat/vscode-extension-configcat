@@ -44,11 +44,10 @@ export class CreateWebPanel extends WebPanel {
     context.subscriptions.push(this.panel);
   }
 
-  listenWebViewCreateMessage = (event: { command: string; text: string }): boolean => {
-    if (event.command === "configcat-ff-create" && event.text === "success") {
-      vscode.commands.executeCommand("configcat.settings.refresh");
+  listenWebViewCreateMessage = (event: { command: string; settingId: number }): boolean => {
+    if (event.command === "configcat-ff-create-success") {
       vscode.window.showInformationMessage("Feature Flag succesfully created!");
-      vscode.commands.executeCommand("configcat.settings.refresh");
+      vscode.commands.executeCommand("configcat.settings.refresh", "" + event.settingId);
       this.panel?.dispose();
       return true;
     } else {
