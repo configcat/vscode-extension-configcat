@@ -5,7 +5,8 @@
     [environmentId]="appData.environmentId"
     [settingId]="appData.settingId"
     [showEnvironmentName]="false"
-    [canDeleteSetting]="false" />
+    [canDeleteSetting]="false"
+    (saveFailed)="saveFailed()" />
 }
 
 @if (appData.evaluationVersion === EvaluationVersion.V2) {
@@ -15,5 +16,6 @@
     [environmentId]="appData.environmentId"
     [settingId]="appData.settingId"
     [showEnvironmentName]="false"
-    [canDeleteSetting]="false" />
+    [canDeleteSetting]="false"
+    (saveFailed)="saveFailed()" />
 }

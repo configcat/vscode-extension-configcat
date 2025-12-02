@@ -38,7 +38,25 @@ export class SettingWebPanel extends WebPanel {
 
     this.panel.webview.html = this.getHtmlForWebview(appData, "featureflagsetting");
 
+    this.panel.webview.onDidReceiveMessage(
+      this.listenWebViewSettingsMessage,
+      null,
+      context.subscriptions
+    );
+
     context.subscriptions.push(this.panel);
+
   }
+
+  listenWebViewSettingsMessage = (event: { command: string }): boolean => {
+    if (event.command === "configcat-ff-save-failed") {
+      vscode.commands.executeCommand("configcat.settings.refresh");
+      this.panel?.dispose();
+      return true;
+    } else {
+      console.log(event);
+      return false;
+    }
+  };
 
 }

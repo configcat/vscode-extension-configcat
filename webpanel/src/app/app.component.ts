@@ -16,6 +16,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private readonly themeService = inject(ThemeService);
   private readonly document = inject(DOCUMENT);
   viewData = inject(ViewData);
+  vscode = acquireVsCodeApi();
 
   title = "webpanel";
 
