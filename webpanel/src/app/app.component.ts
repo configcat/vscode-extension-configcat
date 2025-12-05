@@ -1,24 +1,23 @@
 import { Component, DOCUMENT, inject, OnDestroy, OnInit } from "@angular/core";
-import { EvaluationVersion } from "ng-configcat-publicapi";
-import { FeatureFlagItemComponent, SettingItemComponent, Theme, ThemeService } from "ng-configcat-publicapi-ui";
-import { AppData } from "./app-data";
+import { Theme, ThemeService } from "ng-configcat-publicapi-ui";
+import { ViewData } from "./app.config";
+import { CreateFeatureFlagSettingComponent } from "./create-feature-flag/create-feature-flag-setting.component";
+import { FeatureFlagSettingComponent } from "./feature-flag-setting/feature-flag-setting.component";
 
 @Component({
   selector: "configcat-vscode-root",
   templateUrl: "./app.component.html",
   styles: [],
-  imports: [FeatureFlagItemComponent, SettingItemComponent],
+  imports: [CreateFeatureFlagSettingComponent, FeatureFlagSettingComponent],
 
 })
 export class AppComponent implements OnInit, OnDestroy {
 
   private readonly themeService = inject(ThemeService);
-
-  appData = inject(AppData);
   private readonly document = inject(DOCUMENT);
+  viewData = inject(ViewData);
 
   title = "webpanel";
-  EvaluationVersion = EvaluationVersion;
 
   postThemeChange = (event: MessageEvent<({ command: string; value: string })>) => {
     if (!event.origin.startsWith("vscode-webview"))
@@ -43,4 +42,5 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     window.removeEventListener("message", this.postThemeChange);
   }
+
 }

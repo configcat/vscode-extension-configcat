@@ -5,9 +5,14 @@ import { MatDialogModule } from "@angular/material/dialog";
 import { CONFIGCAT_PUBLICAPI_UI_CONFIGURATION, provideConfigCatPublicApiUi } from "ng-configcat-publicapi-ui";
 import { AppData } from "./app-data";
 
+export class ViewData {
+  public view: "none" | "featureflagsetting" | "createfeatureflag" = "none";
+}
+
 declare global {
   interface Window {
     CONFIGCAT_APPDATA: AppData;
+    CONFIGCAT_APP_VIEW: ViewData;
   }
 }
 
@@ -21,6 +26,10 @@ export const appConfig: ApplicationConfig = {
     {
       provide: AppData,
       useValue: window["CONFIGCAT_APPDATA"],
+    },
+    {
+      provide: ViewData,
+      useValue: window["CONFIGCAT_APP_VIEW"],
     },
     provideHttpClient(withInterceptorsFromDi()),
     {

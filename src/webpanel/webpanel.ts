@@ -1,54 +1,54 @@
-import { EvaluationVersion } from "configcat-publicapi-node-client";
 import * as fs from "fs";
-import * as path from "path";
 import * as vscode from "vscode";
-import { PublicApiConfiguration } from "../public-api/public-api-configuration";
-import { ConfigCatWorkspaceConfiguration } from "../settings/workspace-configuration";
+
+export class AppData {
+  public publicApiBaseUrl = "";
+  public basicAuthUsername = "";
+  public basicAuthPassword = "";
+  public dashboardBasePath = "";
+
+  isCreate = false;
+
+  productId = "";
+  productName = "";
+  configId = "";
+  configName = "";
+  environmentId = "";
+  settingId = 0;
+  evaluationVersion = "";
+}
 
 /**
  * Manages webview panels
  */
-export class WebPanel {
-  /**
-     * Track the currently panel. Only allow a single panel to exist at a time.
-     */
-  public static readonly currentPanel: WebPanel | undefined;
+export abstract class WebPanel {
+  static readonly viewType = "angular";
 
-  private static readonly viewType = "angular";
+  panel: vscode.WebviewPanel | undefined;
+  readonly extensionUri: vscode.Uri;
 
-  private readonly panel: vscode.WebviewPanel;
-  private readonly extensionUri: vscode.Uri;
-
-  constructor(private readonly context: vscode.ExtensionContext,
-    publicApiConfiguration: PublicApiConfiguration, workspaceConfiguration: ConfigCatWorkspaceConfiguration,
-    environmentId: string, environmentName: string, settingId: number, settingKey: string, evaluationVersion: EvaluationVersion) {
+  constructor(private readonly context: vscode.ExtensionContext) {
 
     this.extensionUri = context.extensionUri;
 
-    this.panel = vscode.window.createWebviewPanel(WebPanel.viewType, settingKey + " (" + environmentName + ")", vscode.ViewColumn.One, {
-      enableScripts: true,
-      localResourceRoots: [vscode.Uri.file(path.join(context.extensionPath, "out", "dist"))],
-    });
-    this.panel.webview.html = this.getHtmlForWebview(publicApiConfiguration, workspaceConfiguration, environmentId, settingId, evaluationVersion);
     context.subscriptions.push(
       vscode.window.onDidChangeActiveColorTheme(async colorTheme => {
         const configCatTheme = this.getConfigCatTheme(colorTheme);
-        await this.panel.webview.postMessage({ command: "themeChange", value: configCatTheme });
+        await this.panel!.webview.postMessage({ command: "themeChange", value: configCatTheme });
       })
     );
-    context.subscriptions.push(this.panel);
   }
 
   /**
      * Returns html of the start page (index.html)
      */
-  private getHtmlForWebview(publicApiConfiguration: PublicApiConfiguration, workspaceConfiguration: ConfigCatWorkspaceConfiguration,
-    environmentId: string, settingId: number, evaluationVersion: EvaluationVersion) {
+  getHtmlForWebview(appData: AppData, view: string): string {
+    console.log(view);
     // path to dist folder
     const appDistPath = vscode.Uri.joinPath(this.extensionUri, "out", "dist");
 
     // path as uri
-    const baseUri = this.panel.webview.asWebviewUri(appDistPath);
+    const baseUri = this.panel!.webview.asWebviewUri(appDistPath);
 
     // get path to index.html file from dist folder
     const indexPath = vscode.Uri.joinPath(appDistPath, "index.html");
@@ -58,18 +58,8 @@ export class WebPanel {
     indexHtml = indexHtml.replace('<base href="/">', `<base href="${baseUri.toString()}/">`);
 
     // update the base URI tag
-    const config = {
-      publicApiBaseUrl: workspaceConfiguration.publicApiBaseUrl,
-      basicAuthUsername: publicApiConfiguration.basicAuthUsername,
-      basicAuthPassword: publicApiConfiguration.basicAuthPassword,
-      dashboardBasePath: workspaceConfiguration.dashboardBaseUrl,
-      productId: workspaceConfiguration.productId,
-      configId: workspaceConfiguration.configId,
-      environmentId: environmentId,
-      settingId: settingId,
-      evaluationVersion: evaluationVersion,
-    };
-    indexHtml = indexHtml.replace("window.CONFIGCAT_APPDATA = {};", "window.CONFIGCAT_APPDATA = " + JSON.stringify(config) + ";");
+    indexHtml = indexHtml.replace("window.CONFIGCAT_APPDATA = {};", "window.CONFIGCAT_APPDATA = " + JSON.stringify(appData) + ";");
+    indexHtml = indexHtml.replace("window.CONFIGCAT_APP_VIEW = {};", "window.CONFIGCAT_APP_VIEW = " + JSON.stringify({ view: view }) + ";");
 
     return indexHtml;
   }

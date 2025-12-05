@@ -1,0 +1,21 @@
+@if (appData.evaluationVersion === EvaluationVersion.V1) {
+  <app-setting-item
+    [productId]="appData.productId"
+    [configId]="appData.configId"
+    [environmentId]="appData.environmentId"
+    [settingId]="appData.settingId"
+    [showEnvironmentName]="false"
+    [canDeleteSetting]="false"
+    (saveFailed)="saveFailed()" />
+}
+
+@if (appData.evaluationVersion === EvaluationVersion.V2) {
+  <app-feature-flag-item
+    [productId]="appData.productId"
+    [configId]="appData.configId"
+    [environmentId]="appData.environmentId"
+    [settingId]="appData.settingId"
+    [showEnvironmentName]="false"
+    [canDeleteSetting]="false"
+    (saveFailed)="saveFailed()" />
+}
