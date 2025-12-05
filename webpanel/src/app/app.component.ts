@@ -16,7 +16,6 @@ export class AppComponent implements OnInit, OnDestroy {
   private readonly themeService = inject(ThemeService);
   private readonly document = inject(DOCUMENT);
   viewData = inject(ViewData);
-  vscode = acquireVsCodeApi();
 
   title = "webpanel";
 
@@ -44,7 +43,4 @@ export class AppComponent implements OnInit, OnDestroy {
     window.removeEventListener("message", this.postThemeChange);
   }
 
-  isComponentHidden(componentName: "none" | "featureflagsetting" | "createfeatureflag"): boolean {
-    return componentName !== this.viewData.view;
-  }
 }

@@ -1,4 +1,8 @@
 <div>
-  <configcat-vscode-create-feature-flag [hidden]="isComponentHidden('createfeatureflag')" [vscode]="vscode" />
-  <configcat-vscode-feature-flag-setting [hidden]="isComponentHidden('featureflagsetting')" [vscode]="vscode" />
+  @if (this.viewData.view === "createfeatureflag") {
+    <configcat-vscode-create-feature-flag />
+  }
+  @if (this.viewData.view === "featureflagsetting") {
+    <configcat-vscode-feature-flag-setting />
+  }
 </div>
