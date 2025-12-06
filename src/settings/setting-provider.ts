@@ -12,7 +12,7 @@ import { WorkspaceConfigurationProvider } from "./workspace-configuration-provid
 
 export class SettingProvider implements vscode.TreeDataProvider<Resource> {
 
-  treeView: vscode.TreeView<Resource> | null = null;
+  treeView: vscode.TreeView<Resource | undefined> | null = null;
   selectSettingAfterRefresh: string | null = null;
 
   constructor(private readonly context: vscode.ExtensionContext,
