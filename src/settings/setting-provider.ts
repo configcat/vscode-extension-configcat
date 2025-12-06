@@ -3,6 +3,7 @@ import * as vscode from "vscode";
 import { AuthenticationProvider } from "../authentication/authentication-provider";
 import { handleError } from "../error-handler";
 import { EnvironmentInput } from "../inputs/environment-input";
+import { SettingSearchInput } from "../inputs/setting-search-input";
 import { PublicApiService } from "../public-api/public-api.service";
 import { CreateWebPanel } from "../webpanel/create-webpanel";
 import { SettingWebPanel } from "../webpanel/setting-webpanel";
@@ -165,8 +166,43 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
       console.log(error);
       return;
     }
-    // const evaluationVersion = configModel?.evaluationVersion ? configModel?.evaluationVersion : EvaluationVersion.V1;
     return new CreateWebPanel(this.context, authenticationConfiguration, workspaceConfiguration, productModel.name, configModel.name);
+  }
+
+  async searchSettings() {
+    let authenticationConfiguration = null;
+    let workspaceConfiguration = null;
+    try {
+      authenticationConfiguration = await this.authenticationProvider.getAuthenticationConfiguration();
+      workspaceConfiguration = await this.workspaceConfigurationProvider.getWorkspaceConfiguration();
+    } catch (error: unknown) {
+      console.log(error);
+      return;
+    }
+    if (!authenticationConfiguration
+            || !workspaceConfiguration?.publicApiBaseUrl
+            || !workspaceConfiguration.configId
+            || !workspaceConfiguration.productId) {
+      return;
+    }
+
+    const settingsService = this.publicApiService.createSettingsService(authenticationConfiguration, workspaceConfiguration.publicApiBaseUrl);
+    const settings = await settingsService.getSettings(workspaceConfiguration.configId);
+
+    let settingId: number;
+    try {
+      settingId = await SettingSearchInput.searchSettings(settings.data);
+    } catch (error: unknown) {
+      console.log(error);
+      return;
+    }
+
+    if (!settingId) {
+      return;
+    }
+
+    vscode.commands.executeCommand("configcat.settings.refresh", "" + settingId);
+
   }
 
   async openSettingPanel(resource: Resource) {
@@ -261,6 +297,8 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
 
     this.context.subscriptions.push(vscode.commands.registerCommand("configcat.settings.add",
       async () => this.openCreatePanel()));
+    this.context.subscriptions.push(vscode.commands.registerCommand("configcat.settings.search",
+      async () => this.searchSettings()));
     this.context.subscriptions.push(
       vscode.workspace.onDidChangeConfiguration(async e => {
         if (e.affectsConfiguration(WorkspaceConfigurationProvider.configurationKey)) {

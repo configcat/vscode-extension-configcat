@@ -32,7 +32,8 @@
 		"onCommand:configcat.configs.add",
 		"onCommand:configcat.configs.refresh",
 		"onCommand:configcat.settings.refresh",
-		"onCommand:configcat.settings.add"
+		"onCommand:configcat.settings.add",
+		"onCommand:configcat.settings.search"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -176,6 +177,12 @@
 				"icon": "$(add)"
 			},
 			{
+				"command": "configcat.settings.search",
+				"category": "ConfigCat",
+				"title": "Search Feature Flag",
+				"icon": "$(search)"
+			},
+			{
 				"command": "configcat.settings.findUsages",
 				"category": "ConfigCat",
 				"title": "Find usages",
@@ -234,6 +241,10 @@
 				"when": "configcat:initialized && configcat:authenticated && configcat:connected"
 			},
 			{
+				"command": "configcat.settings.search",
+				"when": "configcat:initialized && configcat:authenticated && configcat:connected"
+			},
+			{
 				"command": "configcat.settings.openInDashboard",
 				"when": "false"
 			},
@@ -259,6 +270,11 @@
 				},
 				{
 					"command": "configcat.settings.add",
+					"when": "configcat:initialized && configcat:authenticated && configcat:connected && view == configcat.settings",
+					"group": "navigation"
+				},
+				{
+					"command": "configcat.settings.search",
 					"when": "configcat:initialized && configcat:authenticated && configcat:connected && view == configcat.settings",
 					"group": "navigation"
 				},
