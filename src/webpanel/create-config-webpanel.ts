@@ -7,14 +7,14 @@ import { WebPanel } from "./webpanel";
 /**
  * Manages webview panels
  */
-export class CreateWebPanel extends WebPanel {
+export class CreateConfigWebPanel extends WebPanel {
 
   constructor(context: vscode.ExtensionContext,
     publicApiConfiguration: PublicApiConfiguration, workspaceConfiguration: ConfigCatWorkspaceConfiguration,
-    productName: string, configName: string) {
+    productName: string) {
     super(context);
 
-    this.panel = vscode.window.createWebviewPanel(WebPanel.viewType, "Create Feature Flag", vscode.ViewColumn.One, {
+    this.panel = vscode.window.createWebviewPanel(WebPanel.viewType, "Create Config", vscode.ViewColumn.One, {
       enableScripts: true,
       localResourceRoots: [vscode.Uri.file(path.join(context.extensionPath, "out", "dist"))],
     });
@@ -24,16 +24,15 @@ export class CreateWebPanel extends WebPanel {
       basicAuthUsername: publicApiConfiguration.basicAuthUsername,
       basicAuthPassword: publicApiConfiguration.basicAuthPassword,
       dashboardBasePath: workspaceConfiguration.dashboardBaseUrl,
-      isCreate: true,
       productId: workspaceConfiguration.productId,
       productName: productName,
-      configId: workspaceConfiguration.configId,
-      configName: configName,
+      configId: "",
+      configName: "",
       environmentId: "",
       settingId: 0,
       evaluationVersion: "",
     };
-    this.panel.webview.html = this.getHtmlForWebview(appData, "createfeatureflag");
+    this.panel.webview.html = this.getHtmlForWebview(appData, "createconfig");
 
     this.panel.webview.onDidReceiveMessage(
       this.listenWebViewCreateMessage,
@@ -44,10 +43,10 @@ export class CreateWebPanel extends WebPanel {
     context.subscriptions.push(this.panel);
   }
 
-  listenWebViewCreateMessage = (event: { command: string; settingId: number }): boolean => {
-    if (event.command === "configcat-ff-create-success") {
-      vscode.window.showInformationMessage("Feature Flag succesfully created!");
-      vscode.commands.executeCommand("configcat.settings.refresh", "" + event.settingId);
+  listenWebViewCreateMessage = (event: { command: string; configId: number }): boolean => {
+    if (event.command === "configcat-config-create-success") {
+      vscode.window.showInformationMessage("Config succesfully created!");
+      vscode.commands.executeCommand("configcat.configs.refresh", "" + event.configId);
       this.panel?.dispose();
       return true;
     } else {

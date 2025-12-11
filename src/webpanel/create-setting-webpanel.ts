@@ -1,4 +1,3 @@
-import { EvaluationVersion } from "configcat-publicapi-node-client";
 import * as path from "path";
 import * as vscode from "vscode";
 import { PublicApiConfiguration } from "../public-api/public-api-configuration";
@@ -8,15 +7,14 @@ import { WebPanel } from "./webpanel";
 /**
  * Manages webview panels
  */
-export class SettingWebPanel extends WebPanel {
+export class CreateSettingWebPanel extends WebPanel {
 
   constructor(context: vscode.ExtensionContext,
     publicApiConfiguration: PublicApiConfiguration, workspaceConfiguration: ConfigCatWorkspaceConfiguration,
-    environmentId: string, environmentName: string, settingId: number, settingKey: string, evaluationVersion: EvaluationVersion) {
-
+    productName: string, configName: string) {
     super(context);
 
-    this.panel = vscode.window.createWebviewPanel(WebPanel.viewType, settingKey + " (" + environmentName + ")", vscode.ViewColumn.One, {
+    this.panel = vscode.window.createWebviewPanel(WebPanel.viewType, "Create Feature Flag", vscode.ViewColumn.One, {
       enableScripts: true,
       localResourceRoots: [vscode.Uri.file(path.join(context.extensionPath, "out", "dist"))],
     });
@@ -27,29 +25,28 @@ export class SettingWebPanel extends WebPanel {
       basicAuthPassword: publicApiConfiguration.basicAuthPassword,
       dashboardBasePath: workspaceConfiguration.dashboardBaseUrl,
       productId: workspaceConfiguration.productId,
-      productName: "",
+      productName: productName,
       configId: workspaceConfiguration.configId,
-      configName: "",
-      environmentId: environmentId,
-      settingId: settingId,
-      evaluationVersion: evaluationVersion,
+      configName: configName,
+      environmentId: "",
+      settingId: 0,
+      evaluationVersion: "",
     };
-
-    this.panel.webview.html = this.getHtmlForWebview(appData, "featureflagsetting");
+    this.panel.webview.html = this.getHtmlForWebview(appData, "createfeatureflag");
 
     this.panel.webview.onDidReceiveMessage(
-      this.listenWebViewSettingsMessage,
+      this.listenWebViewCreateMessage,
       null,
       context.subscriptions
     );
 
     context.subscriptions.push(this.panel);
-
   }
 
-  listenWebViewSettingsMessage = (event: { command: string }): boolean => {
-    if (event.command === "configcat-ff-save-failed") {
-      vscode.commands.executeCommand("configcat.settings.refresh");
+  listenWebViewCreateMessage = (event: { command: string; settingId: number }): boolean => {
+    if (event.command === "configcat-ff-create-success") {
+      vscode.window.showInformationMessage("Feature Flag succesfully created!");
+      vscode.commands.executeCommand("configcat.settings.refresh", "" + event.settingId);
       this.panel?.dispose();
       return true;
     } else {

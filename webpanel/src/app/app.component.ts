@@ -1,6 +1,7 @@
 import { Component, DOCUMENT, inject, OnDestroy, OnInit } from "@angular/core";
 import { Theme, ThemeService } from "ng-configcat-publicapi-ui";
 import { ViewData } from "./app.config";
+import { ConfigCreateComponent } from "./create-config/create-config.component";
 import { CreateFeatureFlagSettingComponent } from "./create-feature-flag/create-feature-flag-setting.component";
 import { FeatureFlagSettingComponent } from "./feature-flag-setting/feature-flag-setting.component";
 
@@ -8,7 +9,7 @@ import { FeatureFlagSettingComponent } from "./feature-flag-setting/feature-flag
   selector: "configcat-vscode-root",
   templateUrl: "./app.component.html",
   styles: [],
-  imports: [CreateFeatureFlagSettingComponent, FeatureFlagSettingComponent],
+  imports: [CreateFeatureFlagSettingComponent, FeatureFlagSettingComponent, ConfigCreateComponent],
 
 })
 export class AppComponent implements OnInit, OnDestroy {

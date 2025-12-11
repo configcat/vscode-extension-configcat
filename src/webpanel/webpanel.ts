@@ -7,8 +7,6 @@ export class AppData {
   public basicAuthPassword = "";
   public dashboardBasePath = "";
 
-  isCreate = false;
-
   productId = "";
   productName = "";
   configId = "";

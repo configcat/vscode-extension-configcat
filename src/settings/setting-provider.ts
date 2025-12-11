@@ -4,7 +4,7 @@ import { AuthenticationProvider } from "../authentication/authentication-provide
 import { handleError } from "../error-handler";
 import { EnvironmentInput } from "../inputs/environment-input";
 import { PublicApiService } from "../public-api/public-api.service";
-import { CreateWebPanel } from "../webpanel/create-webpanel";
+import { CreateSettingWebPanel } from "../webpanel/create-setting-webpanel";
 import { SettingWebPanel } from "../webpanel/setting-webpanel";
 import { ConfigCatWorkspaceConfiguration } from "./workspace-configuration";
 import { WorkspaceConfigurationProvider } from "./workspace-configuration-provider";
@@ -165,8 +165,7 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
       console.log(error);
       return;
     }
-    // const evaluationVersion = configModel?.evaluationVersion ? configModel?.evaluationVersion : EvaluationVersion.V1;
-    return new CreateWebPanel(this.context, authenticationConfiguration, workspaceConfiguration, productModel.name, configModel.name);
+    return new CreateSettingWebPanel(this.context, authenticationConfiguration, workspaceConfiguration, productModel.name, configModel.name);
   }
 
   async openSettingPanel(resource: Resource) {
