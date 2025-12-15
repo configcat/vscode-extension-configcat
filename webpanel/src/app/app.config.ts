@@ -6,7 +6,7 @@ import { CONFIGCAT_PUBLICAPI_UI_CONFIGURATION, provideConfigCatPublicApiUi } fro
 import { AppData } from "./app-data";
 
 export class ViewData {
-  public view: "none" | "featureflagsetting" | "createfeatureflag" = "none";
+  public view: "none" | "featureflagsetting" | "createfeatureflag" | "createconfig" = "none";
 }
 
 declare global {
