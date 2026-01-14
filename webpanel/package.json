@@ -8,16 +8,16 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "^20.3.15",
-    "@angular/cdk": "^20.2.14",
-    "@angular/common": "^20.3.15",
-    "@angular/compiler": "^20.3.15",
-    "@angular/core": "^20.3.15",
-    "@angular/forms": "^20.3.15",
-    "@angular/material": "^20.2.14",
-    "@angular/platform-browser": "^20.3.15",
-    "@angular/platform-browser-dynamic": "^20.3.15",
-    "@angular/router": "^20.3.15",
+    "@angular/animations": "^21.0.8",
+    "@angular/cdk": "^21.0.6",
+    "@angular/common": "^21.0.8",
+    "@angular/compiler": "^21.0.8",
+    "@angular/core": "^21.0.8",
+    "@angular/forms": "^21.0.8",
+    "@angular/material": "^21.0.6",
+    "@angular/platform-browser": "^21.0.8",
+    "@angular/platform-browser-dynamic": "^21.0.8",
+    "@angular/router": "^21.0.8",
     "ng-configcat-publicapi": "^5.3.0",
     "ng-configcat-publicapi-ui": "file:../ng-configcat-publicapi-ui/dist/ng-configcat-publicapi-ui",
     "rxjs": "~7.8.1",
@@ -25,9 +25,9 @@
     "zone.js": "~0.15.1"
   },
   "devDependencies": {
-    "@angular/build": "^20.3.12",
-    "@angular/cli": "^20.3.12",
-    "@angular/compiler-cli": "^20.3.15",
+    "@angular/build": "^21.0.5",
+    "@angular/cli": "^21.0.5",
+    "@angular/compiler-cli": "^21.0.8",
     "@configcat/sdk": "^1.0.2",
     "@rxweb/reactive-form-validators": "^13.0.1",
     "@types/node": "^22.15.30",
@@ -37,6 +37,5 @@
     "ts-node": "~10.9.1",
     "typescript": "~5.9.2",
     "@vscode/vsce": "^3.6.1"
-     
   }
 }
