@@ -33,6 +33,7 @@ export class CreateConfigWebPanel extends WebPanel {
       evaluationVersion: "",
     };
     this.panel.webview.html = this.getHtmlForWebview(appData, "createconfig");
+    this.panel.webview.options = this.getWebviewOptions();
 
     this.panel.webview.onDidReceiveMessage(
       this.listenWebViewCreateMessage,
