@@ -36,6 +36,7 @@ export class SettingWebPanel extends WebPanel {
     };
 
     this.panel.webview.html = this.getHtmlForWebview(appData, "featureflagsetting");
+    this.panel.webview.options = this.getWebviewOptions();
 
     this.panel.webview.onDidReceiveMessage(
       this.listenWebViewSettingsMessage,
