@@ -1,0 +1,24 @@
+name: Lint
+on:
+  push:
+    branches: [master]
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  analysis:
+    name: Run lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+      - name: Install dependencies
+        run: npm install && cd ./webpanel && npm install
+      - name: Lint
+        run: npm run lint
+      - name: Webpanel Lint
+        run: npm run webpanel-lint
