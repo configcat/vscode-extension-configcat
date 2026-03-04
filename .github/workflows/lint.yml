@@ -17,7 +17,7 @@ jobs:
         with:
           node-version: 24
       - name: Install dependencies
-        run: npm install
+        run: npm install && cd ./webpanel && npm install
       - name: Lint
         run: npm run lint
       - name: Webpanel Lint
