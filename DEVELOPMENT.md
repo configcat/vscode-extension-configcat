@@ -1,4 +1,11 @@
 # Development
+
+## Version
+Use pre-version to help the QA team testing.
+1. Increase version
+Increase version number by using `npm version prepatch | preminor | premajor`.
+1. For new prereleases use the `npm version prerelease` command.
+
 ## Modules
 The code is splitted into 2 parts.
 
