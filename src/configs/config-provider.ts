@@ -214,7 +214,7 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
     const productService = this.publicApiService.createProductsService(authenticationConfiguration, workspaceConfiguration.publicApiBaseUrl);
     let productModel: ProductModel | undefined;
     try {
-      productModel = (await productService.getProduct(workspaceConfiguration.productId)).data;
+      productModel = (await productService.getProduct(productId)).data;
     } catch (error: unknown) {
       console.log(error);
       return;
