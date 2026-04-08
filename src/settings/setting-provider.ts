@@ -88,8 +88,8 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
 
         const settingsService = this.publicApiService.createSettingsService(publicApiConfiguration, workspaceConfiguration.publicApiBaseUrl);
         return settingsService.getSettings(workspaceConfiguration.configId).then(settings => {
-          const items = settings.data.map((s) => new Resource(String(s.settingId), s.key ?? "",
-            s.name ?? "", s.hint ?? "",
+          const items = settings.data.map((s) => new Resource(String(s.settingId), s.name ?? "",
+            s.key ?? "", s.hint ?? "",
             vscode.TreeItemCollapsibleState.None));
           statusBar.hide();
           if (this.selectSettingAfterRefresh) {
