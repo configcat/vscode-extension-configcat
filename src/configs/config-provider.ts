@@ -219,7 +219,7 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
       console.log(error);
       return;
     }
-    return new CreateConfigWebPanel(this.context, authenticationConfiguration, workspaceConfiguration, productModel.name);
+    return new CreateConfigWebPanel(this.context, authenticationConfiguration, workspaceConfiguration, productModel);
   }
 
   async openInDashboard(resource: Resource): Promise<void> {
