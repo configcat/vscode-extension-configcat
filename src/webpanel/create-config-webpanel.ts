@@ -1,3 +1,4 @@
+import { ProductModel } from "configcat-publicapi-node-client";
 import * as path from "path";
 import * as vscode from "vscode";
 import { PublicApiConfiguration } from "../public-api/public-api-configuration";
@@ -11,7 +12,7 @@ export class CreateConfigWebPanel extends WebPanel {
 
   constructor(context: vscode.ExtensionContext,
     publicApiConfiguration: PublicApiConfiguration, workspaceConfiguration: ConfigCatWorkspaceConfiguration,
-    productName: string) {
+    productModel: ProductModel) {
     super(context);
 
     this.panel = vscode.window.createWebviewPanel(WebPanel.viewType, "Create Config", vscode.ViewColumn.One, {
@@ -24,8 +25,8 @@ export class CreateConfigWebPanel extends WebPanel {
       basicAuthUsername: publicApiConfiguration.basicAuthUsername,
       basicAuthPassword: publicApiConfiguration.basicAuthPassword,
       dashboardBasePath: workspaceConfiguration.dashboardBaseUrl,
-      productId: workspaceConfiguration.productId,
-      productName: productName,
+      productId: productModel.productId,
+      productName: productModel.name,
       configId: "",
       configName: "",
       environmentId: "",
