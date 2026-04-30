@@ -76,7 +76,7 @@ export class AuthenticationProvider {
     try {
       const me = await meService.getMe();
       await this.context.secrets.store(AuthenticationProvider.secretKey, JSON.stringify(configuration));
-      await vscode.window.showInformationMessage("Logged in to ConfigCat. Email: " + me.data.email);
+      vscode.window.showInformationMessage("Logged in to ConfigCat. Email: " + me.data.email);
       return configuration;
     } catch (error: unknown) {
       await handleError("Could not log in to ConfigCat.", error as Error);

@@ -51,31 +51,31 @@ export class AuthorizationWebPanel extends WebPanel {
     context.subscriptions.push(this.panel);
   }
 
-  listenWebViewAuthorizationMessage = (event: AuthorizationWebViewMessage): Promise<boolean> => {
-    if (event.command === "configcat-login-success" && event.authorizationParameters) {
-      this.authenticationProvider.authenticate(event.authorizationParameters).then(() => {
-        this.panel?.dispose();
+  listenWebViewAuthorizationMessage = async (event: AuthorizationWebViewMessage): Promise<boolean> => {
+    if (event.command === "configcat-login-success") {
+      const panel = this.panel;
+      try {
+        if (!event.authorizationParameters) {
+          console.log("Missing authorization parameters in login message.");
+          return false;
+        }
+        await this.authenticationProvider.authenticate(event.authorizationParameters);
         return true;
-      }).catch(() => {
-        this.panel?.dispose();
-        return true;
-      });
+      } finally {
+        panel?.dispose();
+      }
     }
 
     if (event.command === "configcat-logout-success") {
-      this.authenticationProvider
-        .logout()
-        .then(() => {
-          this.panel?.dispose();
-          return true;
-        })
-        .catch(() => {
-          this.panel?.dispose();
-          return true;
-        });
+      const panel = this.panel;
+      try {
+        await this.authenticationProvider.logout();
+        return true;
+      } finally {
+        panel?.dispose();
+      }
     }
 
-    console.log(event);
-    return Promise.resolve(false);
+    return false;
   };
 }
