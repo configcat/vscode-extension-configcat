@@ -59,6 +59,11 @@
 					"type": "string",
 					"default": "https://app.configcat.com",
 					"markdownDescription": "ConfigCat Dashboard Base URL. Defaults to https://app.configcat.com."
+				},
+				"configcat.webAuthorizationEnabled": {
+					"type": "boolean",
+					"default": true,
+					"markdownDescription": "Use Web-View authorization instead of the VS Code commands option."
 				}
 			}
 		},

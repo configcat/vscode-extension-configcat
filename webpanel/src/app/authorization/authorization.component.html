@@ -1,0 +1,16 @@
+<div class="auth">
+  <h2>Authorize ConfigCat Feature Flags</h2>
+  <div>
+    @if (!this.appData.isAuthorized) {
+      <app-authorization (authorized)="login($event)" />
+    }
+    @if (this.appData.isAuthorized) {
+      <div class="unauthorize">
+        Authorized with: {{ appData.basicAuthUsername }}
+        <div>
+          <button mat-raised-button color="primary" type="button" (click)="unauthorize()">Unauthorize</button>
+        </div>
+      </div>
+    }
+  </div>
+</div>

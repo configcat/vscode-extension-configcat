@@ -3,4 +3,5 @@ export interface ConfigCatWorkspaceConfiguration {
   configId: string;
   publicApiBaseUrl: string;
   dashboardBaseUrl: string;
+  webAuthorizationEnabled: boolean;
 }
