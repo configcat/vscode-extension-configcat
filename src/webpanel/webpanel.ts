@@ -6,6 +6,7 @@ export class AppData {
   public basicAuthUsername = "";
   public basicAuthPassword = "";
   public dashboardBasePath = "";
+  public isAuthorized = false;
 
   productId = "";
   productName = "";

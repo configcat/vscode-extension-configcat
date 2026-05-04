@@ -37,12 +37,14 @@ export class WorkspaceConfigurationProvider {
     const configId = config.get("configId");
     const publicApiBaseUrl = config.get("publicApiBaseUrl");
     const dashboardBaseUrl = config.get("dashboardBaseUrl");
+    const webAuthorizationEnabled = config.get("webAuthorizationEnabled") ?? true;
 
     return Promise.resolve({
       productId: String(productId),
       configId: String(configId),
       publicApiBaseUrl: String(publicApiBaseUrl),
       dashboardBaseUrl: String(dashboardBaseUrl),
+      webAuthorizationEnabled: Boolean(webAuthorizationEnabled),
     });
   }
 

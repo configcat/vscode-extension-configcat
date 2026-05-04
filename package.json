@@ -2,7 +2,7 @@
 	"name": "configcat-feature-flags",
 	"displayName": "ConfigCat Feature Flags",
 	"description": "ConfigCat Visual Studio Code extension to manage feature flags from Visual Studio Code.",
-	"version": "2.2.1",
+	"version": "2.3.0-0",
 	"publisher": "ConfigCat",
 	"repository": "https://github.com/configcat/vscode-extension-configcat",
 	"preview": false,
@@ -59,6 +59,11 @@
 					"type": "string",
 					"default": "https://app.configcat.com",
 					"markdownDescription": "ConfigCat Dashboard Base URL. Defaults to https://app.configcat.com."
+				},
+				"configcat.webAuthorizationEnabled": {
+					"type": "boolean",
+					"default": true,
+					"markdownDescription": "Use Web-View authorization instead of the VS Code commands option."
 				}
 			}
 		},
