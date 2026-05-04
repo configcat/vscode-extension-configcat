@@ -3,6 +3,7 @@ import * as vscode from "vscode";
 import { AuthenticationProvider } from "../authentication/authentication-provider";
 import { handleError } from "../error-handler";
 import { EnvironmentInput } from "../inputs/environment-input";
+import { SettingInput } from "../inputs/setting-input";
 import { PublicApiService } from "../public-api/public-api.service";
 import { CreateSettingWebPanel } from "../webpanel/create-setting-webpanel";
 import { SettingWebPanel } from "../webpanel/setting-webpanel";
@@ -87,7 +88,7 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
         }
 
         const settingsService = this.publicApiService.createSettingsService(publicApiConfiguration, workspaceConfiguration.publicApiBaseUrl);
-        return settingsService.getSettings(workspaceConfiguration.configId).then(settings => {
+        return settingsService.getSettings(workspaceConfiguration.configId).then(async settings => {
           const items = settings.data.map((s) => new Resource(String(s.settingId), s.name ?? "",
             s.key ?? "", s.hint ?? "",
             vscode.TreeItemCollapsibleState.None));
@@ -96,6 +97,10 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
             const selectedResource = items.find(resource => resource?.resourceId === this.selectSettingAfterRefresh);
             if (selectedResource) {
               this.treeView?.reveal(selectedResource, { select: true, focus: true, expand: false });
+              const connect = await SettingInput.askConnect();
+              if (connect === "Yes") {
+                await this.openSettingPanel(selectedResource);
+              }
             }
             this.selectSettingAfterRefresh = null;
           }
