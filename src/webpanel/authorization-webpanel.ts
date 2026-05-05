@@ -1,8 +1,8 @@
 import * as path from "path";
 import * as vscode from "vscode";
 import { AuthenticationProvider } from "../authentication/authentication-provider";
+import { ConfigCatWorkspaceConfiguration } from "../configuration/workspace-configuration";
 import { PublicApiConfiguration } from "../public-api/public-api-configuration";
-import { ConfigCatWorkspaceConfiguration } from "../settings/workspace-configuration";
 import { WebPanel } from "./webpanel";
 
 interface AuthorizationWebViewMessage {

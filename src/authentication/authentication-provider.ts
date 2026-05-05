@@ -1,10 +1,10 @@
 import * as vscode from "vscode";
+import { ConfigCatWorkspaceConfiguration } from "../configuration/workspace-configuration";
+import { WorkspaceConfigurationProvider } from "../configuration/workspace-configuration-provider";
 import { handleError } from "../error-handler";
 import { AuthInput } from "../inputs/auth-input";
 import { PublicApiConfiguration } from "../public-api/public-api-configuration";
 import { PublicApiService } from "../public-api/public-api.service";
-import { ConfigCatWorkspaceConfiguration } from "../settings/workspace-configuration";
-import { WorkspaceConfigurationProvider } from "../settings/workspace-configuration-provider";
 import { AuthorizationWebPanel } from "../webpanel/authorization-webpanel";
 
 export const contextIsAuthenticated = "configcat:authenticated";

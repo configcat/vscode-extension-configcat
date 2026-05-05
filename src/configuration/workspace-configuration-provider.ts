@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { handleError } from "../error-handler";
-import { ConfigCatWorkspaceConfiguration } from "./workspace-configuration";
+import { ConfigCatWorkspaceConfiguration } from "../settings/workspace-configuration";
 
 export class WorkspaceConfigurationProvider {
 

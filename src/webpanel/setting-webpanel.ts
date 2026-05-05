@@ -1,8 +1,9 @@
 import { EvaluationVersion } from "configcat-publicapi-node-client";
 import * as path from "path";
 import * as vscode from "vscode";
+import { ConfigCatWorkspaceConfiguration } from "../configuration/workspace-configuration";
 import { PublicApiConfiguration } from "../public-api/public-api-configuration";
-import { ConfigCatWorkspaceConfiguration } from "../settings/workspace-configuration";
+import { SettingProvider } from "../settings/setting-provider";
 import { WebPanel } from "./webpanel";
 
 /**
@@ -12,7 +13,8 @@ export class SettingWebPanel extends WebPanel {
 
   constructor(context: vscode.ExtensionContext,
     publicApiConfiguration: PublicApiConfiguration, workspaceConfiguration: ConfigCatWorkspaceConfiguration,
-    environmentId: string, environmentName: string, settingId: number, settingKey: string, evaluationVersion: EvaluationVersion) {
+    environmentId: string, environmentName: string, settingId: number, settingKey: string,
+    evaluationVersion: EvaluationVersion, readonly settingProvider: SettingProvider) {
 
     super(context);
 
@@ -33,6 +35,7 @@ export class SettingWebPanel extends WebPanel {
       environmentId: environmentId,
       settingId: settingId,
       evaluationVersion: evaluationVersion,
+      isAuthorized: publicApiConfiguration.basicAuthUsername !== "" && publicApiConfiguration.basicAuthPassword !== "",
     };
 
     this.panel.webview.html = this.getHtmlForWebview(appData, "featureflagsetting");
@@ -48,9 +51,9 @@ export class SettingWebPanel extends WebPanel {
 
   }
 
-  listenWebViewSettingsMessage = (event: { command: string }): boolean => {
+  listenWebViewSettingsMessage = async (event: { command: string }): Promise<boolean> => {
     if (event.command === "configcat-ff-save-failed") {
-      vscode.commands.executeCommand("configcat.settings.refresh");
+      await this.settingProvider.refresh();
       this.panel?.dispose();
       return true;
     } else {
