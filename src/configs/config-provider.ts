@@ -115,7 +115,7 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
       statusBar.show();
 
       const configsService = this.publicApiService.createConfigsService(publicApiConfiguration, workspaceConfiguration.publicApiBaseUrl);
-      return configsService.getConfigs(productId).then(async configs => {
+      return configsService.getConfigs(productId).then(configs => {
         const items = configs.data.map(c => new Resource(c.configId ?? "", productId, c.name ?? "", ResourceType.Config, vscode.TreeItemCollapsibleState.None, c.description ?? ""));
         statusBar.hide();
         if (!items.length) {
