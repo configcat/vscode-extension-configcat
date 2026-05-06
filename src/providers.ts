@@ -1,10 +1,10 @@
 import * as vscode from "vscode";
 import { AuthenticationProvider } from "./authentication/authentication-provider";
 import { ConfigProvider } from "./configs/config-provider";
+import { WorkspaceConfigurationProvider } from "./configuration/workspace-configuration-provider";
 import { HelpProvider } from "./help/help-provider";
 import { PublicApiService } from "./public-api/public-api.service";
 import { SettingProvider } from "./settings/setting-provider";
-import { WorkspaceConfigurationProvider } from "./settings/workspace-configuration-provider";
 
 export async function registerProviders(context: vscode.ExtensionContext): Promise<void> {
   const workspaceConfigurationProvider = new WorkspaceConfigurationProvider(context);
