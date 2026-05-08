@@ -27,6 +27,10 @@ export class SettingWebPanel extends WebPanel {
       enableScripts: true,
       localResourceRoots: [vscode.Uri.file(path.join(context.extensionPath, "out", "dist"))],
     });
+    this.panel.iconPath = {
+      light: vscode.Uri.file(path.join(context.extensionPath, "resources", "light", "cat.svg")),
+      dark: vscode.Uri.file(path.join(context.extensionPath, "resources", "dark", "cat.svg")),
+    };
 
     const appData = {
       publicApiBaseUrl: workspaceConfiguration.publicApiBaseUrl,
