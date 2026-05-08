@@ -27,13 +27,23 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
   private readonly _onDidChangeTreeData: vscode.EventEmitter<void> = new vscode.EventEmitter<void>();
   readonly onDidChangeTreeData: vscode.Event<void> = this._onDidChangeTreeData.event;
 
-  selectConfig(configId: string): void {
+  setSelectedConfig(configId: string): void {
     this.selectedConfig = configId;
+  }
+
+  selectConfigInTreeView(resource?: Resource): void {
+    if (resource?.resourceId && resource.resourceType === ResourceType.Config) {
+      this.setSelectedConfig(resource.resourceId);
+    }
+    if (!this.treeView) {
+      return;
+    }
+    this.treeView?.reveal(resource, { select: true, focus: true, expand: false });
   }
 
   refreshCommand(resource?: Resource): void {
     if (resource?.resourceId && resource.resourceType === ResourceType.Config) {
-      this.selectedConfig = resource.resourceId;
+      this.setSelectedConfig(resource.resourceId);
     }
     this.refresh();
   }
@@ -149,6 +159,7 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
 
   async connectConfigCommand(resource?: Resource): Promise<void> {
     if (resource?.parentResourceId && resource.resourceId) {
+      this.selectConfigInTreeView(resource);
       return this.connectConfig(resource.parentResourceId, resource.resourceId);
     }
 
@@ -253,6 +264,7 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
     }
 
     if (resource?.parentResourceId && resource.resourceId) {
+      this.selectConfigInTreeView(resource);
       return await vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(workspaceConfiguration.dashboardBaseUrl + "/"
                 + resource.parentResourceId + "/" + resource.resourceId));
     }

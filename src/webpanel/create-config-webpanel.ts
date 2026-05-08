@@ -54,7 +54,7 @@ export class CreateConfigWebPanel extends WebPanel {
     if (event.command === "configcat-config-create-success") {
       vscode.window.showInformationMessage("Config succesfully created!");
       const configId = "" + event.configId;
-      this.configProvider.selectConfig(configId);
+      this.configProvider.setSelectedConfig(configId);
       await this.configProvider.connectConfig(this.productModel.productId, configId);
       this.panel?.dispose();
       return true;

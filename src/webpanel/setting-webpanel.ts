@@ -12,13 +12,18 @@ import { WebPanel } from "./webpanel";
 export class SettingWebPanel extends WebPanel {
 
   constructor(context: vscode.ExtensionContext,
-    publicApiConfiguration: PublicApiConfiguration, workspaceConfiguration: ConfigCatWorkspaceConfiguration,
-    environmentId: string, environmentName: string, settingId: number, settingKey: string,
-    evaluationVersion: EvaluationVersion, readonly settingProvider: SettingProvider) {
+    publicApiConfiguration: PublicApiConfiguration,
+    workspaceConfiguration: ConfigCatWorkspaceConfiguration,
+    environmentId: string,
+    environmentName: string,
+    settingId: number,
+    settingName: string,
+    evaluationVersion: EvaluationVersion,
+    readonly settingProvider: SettingProvider) {
 
     super(context);
 
-    this.panel = vscode.window.createWebviewPanel(WebPanel.viewType, settingKey + " (" + environmentName + ")", vscode.ViewColumn.One, {
+    this.panel = vscode.window.createWebviewPanel(WebPanel.viewType, settingName + " (" + environmentName + ")", vscode.ViewColumn.One, {
       enableScripts: true,
       localResourceRoots: [vscode.Uri.file(path.join(context.extensionPath, "out", "dist"))],
     });

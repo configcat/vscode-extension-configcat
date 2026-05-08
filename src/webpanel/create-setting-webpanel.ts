@@ -49,7 +49,7 @@ export class CreateSettingWebPanel extends WebPanel {
   listenWebViewCreateMessage = async (event: { command: string; settingId: number }): Promise<boolean> => {
     if (event.command === "configcat-ff-create-success") {
       vscode.window.showInformationMessage("Feature Flag succesfully created!");
-      this.settingProvider.selectSetting("" + event.settingId);
+      this.settingProvider.setSelectedSetting("" + event.settingId);
       await this.settingProvider.refresh();
       await this.settingProvider.openSettingPanel(event.settingId);
       this.panel?.dispose();
