@@ -19,6 +19,10 @@ export class CreateSettingWebPanel extends WebPanel {
       enableScripts: true,
       localResourceRoots: [vscode.Uri.file(path.join(context.extensionPath, "out", "dist"))],
     });
+    this.panel.iconPath = {
+      light: vscode.Uri.file(path.join(context.extensionPath, "resources", "light", "cat.svg")),
+      dark: vscode.Uri.file(path.join(context.extensionPath, "resources", "dark", "cat.svg")),
+    };
 
     const appData = {
       publicApiBaseUrl: workspaceConfiguration.publicApiBaseUrl,
@@ -49,7 +53,7 @@ export class CreateSettingWebPanel extends WebPanel {
   listenWebViewCreateMessage = async (event: { command: string; settingId: number }): Promise<boolean> => {
     if (event.command === "configcat-ff-create-success") {
       vscode.window.showInformationMessage("Feature Flag succesfully created!");
-      this.settingProvider.selectSetting("" + event.settingId);
+      this.settingProvider.setSelectedSetting("" + event.settingId);
       await this.settingProvider.refresh();
       await this.settingProvider.openSettingPanel(event.settingId);
       this.panel?.dispose();

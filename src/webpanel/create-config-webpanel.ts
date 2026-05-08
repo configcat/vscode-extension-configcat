@@ -23,6 +23,10 @@ export class CreateConfigWebPanel extends WebPanel {
       enableScripts: true,
       localResourceRoots: [vscode.Uri.file(path.join(context.extensionPath, "out", "dist"))],
     });
+    this.panel.iconPath = {
+      light: vscode.Uri.file(path.join(context.extensionPath, "resources", "light", "cat.svg")),
+      dark: vscode.Uri.file(path.join(context.extensionPath, "resources", "dark", "cat.svg")),
+    };
 
     const appData = {
       publicApiBaseUrl: workspaceConfiguration.publicApiBaseUrl,
@@ -54,7 +58,7 @@ export class CreateConfigWebPanel extends WebPanel {
     if (event.command === "configcat-config-create-success") {
       vscode.window.showInformationMessage("Config succesfully created!");
       const configId = "" + event.configId;
-      this.configProvider.selectConfig(configId);
+      this.configProvider.setSelectedConfig(configId);
       await this.configProvider.connectConfig(this.productModel.productId, configId);
       this.panel?.dispose();
       return true;

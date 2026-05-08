@@ -22,13 +22,23 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
   private readonly _onDidChangeTreeData: vscode.EventEmitter<void> = new vscode.EventEmitter<void>();
   readonly onDidChangeTreeData: vscode.Event<void> = this._onDidChangeTreeData.event;
 
-  selectSetting(settingId: string): void {
+  setSelectedSetting(settingId: string): void {
     this.selectedSetting = settingId;
+  }
+
+  selectSettingInTreeView(resource?: Resource): void {
+    if (resource?.resourceId) {
+      this.setSelectedSetting(resource.resourceId);
+    }
+    if (!this.treeView) {
+      return;
+    }
+    this.treeView?.reveal(resource, { select: true, focus: true, expand: false });
   }
 
   async refreshCommand(resource?: Resource): Promise<void> {
     if (resource?.resourceId) {
-      this.selectedSetting = resource.resourceId;
+      this.selectSettingInTreeView(resource);
     }
     await this.refresh();
   }
@@ -118,7 +128,8 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
       });
   }
 
-  async openInDashboardCommand() {
+  async openInDashboardCommand(resource: Resource) {
+    this.selectSettingInTreeView(resource);
     let workspaceConfiguration: ConfigCatWorkspaceConfiguration | null;
     try {
       workspaceConfiguration = await this.workspaceConfigurationProvider.getWorkspaceConfiguration();
@@ -172,12 +183,28 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
     return new CreateSettingWebPanel(this.context, authenticationConfiguration, workspaceConfiguration, productModel.name, configModel.name, this);
   }
 
+  copyToClipboardCommand(resource: Resource) {
+    if (!resource) {
+      return;
+    }
+    this.selectSettingInTreeView(resource);
+    vscode.env.clipboard.writeText(resource.key);
+  }
+
+  findUsageCommand(resource: Resource) {
+    if (!resource) {
+      return;
+    }
+    this.selectSettingInTreeView(resource);
+    vscode.commands.executeCommand("search.action.openNewEditor", { query: resource.label });
+  }
+
   async openSettingPanelCommand(resource: Resource) {
     if (!resource) {
       return;
     }
+    this.selectSettingInTreeView(resource);
     await this.openSettingPanel(+resource.resourceId);
-
   }
 
   async openSettingPanel(settingId: number) {
@@ -234,7 +261,7 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
       return;
     }
 
-    return new SettingWebPanel(this.context, authenticationConfiguration, workspaceConfiguration, environmentId, environmentName || "", settingModel.settingId, settingModel.key, evaluationVersion, this);
+    return new SettingWebPanel(this.context, authenticationConfiguration, workspaceConfiguration, environmentId, environmentName || "", settingModel.settingId, settingModel.name, evaluationVersion, this);
   }
 
   setMessage(message: string) {
@@ -269,12 +296,11 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
         await this.refreshCommand(resource);
       }));
     this.context.subscriptions.push(vscode.commands.registerCommand("configcat.settings.openInDashboard",
-      async () => await this.openInDashboardCommand()));
+      (resource: Resource) => this.openInDashboardCommand(resource)));
     this.context.subscriptions.push(vscode.commands.registerCommand("configcat.settings.copyToClipboard",
-      (resource: Resource) => vscode.env.clipboard.writeText(resource.key)));
+      (resource: Resource) => this.copyToClipboardCommand(resource)));
     this.context.subscriptions.push(vscode.commands.registerCommand("configcat.settings.findUsages",
-      (resource: Resource) => vscode.commands.executeCommand("search.action.openNewEditor", { query: resource.label })));
-
+      (resource: Resource) => this.findUsageCommand(resource)));
     this.context.subscriptions.push(vscode.commands.registerCommand("configcat.settings.values",
       (resource: Resource) => this.openSettingPanelCommand(resource)));
 
