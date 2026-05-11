@@ -3,7 +3,7 @@ import * as vscode from "vscode";
 
 export class SettingSearchInput {
 
-  static async searchSettings(settings: SettingModel[]): Promise<number> {
+  static async searchSettings(settings: SettingModel[]): Promise<SettingModel> {
 
     const pickItems = settings.map(p => {
       return { label: p.key || "", description: p.name, id: p.settingId };
@@ -19,6 +19,6 @@ export class SettingSearchInput {
       return Promise.reject(new Error("No selected enviroment."));
     }
 
-    return Promise.resolve(pick.id);
+    return Promise.resolve(settings.find(s => s.settingId === pick.id)!);
   }
 }

@@ -103,9 +103,7 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
 
         const settingsService = this.publicApiService.createSettingsService(publicApiConfiguration, workspaceConfiguration.publicApiBaseUrl);
         return settingsService.getSettings(workspaceConfiguration.configId).then(settings => {
-          const items = settings.data.map((s) => new Resource(String(s.settingId), s.name ?? "",
-            s.key ?? "", s.hint ?? "",
-            vscode.TreeItemCollapsibleState.None));
+          const items = settings.data.map((s) => this.createResourceFromSetting(s));
           statusBar.hide();
           if (this.selectedSetting) {
             const selectedResource = items.find(resource => resource?.resourceId === this.selectedSetting);
@@ -127,6 +125,12 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
         this.selectedSetting = null;
         return [];
       });
+  }
+
+  private createResourceFromSetting(setting: SettingModel): Resource {
+    return new Resource(String(setting.settingId), setting.name ?? "",
+      setting.key ?? "", setting.hint ?? "",
+      vscode.TreeItemCollapsibleState.None);
   }
 
   async openInDashboardCommand(resource: Resource) {
@@ -204,20 +208,20 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
     const settingsService = this.publicApiService.createSettingsService(authenticationConfiguration, workspaceConfiguration.publicApiBaseUrl);
     const settings = await settingsService.getSettings(workspaceConfiguration.configId);
 
-    let settingId: number;
+    let setting: SettingModel;
     try {
-      settingId = await SettingSearchInput.searchSettings(settings.data);
+      setting = await SettingSearchInput.searchSettings(settings.data);
     } catch (error: unknown) {
       console.log(error);
       return;
     }
 
-    if (!settingId) {
+    if (!setting) {
       return;
     }
 
-    this.selectSettingInTreeView(new Resource(String(settingId), "", "", "", vscode.TreeItemCollapsibleState.None));
-    await this.openSettingPanel(settingId);
+    this.selectSettingInTreeView(this.createResourceFromSetting(setting));
+    await this.openSettingPanel(setting.settingId);
 
   }
 
