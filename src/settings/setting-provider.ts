@@ -184,7 +184,7 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
     return new CreateSettingWebPanel(this.context, authenticationConfiguration, workspaceConfiguration, productModel.name, configModel.name, this);
   }
 
-  async searchSettings() {
+  async searchSettingsCommand() {
     let authenticationConfiguration = null;
     let workspaceConfiguration = null;
     try {
@@ -216,7 +216,8 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
       return;
     }
 
-    vscode.commands.executeCommand("configcat.settings.refresh", "" + settingId);
+    this.selectSettingInTreeView(new Resource(String(settingId), "", "", "", vscode.TreeItemCollapsibleState.None));
+    await this.openSettingPanel(settingId);
 
   }
 
@@ -343,7 +344,7 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
     this.context.subscriptions.push(vscode.commands.registerCommand("configcat.settings.add",
       async () => this.openCreatePanelCommand()));
     this.context.subscriptions.push(vscode.commands.registerCommand("configcat.settings.search",
-      async () => this.searchSettings()));
+      async () => this.searchSettingsCommand()));
     this.context.subscriptions.push(
       vscode.workspace.onDidChangeConfiguration(async e => {
         if (e.affectsConfiguration(WorkspaceConfigurationProvider.configurationKey)) {

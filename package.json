@@ -185,7 +185,7 @@
 				"command": "configcat.settings.search",
 				"category": "ConfigCat",
 				"title": "Search Feature Flag",
-				"icon": "$(search)"
+				"icon": "$(filter)"
 			},
 			{
 				"command": "configcat.settings.findUsages",
