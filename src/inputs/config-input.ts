@@ -52,16 +52,6 @@ export class ConfigInput {
     return Promise.resolve(description);
   }
 
-  static async askConnect(): Promise<string> {
-
-    const pick = await vscode.window.showQuickPick(["Yes", "No"], {
-      canPickMany: false,
-      placeHolder: "Config created successfully. Would you like to connect this Config to the current workspace?",
-    });
-
-    return Promise.resolve(pick || "No");
-  }
-
   static readonly nameValidator = (value: string) => {
     let validationResult = requiredValidator(value);
     if (validationResult != null) {

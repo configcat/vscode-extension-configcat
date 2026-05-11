@@ -6,8 +6,7 @@ export class AppData {
   public basicAuthUsername = "";
   public basicAuthPassword = "";
   public dashboardBasePath = "";
-
-  isCreate = false;
+  public isAuthorized = false;
 
   productId = "";
   productName = "";
@@ -43,7 +42,6 @@ export abstract class WebPanel {
      * Returns html of the start page (index.html)
      */
   getHtmlForWebview(appData: AppData, view: string): string {
-    console.log(view);
     // path to dist folder
     const appDistPath = vscode.Uri.joinPath(this.extensionUri, "out", "dist");
 
@@ -62,6 +60,22 @@ export abstract class WebPanel {
     indexHtml = indexHtml.replace("window.CONFIGCAT_APP_VIEW = {};", "window.CONFIGCAT_APP_VIEW = " + JSON.stringify({ view: view }) + ";");
 
     return indexHtml;
+  }
+
+  /**
+  * Returns the webview options.
+  */
+  getWebviewOptions(): vscode.WebviewOptions {
+    // path to dist folder
+    const appDistPath = vscode.Uri.joinPath(this.extensionUri, "out", "dist");
+
+    return {
+    // Enable javascript in the webview
+      enableScripts: true,
+
+      // And restrict the webview to only loading content from our extension's directory.
+      localResourceRoots: [appDistPath, vscode.Uri.joinPath(appDistPath, "assets")],
+    };
   }
 
   private getConfigCatTheme(vsCodeColorTheme: vscode.ColorTheme): string {

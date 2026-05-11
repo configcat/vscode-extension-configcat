@@ -1,10 +1,11 @@
 import * as vscode from "vscode";
+import { ConfigCatWorkspaceConfiguration } from "../configuration/workspace-configuration";
+import { WorkspaceConfigurationProvider } from "../configuration/workspace-configuration-provider";
 import { handleError } from "../error-handler";
 import { AuthInput } from "../inputs/auth-input";
 import { PublicApiConfiguration } from "../public-api/public-api-configuration";
 import { PublicApiService } from "../public-api/public-api.service";
-import { ConfigCatWorkspaceConfiguration } from "../settings/workspace-configuration";
-import { WorkspaceConfigurationProvider } from "../settings/workspace-configuration-provider";
+import { AuthorizationWebPanel } from "../webpanel/authorization-webpanel";
 
 export const contextIsAuthenticated = "configcat:authenticated";
 
@@ -42,7 +43,7 @@ export class AuthenticationProvider {
     return Promise.resolve(credentials);
   }
 
-  async authenticate(): Promise<PublicApiConfiguration | null> {
+  async authenticateWithAuthInput(): Promise<PublicApiConfiguration | null> {
 
     let configuration: PublicApiConfiguration;
     try {
@@ -52,7 +53,13 @@ export class AuthenticationProvider {
       return null;
     }
 
+    return this.authenticate(configuration);
+  }
+
+  async authenticate(configuration: PublicApiConfiguration): Promise<PublicApiConfiguration | null> {
+
     let workspaceConfiguration: ConfigCatWorkspaceConfiguration | null;
+
     try {
       workspaceConfiguration = await this.workspaceConfigurationProvider.getWorkspaceConfiguration();
     } catch (error: unknown) {
@@ -69,7 +76,7 @@ export class AuthenticationProvider {
     try {
       const me = await meService.getMe();
       await this.context.secrets.store(AuthenticationProvider.secretKey, JSON.stringify(configuration));
-      await vscode.window.showInformationMessage("Logged in to ConfigCat. Email: " + me.data.email);
+      vscode.window.showInformationMessage("Logged in to ConfigCat. Email: " + me.data.email);
       return configuration;
     } catch (error: unknown) {
       await handleError("Could not log in to ConfigCat.", error as Error);
@@ -87,12 +94,45 @@ export class AuthenticationProvider {
     await this.context.secrets.delete(AuthenticationProvider.secretKey);
   }
 
+  private async openAuthorizationWebPanel(workspaceConfiguration: ConfigCatWorkspaceConfiguration): Promise<void> {
+    let publicApiConfiguration: PublicApiConfiguration = {
+      basicAuthUsername: "",
+      basicAuthPassword: "",
+      email: "",
+      fullName: "",
+    };
+    let isAuthorized = false;
+
+    try {
+      const authenticationConfiguration = await this.getAuthenticationConfiguration();
+      if (authenticationConfiguration) {
+        publicApiConfiguration = authenticationConfiguration;
+        isAuthorized = true;
+      }
+    } catch {
+      isAuthorized = false;
+    }
+
+    const webPanel = new AuthorizationWebPanel(this.context, publicApiConfiguration, workspaceConfiguration, isAuthorized, this);
+    this.context.subscriptions.push(webPanel.panel!);
+  }
+
   registerProviders() {
     this.context.subscriptions.push(vscode.commands.registerCommand("configcat.login", async () => {
-      await this.authenticate();
+      const workspaceConfiguration = await this.workspaceConfigurationProvider.getWorkspaceConfiguration();
+      if (workspaceConfiguration?.webAuthorizationEnabled) {
+        await this.openAuthorizationWebPanel(workspaceConfiguration);
+      } else {
+        await this.authenticateWithAuthInput();
+      }
     }));
     this.context.subscriptions.push(vscode.commands.registerCommand("configcat.logout", async () => {
-      await this.logout();
+      const workspaceConfiguration = await this.workspaceConfigurationProvider.getWorkspaceConfiguration();
+      if (workspaceConfiguration?.webAuthorizationEnabled) {
+        await this.openAuthorizationWebPanel(workspaceConfiguration);
+      } else {
+        await this.logout();
+      }
     }));
     this.context.subscriptions.push(
       this.context.secrets.onDidChange(async e => {

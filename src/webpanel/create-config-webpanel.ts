@@ -1,29 +1,25 @@
-import { EvaluationVersion } from "configcat-publicapi-node-client";
+import { ProductModel } from "configcat-publicapi-node-client";
 import * as path from "path";
 import * as vscode from "vscode";
+import { ConfigProvider } from "../configs/config-provider";
 import { ConfigCatWorkspaceConfiguration } from "../configuration/workspace-configuration";
 import { PublicApiConfiguration } from "../public-api/public-api-configuration";
-import { SettingProvider } from "../settings/setting-provider";
 import { WebPanel } from "./webpanel";
 
 /**
  * Manages webview panels
  */
-export class SettingWebPanel extends WebPanel {
+export class CreateConfigWebPanel extends WebPanel {
+
+  private readonly productModel: ProductModel;
 
   constructor(context: vscode.ExtensionContext,
-    publicApiConfiguration: PublicApiConfiguration,
-    workspaceConfiguration: ConfigCatWorkspaceConfiguration,
-    environmentId: string,
-    environmentName: string,
-    settingId: number,
-    settingName: string,
-    evaluationVersion: EvaluationVersion,
-    readonly settingProvider: SettingProvider) {
-
+    publicApiConfiguration: PublicApiConfiguration, workspaceConfiguration: ConfigCatWorkspaceConfiguration,
+    productModel: ProductModel, private readonly configProvider: ConfigProvider) {
     super(context);
+    this.productModel = productModel;
 
-    this.panel = vscode.window.createWebviewPanel(WebPanel.viewType, settingName + " (" + environmentName + ")", vscode.ViewColumn.One, {
+    this.panel = vscode.window.createWebviewPanel(WebPanel.viewType, "Create Config", vscode.ViewColumn.One, {
       enableScripts: true,
       localResourceRoots: [vscode.Uri.file(path.join(context.extensionPath, "out", "dist"))],
     });
@@ -37,32 +33,33 @@ export class SettingWebPanel extends WebPanel {
       basicAuthUsername: publicApiConfiguration.basicAuthUsername,
       basicAuthPassword: publicApiConfiguration.basicAuthPassword,
       dashboardBasePath: workspaceConfiguration.dashboardBaseUrl,
-      productId: workspaceConfiguration.productId,
-      productName: "",
-      configId: workspaceConfiguration.configId,
+      productId: productModel.productId,
+      productName: productModel.name,
+      configId: "",
       configName: "",
-      environmentId: environmentId,
-      settingId: settingId,
-      evaluationVersion: evaluationVersion,
+      environmentId: "",
+      settingId: 0,
+      evaluationVersion: "",
       isAuthorized: publicApiConfiguration.basicAuthUsername !== "" && publicApiConfiguration.basicAuthPassword !== "",
     };
-
-    this.panel.webview.html = this.getHtmlForWebview(appData, "featureflagsetting");
+    this.panel.webview.html = this.getHtmlForWebview(appData, "createconfig");
     this.panel.webview.options = this.getWebviewOptions();
 
     this.panel.webview.onDidReceiveMessage(
-      this.listenWebViewSettingsMessage,
+      this.listenWebViewCreateMessage,
       null,
       context.subscriptions
     );
 
     context.subscriptions.push(this.panel);
-
   }
 
-  listenWebViewSettingsMessage = async (event: { command: string }): Promise<boolean> => {
-    if (event.command === "configcat-ff-save-failed") {
-      await this.settingProvider.refresh();
+  listenWebViewCreateMessage = async (event: { command: string; configId: number }): Promise<boolean> => {
+    if (event.command === "configcat-config-create-success") {
+      vscode.window.showInformationMessage("Config succesfully created!");
+      const configId = "" + event.configId;
+      this.configProvider.setSelectedConfig(configId);
+      await this.configProvider.connectConfig(this.productModel.productId, configId);
       this.panel?.dispose();
       return true;
     } else {

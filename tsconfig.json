@@ -9,7 +9,10 @@
 		],
 		"sourceMap": true,
 		"rootDir": "src",
-		"moduleResolution": "node",
+		"moduleResolution": "bundler",
+		"types": [
+			"node"
+		],
 		"esModuleInterop": true,
 		"strict": true,
 		"declaration": false,

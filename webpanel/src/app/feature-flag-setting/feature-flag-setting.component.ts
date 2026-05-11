@@ -1,6 +1,6 @@
-import { Component, inject} from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { EvaluationVersion } from "ng-configcat-publicapi";
-import { FeatureFlagItemComponent, SettingItemComponent} from "ng-configcat-publicapi-ui";
+import { FeatureFlagItemComponent, SettingItemComponent } from "ng-configcat-publicapi-ui";
 import { AppData } from "../app-data";
 
 @Component({

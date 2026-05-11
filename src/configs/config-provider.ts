@@ -1,11 +1,12 @@
-import { EvaluationVersion } from "configcat-publicapi-node-client";
+import { ProductModel } from "configcat-publicapi-node-client";
 import * as vscode from "vscode";
 import { AuthenticationProvider } from "../authentication/authentication-provider";
+import { WorkspaceConfigurationProvider } from "../configuration/workspace-configuration-provider";
 import { handleError } from "../error-handler";
 import { ConfigInput } from "../inputs/config-input";
 import { ProductInput } from "../inputs/product-input";
 import { PublicApiService } from "../public-api/public-api.service";
-import { WorkspaceConfigurationProvider } from "../settings/workspace-configuration-provider";
+import { CreateConfigWebPanel } from "../webpanel/create-config-webpanel";
 
 export enum ResourceType {
   Unknown = "Unknown",
@@ -19,8 +20,33 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
     private readonly publicApiService: PublicApiService,
     private readonly workspaceConfigurationProvider: WorkspaceConfigurationProvider) {
   }
+
+  treeView: vscode.TreeView<Resource | undefined> | null = null;
+  selectedConfig: string | null = null;
+
   private readonly _onDidChangeTreeData: vscode.EventEmitter<void> = new vscode.EventEmitter<void>();
   readonly onDidChangeTreeData: vscode.Event<void> = this._onDidChangeTreeData.event;
+
+  setSelectedConfig(configId: string): void {
+    this.selectedConfig = configId;
+  }
+
+  selectConfigInTreeView(resource?: Resource): void {
+    if (resource?.resourceId && resource.resourceType === ResourceType.Config) {
+      this.setSelectedConfig(resource.resourceId);
+    }
+    if (!this.treeView) {
+      return;
+    }
+    this.treeView?.reveal(resource, { select: true, focus: true, expand: false });
+  }
+
+  refreshCommand(resource?: Resource): void {
+    if (resource?.resourceId && resource.resourceType === ResourceType.Config) {
+      this.setSelectedConfig(resource.resourceId);
+    }
+    this.refresh();
+  }
 
   refresh(): void {
     this._onDidChangeTreeData.fire();
@@ -30,16 +56,20 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
     return element;
   }
 
-  getChildren(element?: Resource): Thenable<Resource[]> {
+  getParent(_element?: Resource): vscode.ProviderResult<Resource> {
+    if (_element?.resourceType === ResourceType.Config) {
+      return new Resource(_element.parentResourceId, "", "", ResourceType.Product, vscode.TreeItemCollapsibleState.Expanded, "");
+    }
+    return null;
+  }
 
+  getChildren(element?: Resource): Thenable<Resource[]> {
     if (!element) {
       return this.getProducts();
     }
-
     if (element.resourceType === ResourceType.Product) {
       return this.getConfigs(element.resourceId);
     }
-
     return Promise.resolve([]);
   }
 
@@ -101,9 +131,17 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
         if (!items.length) {
           items.push(new Resource("-1", "", "Could not find any Configs.", ResourceType.Unknown, vscode.TreeItemCollapsibleState.None, ""));
         }
+        if (this.selectedConfig) {
+          const selectedResource = items.find(resource => resource?.resourceId === this.selectedConfig);
+          if (selectedResource) {
+            this.treeView?.reveal(selectedResource, { select: true, focus: true, expand: false });
+            this.selectedConfig = null;
+          }
+        }
         return items;
       }, (error: unknown) => {
         void handleError("Could not load Configs.", error as Error);
+        this.selectedConfig = null;
         statusBar.hide();
         return [new Resource("-1", "", "Could not load Configs.", ResourceType.Unknown, vscode.TreeItemCollapsibleState.None, "")];
       });
@@ -112,9 +150,17 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
     });
   }
 
-  async connectConfig(resource: Resource): Promise<void> {
+  async connectConfig(productId?: string, configId?: string): Promise<void> {
+    if (productId && configId) {
+      return await this.workspaceConfigurationProvider.setConfiguration(productId, configId);
+    }
+    return;
+  }
+
+  async connectConfigCommand(resource?: Resource): Promise<void> {
     if (resource?.parentResourceId && resource.resourceId) {
-      return await this.workspaceConfigurationProvider.setConfiguration(resource.parentResourceId, resource.resourceId);
+      this.selectConfigInTreeView(resource);
+      return this.connectConfig(resource.parentResourceId, resource.resourceId);
     }
 
     let authenticationConfiguration = null;
@@ -160,10 +206,10 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
       return;
     }
 
-    return await this.workspaceConfigurationProvider.setConfiguration(productId, configId);
+    return this.connectConfig(productId, configId);
   }
 
-  async addConfig(resource: Resource | null | undefined) {
+  async openCreatePanelCommand(resource: Resource | null | undefined) {
 
     let authenticationConfiguration = null;
     let workspaceConfiguration = null;
@@ -191,48 +237,18 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
       return;
     }
 
-    let configName: string;
+    const productService = this.publicApiService.createProductsService(authenticationConfiguration, workspaceConfiguration.publicApiBaseUrl);
+    let productModel: ProductModel | undefined;
     try {
-      configName = await ConfigInput.configInput();
+      productModel = (await productService.getProduct(productId)).data;
     } catch (error: unknown) {
       console.log(error);
       return;
     }
-    if (!configName) {
-      return;
-    }
-
-    let configDescription: string;
-
-    try {
-      configDescription = await ConfigInput.configDescriptionInput();
-    } catch (error: unknown) {
-      console.log(error);
-      return;
-    }
-
-    const configsService = this.publicApiService.createConfigsService(authenticationConfiguration, workspaceConfiguration.publicApiBaseUrl);
-    let config = null;
-    try {
-      config = await configsService.createConfig(productId, { name: configName, evaluationVersion: EvaluationVersion.V2, description: configDescription });
-    } catch (error: unknown) {
-      void handleError("Could not create Config.", error as Error);
-    }
-
-    if (!config?.data.configId) {
-      return;
-    }
-
-    const connect = await ConfigInput.askConnect();
-    if (connect !== "Yes") {
-      this.refresh();
-      return;
-    }
-
-    return await this.workspaceConfigurationProvider.setConfiguration(productId, config.data.configId);
+    return new CreateConfigWebPanel(this.context, authenticationConfiguration, workspaceConfiguration, productModel, this);
   }
 
-  async openInDashboard(resource: Resource): Promise<void> {
+  async openInDashboardCommand(resource: Resource): Promise<void> {
 
     let authenticationConfiguration = null;
     let workspaceConfiguration = null;
@@ -248,6 +264,7 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
     }
 
     if (resource?.parentResourceId && resource.resourceId) {
+      this.selectConfigInTreeView(resource);
       return await vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(workspaceConfiguration.dashboardBaseUrl + "/"
                 + resource.parentResourceId + "/" + resource.resourceId));
     }
@@ -287,20 +304,23 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
   }
 
   registerProviders() {
-    const treeView = vscode.window.createTreeView("configcat.configs", {
+    const newTreeView = vscode.window.createTreeView("configcat.configs", {
       treeDataProvider: this,
       showCollapseAll: true,
     });
-    this.context.subscriptions.push(treeView);
+    this.context.subscriptions.push(newTreeView);
+    this.treeView = newTreeView;
     this.context.subscriptions.push(vscode.commands.registerCommand("configcat.configs.refresh",
-      () => this.refresh()));
+      (resource: Resource) => {
+        this.refreshCommand(resource);
+      }));
     this.context.subscriptions.push(vscode.commands.registerCommand("configcat.configs.add",
-      async (resource: Resource) => await this.addConfig(resource)));
+      async (resource: Resource) => await this.openCreatePanelCommand(resource)));
     this.context.subscriptions.push(vscode.commands.registerCommand("configcat.configs.openInDashboard",
-      async (resource: Resource) => await this.openInDashboard(resource)));
+      async (resource: Resource) => await this.openInDashboardCommand(resource)));
     this.context.subscriptions.push(vscode.commands.registerCommand("configcat.configs.connect",
       async (resource: Resource) => {
-        await this.connectConfig(resource);
+        await this.connectConfigCommand(resource);
       }));
     this.context.subscriptions.push(this.context.secrets.onDidChange(e => {
       if (e.key === AuthenticationProvider.secretKey) {

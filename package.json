@@ -2,7 +2,7 @@
 	"name": "configcat-feature-flags",
 	"displayName": "ConfigCat Feature Flags",
 	"description": "ConfigCat Visual Studio Code extension to manage feature flags from Visual Studio Code.",
-	"version": "2.2.0",
+	"version": "2.3.0-1",
 	"publisher": "ConfigCat",
 	"repository": "https://github.com/configcat/vscode-extension-configcat",
 	"preview": false,
@@ -60,6 +60,11 @@
 					"type": "string",
 					"default": "https://app.configcat.com",
 					"markdownDescription": "ConfigCat Dashboard Base URL. Defaults to https://app.configcat.com."
+				},
+				"configcat.webAuthorizationEnabled": {
+					"type": "boolean",
+					"default": true,
+					"markdownDescription": "Use Web-View authorization instead of the VS Code commands option."
 				}
 			}
 		},
@@ -341,28 +346,29 @@
 		"deploy": "vsce publish"
 	},
 	"devDependencies": {
-		"@types/glob": "^9.0.0",
-		"@types/mocha": "^10.0.10",
-		"@types/node": "^22.15.30",
-		"@types/vscode": "^1.63.2",
 		"@smarttools/eslint-plugin-rxjs": "^1.0.20",
 		"@stylistic/eslint-plugin": "^4.4.1",
-		"angular-eslint": "20.5.0",
+		"@types/glob": "^9.0.0",
+		"@types/mocha": "^10.0.10",
+		"@types/node": "^22.19.17",
+		"@types/vscode": "^1.63.2",
+		"@vscode/vsce": "^3.6.1",
+		"angular-eslint": "21.3.1",
 		"axios": "^1.6.7",
 		"esbuild": "^0.25.10",
-		"eslint": "^9.36.0",
-		"eslint-config-prettier": "^10.1.5",
-		"eslint-plugin-import": "^2.31.0",
-		"eslint-plugin-prettier": "^5.4.1",
-		"eslint-plugin-sonarjs": "^3.0.2",
+		"eslint": "^9.39.4",
+		"eslint-config-prettier": "^10.1.8",
+		"eslint-plugin-import": "^2.32.0",
+		"eslint-plugin-prettier": "^5.5.4",
+		"eslint-plugin-sonarjs": "^4.0.2",
 		"glob": "^11.0.3",
 		"mocha": "^11.7.2",
-		"prettier": "3.5.3",
-		"typescript": "~5.9.2",
-		"@vscode/vsce": "^3.6.1",
+		"prettier": "3.6.2",
+		"typescript": "~5.9.3",
+		"typescript-eslint": "^8.40.0",
 		"vscode-test": "^1.6.1"
 	},
 	"dependencies": {
-		"configcat-publicapi-node-client": "^3.2.0"
+		"configcat-publicapi-node-client": "^3.2.1"
 	}
 }
