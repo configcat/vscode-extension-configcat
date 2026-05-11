@@ -65,6 +65,11 @@
 					"type": "boolean",
 					"default": true,
 					"markdownDescription": "Use Web-View authorization instead of the VS Code commands option."
+				},
+				"configcat.openAutomaticallySearchedFeatureFlag": {
+					"type": "boolean",
+					"default": true,
+					"markdownDescription": "Automatically open the Feature Flag after searching it."
 				}
 			}
 		},

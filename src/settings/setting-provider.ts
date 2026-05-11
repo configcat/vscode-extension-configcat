@@ -221,7 +221,9 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
     }
 
     this.selectSettingInTreeView(this.createResourceFromSetting(setting));
-    await this.openSettingPanel(setting.settingId);
+    if (workspaceConfiguration.openAutomaticallySearchedFeatureFlag) {
+      await this.openSettingPanel(setting.settingId);
+    }
 
   }
 
