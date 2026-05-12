@@ -6,7 +6,7 @@ export class SettingSearchInput {
   static async searchSettings(settings: SettingModel[]): Promise<SettingModel> {
 
     const pickItems = settings.map(p => {
-      return { label: p.key || "", description: p.name, id: p.settingId };
+      return { label: p.name || "", description: p.key, id: p.settingId };
     });
 
     const pick = await vscode.window.showQuickPick(pickItems, {
