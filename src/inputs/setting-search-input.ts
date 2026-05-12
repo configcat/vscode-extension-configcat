@@ -16,9 +16,12 @@ export class SettingSearchInput {
     });
 
     if (!pick?.id) {
-      return Promise.reject(new Error("No selected enviroment."));
+      return Promise.reject(new Error("No selected setting."));
     }
-
-    return Promise.resolve(settings.find(s => s.settingId === pick.id)!);
+    const setting = settings.find(s => s.settingId === pick.id);
+    if (!setting) {
+      return Promise.reject(new Error("Selected setting not found."));
+    }
+    return Promise.resolve(setting);
   }
 }
