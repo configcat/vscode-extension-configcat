@@ -4,4 +4,5 @@ export interface ConfigCatWorkspaceConfiguration {
   publicApiBaseUrl: string;
   dashboardBaseUrl: string;
   webAuthorizationEnabled: boolean;
+  openAutomaticallySearchedFeatureFlag: boolean;
 }

@@ -2,7 +2,7 @@
 	"name": "configcat-feature-flags",
 	"displayName": "ConfigCat Feature Flags",
 	"description": "ConfigCat Visual Studio Code extension to manage feature flags from Visual Studio Code.",
-	"version": "2.3.0-1",
+	"version": "2.3.0-2",
 	"publisher": "ConfigCat",
 	"repository": "https://github.com/configcat/vscode-extension-configcat",
 	"preview": false,
@@ -32,7 +32,8 @@
 		"onCommand:configcat.configs.add",
 		"onCommand:configcat.configs.refresh",
 		"onCommand:configcat.settings.refresh",
-		"onCommand:configcat.settings.add"
+		"onCommand:configcat.settings.add",
+		"onCommand:configcat.settings.search"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -64,6 +65,11 @@
 					"type": "boolean",
 					"default": true,
 					"markdownDescription": "Use Web-View authorization instead of the VS Code commands option."
+				},
+				"configcat.openAutomaticallySearchedFeatureFlag": {
+					"type": "boolean",
+					"default": true,
+					"markdownDescription": "Automatically open the Feature Flag after searching it."
 				}
 			}
 		},
@@ -181,6 +187,12 @@
 				"icon": "$(add)"
 			},
 			{
+				"command": "configcat.settings.search",
+				"category": "ConfigCat",
+				"title": "Search Feature Flag",
+				"icon": "$(filter)"
+			},
+			{
 				"command": "configcat.settings.findUsages",
 				"category": "ConfigCat",
 				"title": "Find usages",
@@ -239,6 +251,10 @@
 				"when": "configcat:initialized && configcat:authenticated && configcat:connected"
 			},
 			{
+				"command": "configcat.settings.search",
+				"when": "configcat:initialized && configcat:authenticated && configcat:connected"
+			},
+			{
 				"command": "configcat.settings.openInDashboard",
 				"when": "false"
 			},
@@ -264,6 +280,11 @@
 				},
 				{
 					"command": "configcat.settings.add",
+					"when": "configcat:initialized && configcat:authenticated && configcat:connected && view == configcat.settings",
+					"group": "navigation"
+				},
+				{
+					"command": "configcat.settings.search",
 					"when": "configcat:initialized && configcat:authenticated && configcat:connected && view == configcat.settings",
 					"group": "navigation"
 				},

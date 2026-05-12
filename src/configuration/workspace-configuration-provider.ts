@@ -38,6 +38,7 @@ export class WorkspaceConfigurationProvider {
     const publicApiBaseUrl = config.get("publicApiBaseUrl");
     const dashboardBaseUrl = config.get("dashboardBaseUrl");
     const webAuthorizationEnabled = config.get("webAuthorizationEnabled") ?? true;
+    const openAutomaticallySearchedFeatureFlag = config.get("openAutomaticallySearchedFeatureFlag") ?? true;
 
     return Promise.resolve({
       productId: String(productId),
@@ -45,6 +46,7 @@ export class WorkspaceConfigurationProvider {
       publicApiBaseUrl: String(publicApiBaseUrl),
       dashboardBaseUrl: String(dashboardBaseUrl),
       webAuthorizationEnabled: Boolean(webAuthorizationEnabled),
+      openAutomaticallySearchedFeatureFlag: Boolean(openAutomaticallySearchedFeatureFlag),
     });
   }
 

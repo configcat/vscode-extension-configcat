@@ -5,13 +5,14 @@ import { ConfigCatWorkspaceConfiguration } from "../configuration/workspace-conf
 import { WorkspaceConfigurationProvider } from "../configuration/workspace-configuration-provider";
 import { handleError } from "../error-handler";
 import { EnvironmentInput } from "../inputs/environment-input";
+import { SettingSearchInput } from "../inputs/setting-search-input";
 import { PublicApiService } from "../public-api/public-api.service";
 import { CreateSettingWebPanel } from "../webpanel/create-setting-webpanel";
 import { SettingWebPanel } from "../webpanel/setting-webpanel";
 
 export class SettingProvider implements vscode.TreeDataProvider<Resource> {
 
-  treeView: vscode.TreeView<Resource | undefined > | null = null;
+  treeView: vscode.TreeView<Resource | undefined> | null = null;
   selectedSetting: string | null = null;
 
   constructor(private readonly context: vscode.ExtensionContext,
@@ -102,9 +103,7 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
 
         const settingsService = this.publicApiService.createSettingsService(publicApiConfiguration, workspaceConfiguration.publicApiBaseUrl);
         return settingsService.getSettings(workspaceConfiguration.configId).then(settings => {
-          const items = settings.data.map((s) => new Resource(String(s.settingId), s.name ?? "",
-            s.key ?? "", s.hint ?? "",
-            vscode.TreeItemCollapsibleState.None));
+          const items = settings.data.map((s) => this.createResourceFromSetting(s));
           statusBar.hide();
           if (this.selectedSetting) {
             const selectedResource = items.find(resource => resource?.resourceId === this.selectedSetting);
@@ -126,6 +125,12 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
         this.selectedSetting = null;
         return [];
       });
+  }
+
+  private createResourceFromSetting(setting: SettingModel): Resource {
+    return new Resource(String(setting.settingId), setting.name ?? "",
+      setting.key ?? "", setting.hint ?? "",
+      vscode.TreeItemCollapsibleState.None);
   }
 
   async openInDashboardCommand(resource: Resource) {
@@ -181,6 +186,45 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
       return;
     }
     return new CreateSettingWebPanel(this.context, authenticationConfiguration, workspaceConfiguration, productModel.name, configModel.name, this);
+  }
+
+  async searchSettingsCommand() {
+    let authenticationConfiguration = null;
+    let workspaceConfiguration = null;
+    try {
+      authenticationConfiguration = await this.authenticationProvider.getAuthenticationConfiguration();
+      workspaceConfiguration = await this.workspaceConfigurationProvider.getWorkspaceConfiguration();
+    } catch (error: unknown) {
+      console.log(error);
+      return;
+    }
+    if (!authenticationConfiguration
+            || !workspaceConfiguration?.publicApiBaseUrl
+            || !workspaceConfiguration.configId
+            || !workspaceConfiguration.productId) {
+      return;
+    }
+
+    const settingsService = this.publicApiService.createSettingsService(authenticationConfiguration, workspaceConfiguration.publicApiBaseUrl);
+    const settings = await settingsService.getSettings(workspaceConfiguration.configId);
+
+    let setting: SettingModel;
+    try {
+      setting = await SettingSearchInput.searchSettings(settings.data);
+    } catch (error: unknown) {
+      console.log(error);
+      return;
+    }
+
+    if (!setting) {
+      return;
+    }
+
+    this.selectSettingInTreeView(this.createResourceFromSetting(setting));
+    if (workspaceConfiguration.openAutomaticallySearchedFeatureFlag) {
+      await this.openSettingPanel(setting.settingId);
+    }
+
   }
 
   copyToClipboardCommand(resource: Resource) {
@@ -303,9 +347,10 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
       (resource: Resource) => this.findUsageCommand(resource)));
     this.context.subscriptions.push(vscode.commands.registerCommand("configcat.settings.values",
       (resource: Resource) => this.openSettingPanelCommand(resource)));
-
     this.context.subscriptions.push(vscode.commands.registerCommand("configcat.settings.add",
       async () => this.openCreatePanelCommand()));
+    this.context.subscriptions.push(vscode.commands.registerCommand("configcat.settings.search",
+      async () => this.searchSettingsCommand()));
     this.context.subscriptions.push(
       vscode.workspace.onDidChangeConfiguration(async e => {
         if (e.affectsConfiguration(WorkspaceConfigurationProvider.configurationKey)) {
