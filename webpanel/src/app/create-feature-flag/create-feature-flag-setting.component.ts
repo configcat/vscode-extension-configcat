@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from "@angular/common/http";
 import { Component, inject } from "@angular/core";
 import { CreateFeatureFlagComponent, LinkFeatureFlagParameters } from "ng-configcat-publicapi-ui";
 import { AppData } from "../app-data";
@@ -16,6 +17,18 @@ export class CreateFeatureFlagSettingComponent {
     this.vscode.postMessage({
       command: "configcat-ff-create-success",
       settingId: linkFeatureFlagParameters.settingId,
+    });
+  }
+
+  componentFailed(error: Error) {
+    const errorMessage = error.message;
+    let errorStatus: number | undefined;
+    if (error instanceof HttpErrorResponse) {
+      errorStatus = error.status;
+    }
+    this.vscode.postMessage({
+      command: "configcat-ff-create-failed",
+      error: { message: errorMessage, status: errorStatus },
     });
   }
 }

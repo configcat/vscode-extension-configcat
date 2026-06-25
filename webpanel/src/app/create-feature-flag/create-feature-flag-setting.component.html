@@ -10,4 +10,5 @@
     configId: appData.configId,
     configName: appData.configName,
   }"
-  (createInitiated)="createFeatureFlag($event)" />
+  (createInitiated)="createFeatureFlag($event)"
+  (componentError)="componentFailed($event)" />

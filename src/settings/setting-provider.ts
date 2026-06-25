@@ -1,4 +1,4 @@
-import { ConfigModel, EvaluationVersion, ProductModel, SettingModel } from "configcat-publicapi-node-client";
+import { ConfigModel, EnvironmentModel, EvaluationVersion, ProductModel, SettingModel } from "configcat-publicapi-node-client";
 import * as vscode from "vscode";
 import { AuthenticationProvider } from "../authentication/authentication-provider";
 import { ConfigCatWorkspaceConfiguration } from "../configuration/workspace-configuration";
@@ -61,6 +61,7 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
       const config = await configsService.getConfig(workspaceConfiguration.configId);
       this.setDescription(config.data.name || "");
     } catch (error: unknown) {
+      void handleError("Could not load Settings.", error as Error, this.authenticationProvider);
       console.log(error);
       this.setDescription("");
     }
@@ -114,7 +115,7 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
           }
           return items;
         }, (error: unknown) => {
-          void handleError("Could not load Settings.", error as Error);
+          void handleError("Could not load Settings.", error as Error, this.authenticationProvider);
           statusBar.hide();
           this.setMessage("Could not load Settings.");
           this.selectedSetting = null;
@@ -173,6 +174,7 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
     try {
       configModel = (await configsService.getConfig(workspaceConfiguration.configId)).data;
     } catch (error: unknown) {
+      void handleError("Could not open Create Setting.", error as Error, this.authenticationProvider);
       console.log(error);
       return;
     }
@@ -182,10 +184,12 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
     try {
       productModel = (await productService.getProduct(workspaceConfiguration.productId)).data;
     } catch (error: unknown) {
+      void handleError("Could not open Create Setting.", error as Error, this.authenticationProvider);
       console.log(error);
       return;
     }
-    return new CreateSettingWebPanel(this.context, authenticationConfiguration, workspaceConfiguration, productModel.name, configModel.name, this);
+    return new CreateSettingWebPanel(this.context, authenticationConfiguration, workspaceConfiguration,
+      productModel.name, configModel.name, this, this.authenticationProvider);
   }
 
   async searchSettingsCommand() {
@@ -206,12 +210,20 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
     }
 
     const settingsService = this.publicApiService.createSettingsService(authenticationConfiguration, workspaceConfiguration.publicApiBaseUrl);
-    const settings = await settingsService.getSettings(workspaceConfiguration.configId);
+    let settings: SettingModel[];
+    await settingsService.getSettings(workspaceConfiguration.configId)
+      .then(settings => settings.data)
+      .catch((error: unknown) => {
+        void handleError("Could not load Settings.", error as Error, this.authenticationProvider);
+        console.log(error);
+        return;
+      });
 
     let setting: SettingModel;
     try {
-      setting = await SettingSearchInput.searchSettings(settings.data);
+      setting = await SettingSearchInput.searchSettings(settings!);
     } catch (error: unknown) {
+      void handleError("Could not search Settings.", error as Error, this.authenticationProvider);
       console.log(error);
       return;
     }
@@ -270,12 +282,14 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
     }
 
     const environmentsService = this.publicApiService.createEnvironmentsService(authenticationConfiguration, workspaceConfiguration.publicApiBaseUrl);
-    const environments = await environmentsService.getEnvironments(workspaceConfiguration.productId);
 
     let environmentId: string;
+    let environments: EnvironmentModel[];
     try {
-      environmentId = await EnvironmentInput.pickEnvironment(environments.data);
+      environments = (await environmentsService.getEnvironments(workspaceConfiguration.productId)).data;
+      environmentId = await EnvironmentInput.pickEnvironment(environments);
     } catch (error: unknown) {
+      void handleError("Could not open Setting Panel.", error as Error, this.authenticationProvider);
       console.log(error);
       return;
     }
@@ -284,13 +298,14 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
       return;
     }
 
-    const environmentName = environments.data.find(e => e.environmentId === environmentId)?.name;
+    const environmentName = environments.find(e => e.environmentId === environmentId)?.name;
 
     const configsService = this.publicApiService.createConfigsService(authenticationConfiguration, workspaceConfiguration.publicApiBaseUrl);
     let configModel: ConfigModel | undefined;
     try {
       configModel = (await configsService.getConfig(workspaceConfiguration.configId)).data;
     } catch (error: unknown) {
+      void handleError("Could not open Setting Panel.", error as Error, this.authenticationProvider);
       console.log(error);
       return;
     }
@@ -301,11 +316,12 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
     try {
       settingModel = (await settingsService.getSetting(settingId)).data;
     } catch (error: unknown) {
+      void handleError("Could not open Setting Panel.", error as Error, this.authenticationProvider);
       console.log(error);
       return;
     }
 
-    return new SettingWebPanel(this.context, authenticationConfiguration, workspaceConfiguration, environmentId, environmentName || "", settingModel.settingId, settingModel.name, evaluationVersion, this);
+    return new SettingWebPanel(this.context, authenticationConfiguration, workspaceConfiguration, environmentId, environmentName || "", settingModel.settingId, settingModel.name, evaluationVersion, this, this.authenticationProvider);
   }
 
   setMessage(message: string) {

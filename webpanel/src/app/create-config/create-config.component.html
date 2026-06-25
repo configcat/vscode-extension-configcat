@@ -7,4 +7,5 @@
     productId: appData.productId,
     productName: appData.productName,
   }"
-  (createInitiated)="createConfig($event)" />
+  (createInitiated)="createConfig($event)"
+  (componentError)="componentFailed($event)" />
