@@ -1,4 +1,4 @@
-import { AxiosError } from "axios";
+import { isAxiosError } from "axios";
 import * as vscode from "vscode";
 import { AuthenticationProvider } from "./authentication/authentication-provider";
 
@@ -6,7 +6,7 @@ export async function handleError(errorTitle: string, error: Error, authenticati
   let errorDetails = "";
   let isUnauthorizedError = false;
 
-  if (error instanceof AxiosError) {
+  if (isAxiosError(error)) {
     isUnauthorizedError = error.response?.status === 401;
 
     if (isUnauthorizedError) {
