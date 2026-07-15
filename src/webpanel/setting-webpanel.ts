@@ -1,6 +1,7 @@
 import { EvaluationVersion } from "configcat-publicapi-node-client";
 import * as path from "path";
 import * as vscode from "vscode";
+import { AuthenticationProvider } from "../authentication/authentication-provider";
 import { ConfigCatWorkspaceConfiguration } from "../configuration/workspace-configuration";
 import { PublicApiConfiguration } from "../public-api/public-api-configuration";
 import { SettingProvider } from "../settings/setting-provider";
@@ -19,7 +20,8 @@ export class SettingWebPanel extends WebPanel {
     settingId: number,
     settingName: string,
     evaluationVersion: EvaluationVersion,
-    readonly settingProvider: SettingProvider) {
+    readonly settingProvider: SettingProvider,
+    private readonly authenticationProvider: AuthenticationProvider) {
 
     super(context);
 
@@ -60,8 +62,18 @@ export class SettingWebPanel extends WebPanel {
 
   }
 
-  listenWebViewSettingsMessage = async (event: { command: string }): Promise<boolean> => {
+  listenWebViewSettingsMessage = async (event: { command: string; error?: { message?: string; status?: number } }): Promise<boolean> => {
     if (event.command === "configcat-ff-save-failed") {
+      vscode.window.showErrorMessage("Could not save Feature Flag.");
+      if (!event.error) {
+        console.log(event);
+      } else {
+        console.log(event.error);
+        if (event.error.status === 401) {
+          await this.authenticationProvider.logout();
+          this.panel?.dispose();
+        }
+      }
       await this.settingProvider.refresh();
       this.panel?.dispose();
       return true;

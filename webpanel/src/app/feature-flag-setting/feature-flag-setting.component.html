@@ -6,7 +6,7 @@
     [settingId]="appData.settingId"
     [showEnvironmentName]="false"
     [canDeleteSetting]="false"
-    (saveFailed)="saveFailed()" />
+    (componentError)="componentFailed($event)" />
 }
 
 @if (appData.evaluationVersion === EvaluationVersion.V2) {
@@ -17,5 +17,5 @@
     [settingId]="appData.settingId"
     [showEnvironmentName]="false"
     [canDeleteSetting]="false"
-    (saveFailed)="saveFailed()" />
+    (componentError)="componentFailed($event)" />
 }

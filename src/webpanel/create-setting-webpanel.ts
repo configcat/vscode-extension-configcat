@@ -1,5 +1,6 @@
 import * as path from "path";
 import * as vscode from "vscode";
+import { AuthenticationProvider } from "../authentication/authentication-provider";
 import { ConfigCatWorkspaceConfiguration } from "../configuration/workspace-configuration";
 import { PublicApiConfiguration } from "../public-api/public-api-configuration";
 import { SettingProvider } from "../settings/setting-provider";
@@ -12,7 +13,8 @@ export class CreateSettingWebPanel extends WebPanel {
 
   constructor(context: vscode.ExtensionContext,
     publicApiConfiguration: PublicApiConfiguration, workspaceConfiguration: ConfigCatWorkspaceConfiguration,
-    productName: string, configName: string, readonly settingProvider: SettingProvider) {
+    productName: string, configName: string, readonly settingProvider: SettingProvider,
+    private readonly authenticationProvider: AuthenticationProvider) {
     super(context);
 
     this.panel = vscode.window.createWebviewPanel(WebPanel.viewType, "Create Feature Flag", vscode.ViewColumn.One, {
@@ -50,14 +52,30 @@ export class CreateSettingWebPanel extends WebPanel {
     context.subscriptions.push(this.panel);
   }
 
-  listenWebViewCreateMessage = async (event: { command: string; settingId: number }): Promise<boolean> => {
+  listenWebViewCreateMessage = async (event: { command: string; settingId?: number; error?: { message?: string; status?: number } }): Promise<boolean> => {
     if (event.command === "configcat-ff-create-success") {
       vscode.window.showInformationMessage("Feature Flag succesfully created!");
-      this.settingProvider.setSelectedSetting("" + event.settingId);
-      await this.settingProvider.refresh();
-      await this.settingProvider.openSettingPanel(event.settingId);
+      if (event.settingId) {
+        this.settingProvider.setSelectedSetting("" + event.settingId);
+        await this.settingProvider.refresh();
+        await this.settingProvider.openSettingPanel(event.settingId);
+      } else {
+        await this.settingProvider.refresh();
+      }
       this.panel?.dispose();
       return true;
+    } else if (event.command === "configcat-ff-create-failed") {
+      vscode.window.showErrorMessage("Could not create Feature Flag.");
+      if (!event.error) {
+        console.log(event);
+      } else {
+        console.log(event.error);
+        if (event.error.status === 401) {
+          await this.authenticationProvider.logout();
+          this.panel?.dispose();
+        }
+      }
+      return false;
     } else {
       console.log(event);
       return false;

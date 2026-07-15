@@ -98,7 +98,7 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
         }
         return items;
       }, (error: unknown) => {
-        void handleError("Could not load Products.", error as Error);
+        void handleError("Could not load Products.", error as Error, this.authenticationProvider);
         statusBar.hide();
         return [new Resource("-1", "", "Could not load Products.", ResourceType.Unknown, vscode.TreeItemCollapsibleState.None, "")];
       });
@@ -140,7 +140,7 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
         }
         return items;
       }, (error: unknown) => {
-        void handleError("Could not load Configs.", error as Error);
+        void handleError("Could not load Configs.", error as Error, this.authenticationProvider);
         this.selectedConfig = null;
         statusBar.hide();
         return [new Resource("-1", "", "Could not load Configs.", ResourceType.Unknown, vscode.TreeItemCollapsibleState.None, "")];
@@ -183,6 +183,7 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
     try {
       productId = await ProductInput.pickProduct(products.data);
     } catch (error: unknown) {
+      void handleError("Could not connect Config.", error as Error, this.authenticationProvider);
       console.log(error);
       return;
     }
@@ -198,6 +199,7 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
     try {
       configId = await ConfigInput.pickConfig(configs.data);
     } catch (error: unknown) {
+      void handleError("Could not connect Config.", error as Error, this.authenticationProvider);
       console.log(error);
       return;
     }
@@ -227,8 +229,15 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
     let productId = "";
     if (resource?.resourceType !== ResourceType.Product) {
       const productsService = this.publicApiService.createProductsService(authenticationConfiguration, workspaceConfiguration.publicApiBaseUrl);
-      const products = await productsService.getProducts();
-      productId = await ProductInput.pickProduct(products.data);
+      let products: ProductModel[] = [];
+      try {
+        products = (await productsService.getProducts()).data;
+      } catch (error: unknown) {
+        void handleError("Could not open Create Config.", error as Error, this.authenticationProvider);
+        console.log(error);
+        return;
+      }
+      productId = await ProductInput.pickProduct(products);
     } else {
       productId = resource.resourceId;
     }
@@ -242,10 +251,11 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
     try {
       productModel = (await productService.getProduct(productId)).data;
     } catch (error: unknown) {
+      void handleError("Could not open Create Config.", error as Error, this.authenticationProvider);
       console.log(error);
       return;
     }
-    return new CreateConfigWebPanel(this.context, authenticationConfiguration, workspaceConfiguration, productModel, this);
+    return new CreateConfigWebPanel(this.context, authenticationConfiguration, workspaceConfiguration, productModel, this, this.authenticationProvider);
   }
 
   async openInDashboardCommand(resource: Resource): Promise<void> {
@@ -276,6 +286,7 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
     try {
       productId = await ProductInput.pickProduct(products.data);
     } catch (error: unknown) {
+      void handleError("Could not open Config in Dashboard.", error as Error, this.authenticationProvider);
       console.log(error);
       return;
     }
@@ -291,6 +302,7 @@ export class ConfigProvider implements vscode.TreeDataProvider<Resource> {
     try {
       configId = await ConfigInput.pickConfig(configs.data);
     } catch (error: unknown) {
+      void handleError("Could not open Config in Dashboard.", error as Error, this.authenticationProvider);
       console.log(error);
       return;
     }

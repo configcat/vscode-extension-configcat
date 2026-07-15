@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from "@angular/common/http";
 import { Component, inject } from "@angular/core";
 import { CreateConfigComponent } from "ng-configcat-publicapi-ui";
 import { AppData } from "../app-data";
@@ -16,6 +17,18 @@ export class ConfigCreateComponent {
     this.vscode.postMessage({
       command: "configcat-config-create-success",
       configId: configId,
+    });
+  }
+
+  componentFailed(error: Error) {
+    const errorMessage = error.message;
+    let errorStatus: number | undefined;
+    if (error instanceof HttpErrorResponse) {
+      errorStatus = error.status;
+    }
+    this.vscode.postMessage({
+      command: "configcat-config-create-failed",
+      error: { message: errorMessage, status: errorStatus },
     });
   }
 }

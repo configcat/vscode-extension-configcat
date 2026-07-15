@@ -1,6 +1,7 @@
 import { ProductModel } from "configcat-publicapi-node-client";
 import * as path from "path";
 import * as vscode from "vscode";
+import { AuthenticationProvider } from "../authentication/authentication-provider";
 import { ConfigProvider } from "../configs/config-provider";
 import { ConfigCatWorkspaceConfiguration } from "../configuration/workspace-configuration";
 import { PublicApiConfiguration } from "../public-api/public-api-configuration";
@@ -15,7 +16,8 @@ export class CreateConfigWebPanel extends WebPanel {
 
   constructor(context: vscode.ExtensionContext,
     publicApiConfiguration: PublicApiConfiguration, workspaceConfiguration: ConfigCatWorkspaceConfiguration,
-    productModel: ProductModel, private readonly configProvider: ConfigProvider) {
+    productModel: ProductModel, private readonly configProvider: ConfigProvider,
+    private readonly authenticationProvider: AuthenticationProvider) {
     super(context);
     this.productModel = productModel;
 
@@ -54,7 +56,7 @@ export class CreateConfigWebPanel extends WebPanel {
     context.subscriptions.push(this.panel);
   }
 
-  listenWebViewCreateMessage = async (event: { command: string; configId: number }): Promise<boolean> => {
+  listenWebViewCreateMessage = async (event: { command: string; configId: number; error?: { message?: string; status?: number } }): Promise<boolean> => {
     if (event.command === "configcat-config-create-success") {
       vscode.window.showInformationMessage("Config succesfully created!");
       const configId = "" + event.configId;
@@ -62,6 +64,18 @@ export class CreateConfigWebPanel extends WebPanel {
       await this.configProvider.connectConfig(this.productModel.productId, configId);
       this.panel?.dispose();
       return true;
+    } else if (event.command === "configcat-config-create-failed") {
+      vscode.window.showErrorMessage("Could not create Config.");
+      if (!event.error) {
+        console.log(event);
+      } else {
+        console.log(event.error);
+        if (event.error.status === 401) {
+          await this.authenticationProvider.logout();
+          this.panel?.dispose();
+        }
+      }
+      return false;
     } else {
       console.log(event);
       return false;
