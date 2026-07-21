@@ -1,11 +1,12 @@
 import { HttpErrorResponse } from "@angular/common/http";
-import { Component, inject } from "@angular/core";
+import { Component, inject, ChangeDetectionStrategy } from "@angular/core";
 import { CreateFeatureFlagComponent, LinkFeatureFlagParameters } from "ng-configcat-publicapi-ui";
 import { AppData } from "../app-data";
 
 @Component({
   selector: "configcat-vscode-create-feature-flag",
   imports: [CreateFeatureFlagComponent],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: "./create-feature-flag-setting.component.html",
 })
 export class CreateFeatureFlagSettingComponent {

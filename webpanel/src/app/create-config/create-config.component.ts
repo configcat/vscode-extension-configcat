@@ -1,11 +1,12 @@
 import { HttpErrorResponse } from "@angular/common/http";
-import { Component, inject } from "@angular/core";
+import { Component, inject, ChangeDetectionStrategy } from "@angular/core";
 import { CreateConfigComponent } from "ng-configcat-publicapi-ui";
 import { AppData } from "../app-data";
 
 @Component({
   selector: "configcat-vscode-create-config",
   imports: [CreateConfigComponent],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: "./create-config.component.html",
 })
 export class ConfigCreateComponent {
