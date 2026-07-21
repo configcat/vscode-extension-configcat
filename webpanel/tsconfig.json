@@ -23,6 +23,7 @@
     "resolveJsonModule": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
+    "types": ["node", "vscode", "@types/vscode-webview"]
   },
  "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
