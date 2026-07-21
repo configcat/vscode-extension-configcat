@@ -1,4 +1,4 @@
-import { Component, DOCUMENT, inject, OnDestroy, OnInit, ChangeDetectionStrategy } from "@angular/core";
+import { ChangeDetectionStrategy, Component, DOCUMENT, inject, OnDestroy, OnInit } from "@angular/core";
 import { Theme, ThemeService } from "ng-configcat-publicapi-ui";
 import { ViewData } from "./app.config";
 import { AuthComponent } from "./authorization/authorization.component";

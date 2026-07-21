@@ -53,6 +53,7 @@ module.exports = tseslint.config(
       "@typescript-eslint/unbound-method": ["error", { ignoreStatic: true }],
       "@typescript-eslint/prefer-nullish-coalescing": "off", // TODO do it later
       "@typescript-eslint/no-misused-spread": "off", // TODO check later if we need it.
+      "@typescript-eslint/no-unnecessary-type-assertion": "off",
 
       /* @smarttools/eslint-plugin-rxjs rules (https://github.com/DaveMBush/eslint-plugin-rxjs?tab=readme-ov-file#rules) */
       "@smarttools/rxjs/no-implicit-any-catch": "off",
@@ -84,7 +85,6 @@ module.exports = tseslint.config(
         { type: "attribute", prefix: ["configcat-vscode"], style: "camelCase" },
       ],
       "@angular-eslint/no-async-lifecycle-method": "error",
-      "@angular-eslint/no-conflicting-lifecycle": "error",
       "@angular-eslint/no-duplicates-in-metadata-arrays": "error",
       "@angular-eslint/prefer-output-readonly": "error",
       "@angular-eslint/prefer-signals": "error",
@@ -93,6 +93,7 @@ module.exports = tseslint.config(
       "@angular-eslint/use-lifecycle-interface": "error",
       "@angular-eslint/no-uncalled-signals": "error",
       "@angular-eslint/prefer-output-emitter-ref": "error",
+      "@angular-eslint/prefer-on-push-component-change-detection": "off", // We should turn this on after onpush migrations.
       // All rules for angular eslint-plugin: https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin/src/configs/all.json
 
       /* Layout & Formatting (https://eslint.style/packages/js, https://eslint.style/packages/ts) */
