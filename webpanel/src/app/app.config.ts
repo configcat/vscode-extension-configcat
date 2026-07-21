@@ -1,4 +1,4 @@
-import { provideHttpClient, withInterceptorsFromDi, withXhr } from "@angular/common/http";
+import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } from "@angular/core";
 import { MatNativeDateModule } from "@angular/material/core";
 import { MatDialogModule } from "@angular/material/dialog";
@@ -28,7 +28,7 @@ export const appConfig: ApplicationConfig = {
       provide: ViewData,
       useValue: window["CONFIGCAT_APP_VIEW"],
     },
-    provideHttpClient(withXhr(), withInterceptorsFromDi()),
+    provideHttpClient(withInterceptorsFromDi()),
     {
       provide: CONFIGCAT_PUBLICAPI_UI_CONFIGURATION,
       useValue: {
