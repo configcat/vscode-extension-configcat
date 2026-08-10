@@ -244,7 +244,7 @@ export class SettingProvider implements vscode.TreeDataProvider<Resource> {
       return;
     }
     this.selectSettingInTreeView(resource);
-    vscode.env.clipboard.writeText(resource.key);
+    vscode.env.clipboard.writeText(resource.name);
   }
 
   findUsageCommand(resource: Resource) {
