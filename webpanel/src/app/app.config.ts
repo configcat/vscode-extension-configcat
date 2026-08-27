@@ -18,10 +18,7 @@ declare global {
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    importProvidersFrom(
-      MatDialogModule,
-      MatNativeDateModule
-    ),
+    importProvidersFrom(MatDialogModule, MatNativeDateModule),
     provideZoneChangeDetection({ eventCoalescing: true, runCoalescing: true }),
     {
       provide: AppData,

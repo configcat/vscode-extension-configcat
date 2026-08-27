@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatButton } from "@angular/material/button";
 import { AuthorizationComponent, AuthorizationModel } from "ng-configcat-publicapi-ui";
@@ -8,12 +8,8 @@ import { AppData } from "../app-data";
   selector: "configcat-vscode-authorization",
   templateUrl: "./authorization.component.html",
   styleUrls: ["./authorization.component.scss"],
-  imports: [
-    FormsModule,
-    ReactiveFormsModule,
-    MatButton,
-    AuthorizationComponent,
-  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [FormsModule, ReactiveFormsModule, MatButton, AuthorizationComponent],
 })
 export class AuthComponent {
   vscode = acquireVsCodeApi();
@@ -33,5 +29,4 @@ export class AuthComponent {
       command: "configcat-logout-success",
     });
   }
-
 }

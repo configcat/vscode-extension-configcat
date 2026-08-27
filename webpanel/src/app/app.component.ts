@@ -1,4 +1,4 @@
-import { Component, DOCUMENT, inject, OnDestroy, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, Component, DOCUMENT, inject, OnDestroy, OnInit } from "@angular/core";
 import { Theme, ThemeService } from "ng-configcat-publicapi-ui";
 import { ViewData } from "./app.config";
 import { AuthComponent } from "./authorization/authorization.component";
@@ -10,26 +10,23 @@ import { FeatureFlagSettingComponent } from "./feature-flag-setting/feature-flag
   selector: "configcat-vscode-root",
   templateUrl: "./app.component.html",
   styles: [],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CreateFeatureFlagSettingComponent, FeatureFlagSettingComponent, ConfigCreateComponent, AuthComponent],
-
 })
 export class AppComponent implements OnInit, OnDestroy {
-
   private readonly themeService = inject(ThemeService);
   private readonly document = inject(DOCUMENT);
   viewData = inject(ViewData);
 
   title = "webpanel";
 
-  postThemeChange = (event: MessageEvent<({ command: string; value: string })>) => {
-    if (!event.origin.startsWith("vscode-webview"))
-      return;
+  postThemeChange = (event: MessageEvent<{ command: string; value: string }>) => {
+    if (!event.origin.startsWith("vscode-webview")) return;
     const message = event.data; // The JSON data our extension sent
     if (message.command === "themeChange") {
       const turnOn = message.value === "dark";
       this.themeService.setTheme(turnOn ? Theme.Dark : Theme.Light);
     }
-
   };
 
   ngOnInit(): void {
@@ -44,5 +41,4 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     window.removeEventListener("message", this.postThemeChange);
   }
-
 }

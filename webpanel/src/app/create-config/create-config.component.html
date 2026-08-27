@@ -1,6 +1,5 @@
 <app-create-config
-  targetSectionHeader="Product"
-  targetSectionDescription="The config will be created under the following product in ConfigCat."
+  [customize]="getCustomize()"
   [basicAuthUsername]="appData.basicAuthUsername"
   [basicAuthPassword]="appData.basicAuthPassword"
   [presetProduct]="{

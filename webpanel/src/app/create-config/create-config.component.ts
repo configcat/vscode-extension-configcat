@@ -1,11 +1,12 @@
 import { HttpErrorResponse } from "@angular/common/http";
-import { Component, inject } from "@angular/core";
-import { CreateConfigComponent } from "ng-configcat-publicapi-ui";
+import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { CreateConfigComponent, DEFAULT_CUSTOMIZE_CREATE_CONFIG, ICustomizeCreateConfig } from "ng-configcat-publicapi-ui";
 import { AppData } from "../app-data";
 
 @Component({
   selector: "configcat-vscode-create-config",
   imports: [CreateConfigComponent],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: "./create-config.component.html",
 })
 export class ConfigCreateComponent {
@@ -30,5 +31,9 @@ export class ConfigCreateComponent {
       command: "configcat-config-create-failed",
       error: { message: errorMessage, status: errorStatus },
     });
+  }
+
+  getCustomize(): ICustomizeCreateConfig {
+    return { ...DEFAULT_CUSTOMIZE_CREATE_CONFIG, hideCancelButton: false, targetSectionHeader: "Product", targetSectionDescription: "The config will be created under the following product in ConfigCat." };
   }
 }
