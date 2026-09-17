@@ -6,6 +6,7 @@
     [settingId]="appData.settingId"
     [showEnvironmentName]="false"
     [canDeleteSetting]="false"
+    (loadFailed)="componentFailed($event)"
     (componentError)="componentFailed($event)" />
 }
 
@@ -17,5 +18,6 @@
     [settingId]="appData.settingId"
     [showEnvironmentName]="false"
     [canDeleteSetting]="false"
+    (loadFailed)="componentFailed($event)"
     (componentError)="componentFailed($event)" />
 }
