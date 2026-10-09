@@ -32,7 +32,7 @@
     "@rxweb/reactive-form-validators": "^13.0.1",
     "@types/node": "^24.1.0",
     "@types/vscode-webview": "1.57.5",
-    "@vscode/vsce": "^3.6.1",
+    "@vscode/vsce": "^4.0.0",
     "ace-builds": "^1.44.0",
     "papaparse": "^5.5.4",
     "ts-node": "~10.9.1",
