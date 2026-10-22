@@ -2,7 +2,7 @@
 	"name": "configcat-feature-flags",
 	"displayName": "ConfigCat Feature Flags",
 	"description": "ConfigCat Visual Studio Code extension to manage feature flags from Visual Studio Code.",
-	"version": "2.4.0",
+	"version": "2.4.1",
 	"publisher": "ConfigCat",
 	"repository": "https://github.com/configcat/vscode-extension-configcat",
 	"preview": false,
@@ -357,9 +357,9 @@
 		"@types/mocha": "^10.0.10",
 		"@types/node": "^24.1.0",
 		"@types/vscode": "^1.63.2",
-		"@vscode/vsce": "^3.6.1",
+		"@vscode/vsce": "^4.0.0",
 		"angular-eslint": "22.1.0",
-		"axios": "^1.6.7",
+		"axios": "^1.20.0",
 		"esbuild": "^0.25.10",
 		"eslint": "^9.39.4",
 		"eslint-config-prettier": "^10.1.8",
@@ -374,6 +374,6 @@
 		"vscode-test": "^1.6.1"
 	},
 	"dependencies": {
-		"configcat-publicapi-node-client": "^3.4.0"
+		"configcat-publicapi-node-client": "^3.5.0"
 	}
 }
